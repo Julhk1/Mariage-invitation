@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Nour & Karim — Invitation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Parisienne&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+  :root{
+    --bg-deep:#1f3325; --bg-deep-2:#294532;
+    --parchment:#faf5e8; --parchment-2:#f3ecda;
+    --ink:#2b271e; --ink-soft:#5b5646;
+    --gold:#b8935b; --gold-light:#e3c88f; --blush:#cf9f8a; --line:#d9cba4;
+    --green-soft:#4a6b4f;
+    --ok-bg:#e4efe1; --ok-text:#3c6b41;
+    --no-bg:#f3e3de; --no-text:#a2503e;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(184,147,91,0.10), transparent 45%),
+      radial-gradient(circle at 85% 90%, rgba(184,147,91,0.10), transparent 45%),
+      linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-deep-2) 100%);
+    font-family:'Cormorant Garamond', serif;
+    color:var(--ink);
+    padding:32px 16px 64px;
+    display:flex; flex-direction:column; align-items:center; gap:18px;
+  }
+  .card{
+    width:100%; max-width:560px;
+    background:var(--parchment);
+    border-radius:6px;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.55), 0 0 0 1px rgba(184,147,91,0.15);
+    overflow:hidden; position:relative;
+  }
+  .card::before{ content:""; position:absolute; inset:10px; border:1px solid rgba(184,147,91,0.35); border-radius:2px; pointer-events:none; }
+  .card-inner{padding:52px 40px 44px; text-align:center; position:relative;}
+  .branch{width:120px; margin:0 auto 14px; display:block; opacity:0.9;}
+  .eyebrow{font-size:12px; letter-spacing:0.32em; text-transform:uppercase; color:var(--green-soft); margin-bottom:6px;}
+  .names{font-family:'Parisienne', cursive; font-size:56px; line-height:1.05; margin:6px 0 4px;}
+  .names .amp{color:var(--gold); font-size:38px; margin:0 8px;}
+  .presented-by{font-size:15px; color:var(--ink-soft); font-style:italic; max-width:380px; margin:6px auto 22px; line-height:1.5;}
+  .rule{width:80px; height:1px; background:linear-gradient(90deg, transparent, var(--gold), transparent); margin:22px auto;}
+  .date-block{margin:8px 0 26px;}
+  .date-block .day{font-size:14px; letter-spacing:0.2em; text-transform:uppercase; color:var(--green-soft);}
+  .date-block .big{font-family:'Parisienne', cursive; font-size:34px; color:var(--gold); margin-top:2px;}
+  .events{display:flex; justify-content:center; gap:34px; flex-wrap:wrap; margin-bottom:8px;}
+  .event{max-width:180px;}
+  .event .label{text-transform:uppercase; font-size:11px; letter-spacing:0.16em; color:var(--gold); margin-bottom:4px;}
+  .event .place{font-size:18px; font-weight:600;}
+  .event .sub{font-size:14px; color:var(--ink-soft); font-style:italic;}
+  .rsvp{margin-top:34px;}
+  .rsvp h2{font-family:'Parisienne', cursive; font-weight:400; font-size:34px;}
+  .rsvp .deadline{font-style:italic; color:var(--ink-soft); font-size:15px; margin:2px 0 26px;}
+  .guest-row{display:flex; align-items:center; justify-content:space-between; gap:16px; padding:14px 4px; border-bottom:1px solid var(--line); text-align:left;}
+  .guest-row:last-of-type{border-bottom:none;}
+  .guest-name{font-size:19px; font-weight:600;}
+  .choice{display:flex; gap:8px;}
+  .pill{font-family:'Cormorant Garamond', serif; font-weight:600; font-size:14px; padding:9px 16px; border-radius:30px; border:1.5px solid var(--line); background:var(--parchment); color:var(--ink-soft); cursor:pointer; transition:all .15s ease;}
+  .pill:hover{border-color:var(--gold);}
+  .pill.attend.active{background:var(--ok-bg); border-color:var(--ok-text); color:var(--ok-text);}
+  .pill.decline.active{background:var(--no-bg); border-color:var(--no-text); color:var(--no-text);}
+  .submit-row{margin-top:28px; display:flex; flex-direction:column; align-items:center; gap:10px;}
+  .submit-btn{font-family:'Cormorant Garamond', serif; text-transform:uppercase; letter-spacing:0.18em; font-size:13px; font-weight:600; background:var(--ink); color:var(--parchment); border:none; padding:14px 40px; border-radius:30px; cursor:pointer; transition:transform .15s ease, background .15s ease;}
+  .submit-btn:hover{background:var(--green-soft); transform:translateY(-1px);}
+  .submit-btn:disabled{opacity:0.5; cursor:not-allowed; transform:none;}
+  .status-msg{font-size:14px; color:var(--green-soft); font-style:italic; min-height:18px;}
+  .status-msg.error{color:var(--no-text);}
+  .seal{width:64px; height:64px; margin:30px auto 0; opacity:0.85;}
+  .loading, .error-box{color:var(--ink-soft); font-style:italic; padding:40px 20px; text-align:center;}
+  @media (max-width:480px){ .names{font-size:44px;} .card-inner{padding:40px 22px 34px;} .events{gap:20px;} }
+</style>
+</head>
+<body>
+
+  <div class="card">
+    <div class="card-inner" id="cardInner">
+      <div class="loading">Chargement de l'invitation…</div>
+    </div>
+  </div>
+
+<script>
+/* =========================================================
+   1) CONFIGURATION — à remplacer par tes vraies valeurs
+   Supabase > Settings > API > Project URL / anon public key
+   ========================================================= */
+const SUPABASE_URL = "https://VOTRE-PROJET.supabase.co";
+const SUPABASE_ANON_KEY = "VOTRE_CLE_ANON_PUBLIC";
+
+/* =========================================================
+   2) PERSONNALISATION DE L'ÉVÉNEMENT — modifie ici
+   ========================================================= */
+const EVENT = {
+  names: 'Nour<span class="amp">&amp;</span>Karim',
+  date_day: 'Samedi',
+  date_big: '12 Septembre 2026',
+  ceremony_place: "Jardins de l'Olivier",
+  ceremony_time: '17h30',
+  reception_place: 'Domaine Beit Zahra',
+  reception_time: '20h00',
+  deadline: 'Merci de confirmer avant le 25 août',
+  seal_initials: 'NK'
+};
+/* ========================================================= */
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const cardInner = document.getElementById('cardInner');
+
+function getSlug(){
+  const params = new URLSearchParams(window.location.search);
+  return params.get('invite');
+}
+
+function renderShell(invite, guests){
+  cardInner.innerHTML = `
+    <svg class="branch" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M100 50 C100 30 60 30 40 10" stroke="#b8935b" stroke-width="1.2"/>
+      <path d="M100 50 C100 30 140 30 160 10" stroke="#b8935b" stroke-width="1.2"/>
+      <ellipse cx="45" cy="14" rx="7" ry="3.5" fill="#b8935b" transform="rotate(-30 45 14)"/>
+      <ellipse cx="60" cy="24" rx="7" ry="3.5" fill="#cf9f8a" transform="rotate(-15 60 24)"/>
+      <ellipse cx="155" cy="14" rx="7" ry="3.5" fill="#b8935b" transform="rotate(30 155 14)"/>
+      <ellipse cx="140" cy="24" rx="7" ry="3.5" fill="#cf9f8a" transform="rotate(15 140 24)"/>
+      <circle cx="100" cy="52" r="3" fill="#b8935b"/>
+    </svg>
+    <div class="eyebrow">Vous êtes convié·e·s au mariage de</div>
+    <div class="names">${EVENT.names}</div>
+    <p class="presented-by">${invite.note || ''}</p>
+    <div class="rule"></div>
+    <div class="date-block">
+      <div class="day">${EVENT.date_day}</div>
+      <div class="big">${EVENT.date_big}</div>
+    </div>
+    <div class="events">
+      <div class="event"><div class="label">Cérémonie</div><div class="place">${EVENT.ceremony_place}</div><div class="sub">${EVENT.ceremony_time}</div></div>
+      <div class="event"><div class="label">Réception</div><div class="place">${EVENT.reception_place}</div><div class="sub">${EVENT.reception_time}</div></div>
+    </div>
+    <div class="rule"></div>
+    <div class="rsvp">
+      <h2>Serez-vous des nôtres ?</h2>
+      <div class="deadline">${EVENT.deadline}</div>
+      <div id="guestRows"></div>
+      <div class="submit-row">
+        <button class="submit-btn" id="submitBtn">Envoyer ma réponse</button>
+        <div class="status-msg" id="statusMsg"></div>
+      </div>
+    </div>
+    <svg class="seal" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="30" stroke="#b8935b" stroke-width="1.4"/>
+      <circle cx="32" cy="32" r="24" stroke="#b8935b" stroke-width="0.8"/>
+      <text x="32" y="39" text-anchor="middle" font-family="Parisienne, cursive" font-size="24" fill="#b8935b">${EVENT.seal_initials}</text>
+    </svg>
+  `;
+
+  const draft = {};
+  guests.forEach(g => { draft[g.id] = g.status; });
+
+  function renderRows(){
+    const rowsEl = document.getElementById('guestRows');
+    rowsEl.innerHTML = '';
+    guests.forEach(g => {
+      const row = document.createElement('div');
+      row.className = 'guest-row';
+      row.innerHTML = `
+        <div class="guest-name">${g.member_name}</div>
+        <div class="choice">
+          <button class="pill attend ${draft[g.id]==='attending'?'active':''}">Je serai présent·e</button>
+          <button class="pill decline ${draft[g.id]==='declined'?'active':''}">Je ne pourrai pas</button>
+        </div>`;
+      const [attendBtn, declineBtn] = row.querySelectorAll('.pill');
+      attendBtn.onclick = () => { draft[g.id] = 'attending'; renderRows(); };
+      declineBtn.onclick = () => { draft[g.id] = 'declined'; renderRows(); };
+      rowsEl.appendChild(row);
+    });
+  }
+  renderRows();
+
+  document.getElementById('submitBtn').onclick = async () => {
+    const statusMsg = document.getElementById('statusMsg');
+    const submitBtn = document.getElementById('submitBtn');
+    const allAnswered = guests.every(g => draft[g.id] === 'attending' || draft[g.id] === 'declined');
+    if(!allAnswered){
+      statusMsg.textContent = "Merci de répondre pour chaque invité avant d'envoyer.";
+      statusMsg.className = 'status-msg error';
+      return;
+    }
+    submitBtn.disabled = true;
+    statusMsg.textContent = 'Enregistrement…';
+    statusMsg.className = 'status-msg';
+
+    try{
+      for(const g of guests){
+        const { error } = await sb.from('guests')
+          .update({ status: draft[g.id], responded_at: new Date().toISOString() })
+          .eq('id', g.id);
+        if(error) throw error;
+        g.status = draft[g.id];
+      }
+      statusMsg.textContent = 'Merci ! Votre réponse a bien été enregistrée.';
+      statusMsg.className = 'status-msg';
+    }catch(e){
+      console.error(e);
+      statusMsg.textContent = "Une erreur est survenue, merci de réessayer.";
+      statusMsg.className = 'status-msg error';
+    }
+    submitBtn.disabled = false;
+  };
+}
+
+async function init(){
+  const slug = getSlug();
+  if(!slug){
+    cardInner.innerHTML = '<div class="error-box">Ce lien d\'invitation est incomplet.<br>Merci d\'utiliser le lien qui vous a été envoyé.</div>';
+    return;
+  }
+  try{
+    const { data: invite, error: inviteErr } = await sb.from('invites').select('*').eq('slug', slug).single();
+    if(inviteErr || !invite) throw new Error('invite not found');
+
+    const { data: guests, error: guestsErr } = await sb.from('guests').select('*').eq('invite_slug', slug).order('member_name');
+    if(guestsErr) throw guestsErr;
+
+    renderShell(invite, guests);
+  }catch(e){
+    console.error(e);
+    cardInner.innerHTML = '<div class="error-box">Invitation introuvable.<br>Merci de vérifier votre lien.</div>';
+  }
+}
+
+init();
+</script>
+</body>
+</html>
