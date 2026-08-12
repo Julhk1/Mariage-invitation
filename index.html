@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Julien & Vanessa — Invitation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Parisienne&family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Parisienne&family=Markazi+Text:wght@400;500;600;700&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{
@@ -29,8 +29,12 @@
     padding:22px 12px 50px;
     display:flex; flex-direction:column; align-items:center;
   }
-  body.lang-ar{ font-family:'Amiri', serif; }
-  body.lang-ar .names, body.lang-ar .monogram, body.lang-ar .parents-line{ font-family:'Aref Ruqaa', serif; }
+  /* Markazi Text is the closest elegant, light-weight match to Cormorant Garamond for body copy.
+     Aref Ruqaa (weight 400, not bold) pairs with Parisienne for the big script names. */
+  body.lang-ar{ font-family:'Markazi Text', serif; }
+  body.lang-ar .names, body.lang-ar .monogram, body.lang-ar .parents-line, body.lang-ar .rsvp h2{
+    font-family:'Aref Ruqaa', serif; font-weight:400;
+  }
 
   body::before{
     content:"";
@@ -55,6 +59,12 @@
   .corner.tr{ top:6px; right:6px; transform:scaleX(-1); }
   .corner.bl{ bottom:6px; left:6px; transform:scaleY(-1); }
   .corner.br{ bottom:6px; right:6px; transform:scale(-1,-1); }
+
+  /* watermark: doves + interlocking rings, faint, sits behind all text */
+  .watermark{
+    position:absolute; top:52%; left:50%; transform:translate(-50%,-50%);
+    width:78%; max-width:320px; opacity:0.16; z-index:1; pointer-events:none;
+  }
 
   .lang-switch{
     position:relative; z-index:4;
@@ -81,13 +91,15 @@
   .parents-line{ font-family:'Parisienne', cursive; font-size:clamp(21px,5.5vw,26px); color:var(--ink); margin-bottom:20px; line-height:1.3; }
 
   .invite-copy{ font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft); line-height:1.9; max-width:320px; margin:0 auto 22px; }
-  body.lang-ar .invite-copy{ letter-spacing:0.02em; text-transform:none; font-size:14px; }
+  body.lang-ar .invite-copy{ letter-spacing:0.02em; text-transform:none; font-size:15px; line-height:1.7; }
   body.lang-ar .eyebrow{ letter-spacing:0.1em; }
 
   .names{ font-family:'Parisienne', cursive; font-size:clamp(42px,12vw,58px); line-height:1.15; margin-bottom:16px; color:var(--ink); }
   .names .amp{ color:var(--gold-deep); font-size:0.65em; margin:0 4px; }
+  body.lang-ar .names{ font-size:clamp(38px,10vw,50px); }
 
   .presented-by{ font-size:14.5px; color:var(--ink-soft); font-style:italic; max-width:340px; margin:0 auto 22px; line-height:1.55; }
+  body.lang-ar .presented-by{ font-size:16px; font-style:normal; }
 
   .rule{ width:64px; height:1px; background:linear-gradient(90deg, transparent, var(--gold), transparent); margin:20px auto; position:relative; }
   .rule::before{ content:"❖"; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--paper); color:var(--gold-deep); font-size:12px; padding:0 8px; }
@@ -95,7 +107,7 @@
   .date-block{ margin:6px 0 24px; }
   .date-block .day{ font-size:12.5px; letter-spacing:0.28em; text-transform:uppercase; color:var(--gold-deep); }
   .date-block .big{ font-size:clamp(20px,5.5vw,26px); letter-spacing:0.08em; margin-top:6px; font-weight:600; }
-  body.lang-ar .date-block .day{ letter-spacing:0.05em; }
+  body.lang-ar .date-block .day{ letter-spacing:0.05em; font-size:15px; }
   body.lang-ar .date-block .big{ letter-spacing:0; }
 
   .events{ display:flex; justify-content:center; align-items:center; gap:0; margin-bottom:4px; width:100%; }
@@ -103,20 +115,25 @@
   .event + .event{ border-left:1px solid var(--line); }
   body.lang-ar .event + .event{ border-left:none; border-right:1px solid var(--line); }
   .event .label{ text-transform:uppercase; font-size:10.5px; letter-spacing:0.16em; color:var(--gold-deep); margin-bottom:6px; }
+  body.lang-ar .event .label{ font-size:14px; letter-spacing:0.02em; text-transform:none; }
   .event .place{ font-size:16px; font-weight:600; line-height:1.3; }
+  body.lang-ar .event .place{ font-size:18px; }
   .event .place a{ color:var(--ink); text-decoration:none; border-bottom:1px solid var(--gold-light); transition:color .15s ease, border-color .15s ease; }
   .event .place a:hover{ color:var(--gold-deep); border-color:var(--gold-deep); }
   .event .sub{ font-size:13.5px; color:var(--ink-soft); font-style:italic; margin-top:3px; }
+  body.lang-ar .event .sub{ font-size:15px; font-style:normal; }
 
   .rsvp{ margin-top:32px; }
   .rsvp h2{ font-family:'Parisienne', cursive; font-weight:400; font-size:clamp(26px,7vw,32px); }
-  body.lang-ar .rsvp h2{ font-family:'Aref Ruqaa', serif; font-size:clamp(24px,6.5vw,30px); }
+  body.lang-ar .rsvp h2{ font-size:clamp(26px,7vw,34px); }
   .rsvp .deadline{ font-style:italic; color:var(--ink-soft); font-size:14px; margin:2px 0 22px; }
+  body.lang-ar .rsvp .deadline{ font-style:normal; font-size:15.5px; }
 
   .guest-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 2px; border-bottom:1px solid var(--line); text-align:left; flex-wrap:wrap; }
   body.lang-ar .guest-row{ text-align:right; }
   .guest-row:last-of-type{ border-bottom:none; }
   .guest-name{ font-size:17px; font-weight:600; flex:1 1 100%; }
+  body.lang-ar .guest-name{ font-size:19px; }
 
   .choice{ display:flex; gap:8px; width:100%; }
   .pill{
@@ -125,6 +142,7 @@
     background:var(--paper); color:var(--ink-soft); cursor:pointer;
     transition:all .15s ease; flex:1; min-height:44px;
   }
+  body.lang-ar .pill{ font-size:15.5px; }
   .pill:active{ transform:scale(0.97); }
   .pill.attend.active{ background:var(--ok-bg); border-color:var(--ok-text); color:var(--ok-text); }
   .pill.decline.active{ background:var(--no-bg); border-color:var(--no-text); color:var(--no-text); }
@@ -136,13 +154,15 @@
     border:1px solid var(--gold); padding:15px 10px; border-radius:4px; cursor:pointer;
     transition:background .15s ease; width:100%; max-width:280px; min-height:48px;
   }
-  body.lang-ar .submit-btn{ text-transform:none; letter-spacing:0.02em; }
+  body.lang-ar .submit-btn{ text-transform:none; letter-spacing:0.02em; font-size:16px; }
   .submit-btn:hover{ background:var(--emerald-3); }
   .submit-btn:disabled{ opacity:0.5; cursor:not-allowed; }
   .status-msg{ font-size:13.5px; color:var(--ok-text); font-style:italic; min-height:18px; }
   .status-msg.error{ color:var(--no-text); }
+  body.lang-ar .status-msg{ font-size:15px; font-style:normal; }
 
   .loading, .error-box{ color:var(--ink-soft); font-style:italic; padding:48px 20px; text-align:center; }
+  body.lang-ar .loading, body.lang-ar .error-box{ font-style:normal; font-size:16px; }
 
   @media (max-width:400px){
     .events{ flex-direction:column; gap:16px; }
@@ -177,6 +197,20 @@
       <path d="M4 40 C4 20 20 4 40 4" stroke="#d4af37" stroke-width="1"/>
       <path d="M4 30 C4 16 16 4 30 4" stroke="#d4af37" stroke-width="0.8"/>
       <circle cx="4" cy="4" r="3" fill="#d4af37"/>
+    </svg>
+
+    <svg class="watermark" viewBox="0 0 260 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- left dove -->
+      <path d="M40 90 C25 78 20 60 30 46 C36 38 46 35 54 39 C50 30 54 20 64 16 C68 26 66 36 58 42 C68 40 78 46 80 58 C68 56 60 62 58 70 C64 74 66 82 62 90 C56 82 48 80 42 84 C44 78 40 76 34 78 C36 82 40 86 40 90 Z" fill="#d4af37"/>
+      <!-- right dove (mirrored) -->
+      <path d="M220 90 C235 78 240 60 230 46 C224 38 214 35 206 39 C210 30 206 20 196 16 C192 26 194 36 202 42 C192 40 182 46 180 58 C192 56 200 62 202 70 C196 74 194 82 198 90 C204 82 212 80 218 84 C216 78 220 76 226 78 C224 82 220 86 220 90 Z" fill="#d4af37"/>
+      <!-- gentle connecting flourish -->
+      <path d="M96 96 C110 108 150 108 164 96" stroke="#d4af37" stroke-width="1.4" fill="none"/>
+      <!-- interlocking rings -->
+      <circle cx="112" cy="180" r="34" stroke="#d4af37" stroke-width="4" fill="none"/>
+      <circle cx="148" cy="180" r="34" stroke="#a9822b" stroke-width="4" fill="none"/>
+      <!-- small flourish above rings -->
+      <path d="M80 130 C95 118 120 116 130 126 C140 116 165 118 180 130" stroke="#d4af37" stroke-width="1.2" fill="none"/>
     </svg>
 
     <div class="lang-switch">
