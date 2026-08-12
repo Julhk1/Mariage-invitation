@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suivi des invités</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600&family=Parisienne&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+  :root{
+    --parchment:#faf5e8; --parchment-2:#f3ecda; --ink:#2b271e; --ink-soft:#5b5646;
+    --gold:#b8935b; --line:#d9cba4;
+    --ok-bg:#e4efe1; --ok-text:#3c6b41;
+    --no-bg:#f3e3de; --no-text:#a2503e;
+    --pending-bg:#efe7cf; --pending-text:#8a7440;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{ min-height:100vh; background:linear-gradient(180deg,#1f3325,#294532); font-family:'Cormorant Garamond', serif; color:var(--ink); padding:40px 16px; display:flex; justify-content:center; }
+  .panel{ width:100%; max-width:720px; background:var(--parchment); border-radius:8px; padding:32px 30px 40px; box-shadow:0 30px 60px rgba(0,0,0,0.5); }
+  h1{ font-family:'Parisienne', cursive; font-weight:400; font-size:34px; margin-bottom:2px; }
+  .sub{ color:var(--ink-soft); font-style:italic; font-size:14px; margin-bottom:22px; }
+  .stat-row{ display:flex; gap:10px; margin-bottom:24px; flex-wrap:wrap; }
+  .stat{ flex:1; min-width:110px; background:var(--parchment-2); border:1px solid var(--line); border-radius:8px; padding:12px 14px; text-align:center; }
+  .stat .num{ font-size:26px; font-weight:600; }
+  .stat .lbl{ font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-soft); }
+  .stat.ok .num{ color:var(--ok-text); } .stat.no .num{ color:var(--no-text); } .stat.pending .num{ color:var(--pending-text); }
+  input, select{ font-family:'Cormorant Garamond', serif; font-size:15px; padding:8px 12px; border:1px solid var(--line); border-radius:6px; background:#fff; }
+  .filters{ display:flex; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+  table{ width:100%; border-collapse:collapse; font-size:15px; }
+  th{ text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:0.1em; color:var(--ink-soft); padding:8px; border-bottom:1px solid var(--line); }
+  td{ padding:9px 8px; border-bottom:1px solid var(--line); }
+  .fam{ font-weight:600; font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); }
+  .badge{ display:inline-block; font-size:12px; font-weight:600; padding:3px 10px; border-radius:20px; }
+  .badge.attending{ background:var(--ok-bg); color:var(--ok-text); }
+  .badge.declined{ background:var(--no-bg); color:var(--no-text); }
+  .badge.pending{ background:var(--pending-bg); color:var(--pending-text); }
+  .lock-screen{ text-align:center; padding:40px 10px; }
+  .lock-screen input{ width:100%; max-width:220px; text-align:center; margin:14px 0; }
+  .lock-screen button{ font-family:'Cormorant Garamond', serif; background:var(--ink); color:var(--parchment); border:none; padding:10px 28px; border-radius:30px; cursor:pointer; font-weight:600; letter-spacing:0.05em; }
+  .msg{ font-size:13px; color:var(--no-text); min-height:16px; }
+  .loading{ text-align:center; color:var(--ink-soft); font-style:italic; padding:30px; }
+</style>
+</head>
+<body>
+  <div class="panel" id="panel">
+    <div class="lock-screen" id="lockScreen">
+      <h1>Suivi des invités</h1>
+      <p class="sub">Accès organisateur</p>
+      <input type="password" id="passInput" placeholder="Code d'accès">
+      <div class="msg" id="lockMsg"></div>
+      <button id="unlockBtn">Entrer</button>
+    </div>
+  </div>
+
+<script>
+/* =========================================================
+   CONFIGURATION — mêmes valeurs que dans index.html
+   ========================================================= */
+const SUPABASE_URL = "https://VOTRE-PROJET.supabase.co";
+const SUPABASE_ANON_KEY = "VOTRE_CLE_ANON_PUBLIC";
+
+// Code simple pour dissuader les curieux — PAS une vraie sécurité
+// (n'importe qui inspectant le code source peut le voir : ne partage pas ce lien publiquement)
+const ADMIN_PASSCODE = "changez-moi";
+/* ========================================================= */
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const panel = document.getElementById('panel');
+
+document.getElementById('unlockBtn').onclick = () => {
+  const val = document.getElementById('passInput').value;
+  if(val === ADMIN_PASSCODE){
+    loadDashboard();
+  }else{
+    document.getElementById('lockMsg').textContent = 'Code incorrect.';
+  }
+};
+document.getElementById('passInput').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') document.getElementById('unlockBtn').click();
+});
+
+async function loadDashboard(){
+  panel.innerHTML = '<div class="loading">Chargement des invités…</div>';
+  try{
+    const { data: invites, error: invErr } = await sb.from('invites').select('*').order('family_name');
+    if(invErr) throw invErr;
+    const { data: guests, error: gErr } = await sb.from('guests').select('*');
+    if(gErr) throw gErr;
+
+    let total=0, attending=0, declined=0, pending=0;
+    guests.forEach(g => {
+      total++;
+      if(g.status==='attending') attending++;
+      else if(g.status==='declined') declined++;
+      else pending++;
+    });
+
+    const rows = guests
+      .map(g => ({ ...g, family_name: (invites.find(i=>i.slug===g.invite_slug)||{}).family_name || g.invite_slug }))
+      .sort((a,b) => a.family_name.localeCompare(b.family_name));
+
+    panel.innerHTML = `
+      <h1>Suivi des invités</h1>
+      <p class="sub">${total} invités au total — mis à jour en direct depuis Supabase</p>
+      <div class="stat-row">
+        <div class="stat"><div class="num">${total}</div><div class="lbl">Invités</div></div>
+        <div class="stat ok"><div class="num">${attending}</div><div class="lbl">Présents</div></div>
+        <div class="stat no"><div class="num">${declined}</div><div class="lbl">Déclinés</div></div>
+        <div class="stat pending"><div class="num">${pending}</div><div class="lbl">En attente</div></div>
+      </div>
+      <div class="filters">
+        <select id="statusFilter">
+          <option value="all">Tous les statuts</option>
+          <option value="attending">Présents</option>
+          <option value="declined">Déclinés</option>
+          <option value="pending">En attente</option>
+        </select>
+        <input id="searchInput" placeholder="Rechercher un nom ou une famille…">
+      </div>
+      <table>
+        <thead><tr><th>Foyer</th><th>Invité</th><th>Statut</th></tr></thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    `;
+
+    function renderTable(){
+      const statusFilter = document.getElementById('statusFilter').value;
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const tbody = document.getElementById('tbody');
+      tbody.innerHTML = '';
+      rows
+        .filter(r => statusFilter==='all' || r.status===statusFilter)
+        .filter(r => r.family_name.toLowerCase().includes(search) || r.member_name.toLowerCase().includes(search))
+        .forEach(r => {
+          const label = r.status==='attending' ? 'Présent·e' : (r.status==='declined' ? 'Décliné' : 'En attente');
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td class="fam">${r.family_name}</td><td>${r.member_name}</td><td><span class="badge ${r.status}">${label}</span></td>`;
+          tbody.appendChild(tr);
+        });
+    }
+    renderTable();
+    document.getElementById('statusFilter').onchange = renderTable;
+    document.getElementById('searchInput').oninput = renderTable;
+
+  }catch(e){
+    console.error(e);
+    panel.innerHTML = '<div class="loading">Erreur de chargement. Vérifie ta configuration Supabase.</div>';
+  }
+}
+</script>
+</body>
+</html>
