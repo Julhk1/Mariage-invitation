@@ -60,10 +60,11 @@
   .corner.bl{ bottom:6px; left:6px; transform:scaleY(-1); }
   .corner.br{ bottom:6px; right:6px; transform:scale(-1,-1); }
 
-  /* watermark: doves + interlocking rings, faint, sits behind all text */
+  /* watermark: flourish + interlocking rings illustration, faint, sits behind all text */
   .watermark{
-    position:absolute; top:52%; left:50%; transform:translate(-50%,-50%);
-    width:78%; max-width:320px; opacity:0.16; z-index:1; pointer-events:none;
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:62%; max-width:260px; opacity:0.22; z-index:1; pointer-events:none;
+    object-fit:contain;
   }
 
   .lang-switch{
@@ -199,19 +200,7 @@
       <circle cx="4" cy="4" r="3" fill="#d4af37"/>
     </svg>
 
-    <svg class="watermark" viewBox="0 0 260 300" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <!-- left dove -->
-      <path d="M40 90 C25 78 20 60 30 46 C36 38 46 35 54 39 C50 30 54 20 64 16 C68 26 66 36 58 42 C68 40 78 46 80 58 C68 56 60 62 58 70 C64 74 66 82 62 90 C56 82 48 80 42 84 C44 78 40 76 34 78 C36 82 40 86 40 90 Z" fill="#d4af37"/>
-      <!-- right dove (mirrored) -->
-      <path d="M220 90 C235 78 240 60 230 46 C224 38 214 35 206 39 C210 30 206 20 196 16 C192 26 194 36 202 42 C192 40 182 46 180 58 C192 56 200 62 202 70 C196 74 194 82 198 90 C204 82 212 80 218 84 C216 78 220 76 226 78 C224 82 220 86 220 90 Z" fill="#d4af37"/>
-      <!-- gentle connecting flourish -->
-      <path d="M96 96 C110 108 150 108 164 96" stroke="#d4af37" stroke-width="1.4" fill="none"/>
-      <!-- interlocking rings -->
-      <circle cx="112" cy="180" r="34" stroke="#d4af37" stroke-width="4" fill="none"/>
-      <circle cx="148" cy="180" r="34" stroke="#a9822b" stroke-width="4" fill="none"/>
-      <!-- small flourish above rings -->
-      <path d="M80 130 C95 118 120 116 130 126 C140 116 165 118 180 130" stroke="#d4af37" stroke-width="1.2" fill="none"/>
-    </svg>
+    <img class="watermark" src="royal-flourish-rings.png" alt="" />
 
     <div class="lang-switch">
       <button class="lang-btn" id="btnEn" type="button">EN</button>
