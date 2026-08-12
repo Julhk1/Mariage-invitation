@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Julien & Vanessa — Invitation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Parisienne&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Parisienne&family=Amiri:ital,wght@0,400;0,700;1,400&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{
@@ -29,8 +29,9 @@
     padding:22px 12px 50px;
     display:flex; flex-direction:column; align-items:center;
   }
+  body.lang-ar{ font-family:'Amiri', serif; }
+  body.lang-ar .names, body.lang-ar .monogram, body.lang-ar .parents-line{ font-family:'Aref Ruqaa', serif; }
 
-  /* subtle royal diamond pattern behind everything */
   body::before{
     content:"";
     position:fixed; inset:0; z-index:0; pointer-events:none;
@@ -55,8 +56,20 @@
   .corner.bl{ bottom:6px; left:6px; transform:scaleY(-1); }
   .corner.br{ bottom:6px; right:6px; transform:scale(-1,-1); }
 
+  .lang-switch{
+    position:relative; z-index:4;
+    display:flex; justify-content:center; gap:6px;
+    padding:14px 14px 0;
+  }
+  .lang-btn{
+    font-family:'Cormorant Garamond', serif; font-size:12px; font-weight:700; letter-spacing:0.08em;
+    padding:5px 14px; border-radius:20px; border:1px solid var(--gold-deep);
+    background:transparent; color:var(--gold-deep); cursor:pointer; transition:all .15s ease;
+  }
+  .lang-btn.active{ background:var(--emerald-2); color:var(--gold-light); border-color:var(--emerald-2); }
+
   .card-inner{
-    padding:clamp(38px,9vw,56px) clamp(22px,6vw,42px) clamp(34px,7vw,46px);
+    padding:clamp(26px,7vw,40px) clamp(22px,6vw,42px) clamp(34px,7vw,46px);
     text-align:center; position:relative; z-index:2;
   }
 
@@ -68,8 +81,10 @@
   .parents-line{ font-family:'Parisienne', cursive; font-size:clamp(21px,5.5vw,26px); color:var(--ink); margin-bottom:20px; line-height:1.3; }
 
   .invite-copy{ font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft); line-height:1.9; max-width:320px; margin:0 auto 22px; }
+  body.lang-ar .invite-copy{ letter-spacing:0.02em; text-transform:none; font-size:14px; }
+  body.lang-ar .eyebrow{ letter-spacing:0.1em; }
 
-  .names{ font-family:'Parisienne', cursive; font-size:clamp(42px,12vw,58px); line-height:1.1; margin-bottom:16px; color:var(--ink); }
+  .names{ font-family:'Parisienne', cursive; font-size:clamp(42px,12vw,58px); line-height:1.15; margin-bottom:16px; color:var(--ink); }
   .names .amp{ color:var(--gold-deep); font-size:0.65em; margin:0 4px; }
 
   .presented-by{ font-size:14.5px; color:var(--ink-soft); font-style:italic; max-width:340px; margin:0 auto 22px; line-height:1.55; }
@@ -80,10 +95,13 @@
   .date-block{ margin:6px 0 24px; }
   .date-block .day{ font-size:12.5px; letter-spacing:0.28em; text-transform:uppercase; color:var(--gold-deep); }
   .date-block .big{ font-size:clamp(20px,5.5vw,26px); letter-spacing:0.08em; margin-top:6px; font-weight:600; }
+  body.lang-ar .date-block .day{ letter-spacing:0.05em; }
+  body.lang-ar .date-block .big{ letter-spacing:0; }
 
-  .events{ display:flex; justify-content:center; gap:0; margin-bottom:4px; }
-  .event{ flex:1; max-width:210px; padding:0 12px; }
+  .events{ display:flex; justify-content:center; align-items:center; gap:0; margin-bottom:4px; width:100%; }
+  .event{ flex:1 1 0; max-width:210px; padding:0 12px; margin:0 auto; }
   .event + .event{ border-left:1px solid var(--line); }
+  body.lang-ar .event + .event{ border-left:none; border-right:1px solid var(--line); }
   .event .label{ text-transform:uppercase; font-size:10.5px; letter-spacing:0.16em; color:var(--gold-deep); margin-bottom:6px; }
   .event .place{ font-size:16px; font-weight:600; line-height:1.3; }
   .event .place a{ color:var(--ink); text-decoration:none; border-bottom:1px solid var(--gold-light); transition:color .15s ease, border-color .15s ease; }
@@ -92,15 +110,17 @@
 
   .rsvp{ margin-top:32px; }
   .rsvp h2{ font-family:'Parisienne', cursive; font-weight:400; font-size:clamp(26px,7vw,32px); }
+  body.lang-ar .rsvp h2{ font-family:'Aref Ruqaa', serif; font-size:clamp(24px,6.5vw,30px); }
   .rsvp .deadline{ font-style:italic; color:var(--ink-soft); font-size:14px; margin:2px 0 22px; }
 
   .guest-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 2px; border-bottom:1px solid var(--line); text-align:left; flex-wrap:wrap; }
+  body.lang-ar .guest-row{ text-align:right; }
   .guest-row:last-of-type{ border-bottom:none; }
   .guest-name{ font-size:17px; font-weight:600; flex:1 1 100%; }
 
   .choice{ display:flex; gap:8px; width:100%; }
   .pill{
-    font-family:'Cormorant Garamond', serif; font-weight:600; font-size:13.5px;
+    font-family:inherit; font-weight:600; font-size:13.5px;
     padding:11px 10px; border-radius:24px; border:1.5px solid var(--line);
     background:var(--paper); color:var(--ink-soft); cursor:pointer;
     transition:all .15s ease; flex:1; min-height:44px;
@@ -111,11 +131,12 @@
 
   .submit-row{ margin-top:26px; display:flex; flex-direction:column; align-items:center; gap:10px; }
   .submit-btn{
-    font-family:'Cormorant Garamond', serif; text-transform:uppercase; letter-spacing:0.18em;
+    font-family:inherit; text-transform:uppercase; letter-spacing:0.18em;
     font-size:12.5px; font-weight:700; background:var(--emerald-2); color:var(--gold-light);
     border:1px solid var(--gold); padding:15px 10px; border-radius:4px; cursor:pointer;
     transition:background .15s ease; width:100%; max-width:280px; min-height:48px;
   }
+  body.lang-ar .submit-btn{ text-transform:none; letter-spacing:0.02em; }
   .submit-btn:hover{ background:var(--emerald-3); }
   .submit-btn:disabled{ opacity:0.5; cursor:not-allowed; }
   .status-msg{ font-size:13.5px; color:var(--ok-text); font-style:italic; min-height:18px; }
@@ -125,7 +146,9 @@
 
   @media (max-width:400px){
     .events{ flex-direction:column; gap:16px; }
+    .event{ margin:0 auto; }
     .event + .event{ border-left:none; border-top:1px solid var(--line); padding-top:14px; }
+    body.lang-ar .event + .event{ border-right:none; border-top:1px solid var(--line); }
   }
 </style>
 </head>
@@ -139,7 +162,6 @@
       <path d="M4 40 C4 20 20 4 40 4" stroke="#d4af37" stroke-width="1"/>
       <path d="M4 30 C4 16 16 4 30 4" stroke="#d4af37" stroke-width="0.8"/>
       <circle cx="4" cy="4" r="3" fill="#d4af37"/>
-      <path d="M12 12 C16 8 8 16 12 12Z" fill="#d4af37"/>
     </svg>
     <svg class="corner tr" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M4 40 C4 20 20 4 40 4" stroke="#d4af37" stroke-width="1"/>
@@ -157,43 +179,89 @@
       <circle cx="4" cy="4" r="3" fill="#d4af37"/>
     </svg>
 
+    <div class="lang-switch">
+      <button class="lang-btn" id="btnEn" type="button">EN</button>
+      <button class="lang-btn" id="btnAr" type="button">AR · عربي</button>
+    </div>
+
     <div class="card-inner" id="cardInner">
-      <div class="loading">Chargement de l'invitation…</div>
+      <div class="loading" id="loadingText">Loading your invitation…</div>
     </div>
   </div>
 
 <script>
 /* =========================================================
-   1) CONFIGURATION — à remplacer par tes vraies valeurs
-   Supabase > Settings > API > Project URL / anon public key
+   1) CONFIGURATION — Supabase project keys
    ========================================================= */
 const SUPABASE_URL = "https://dthppsntdwdtvqgwwbhm.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_Vv0Xsv71M5Xf--EUXXYm2A_r2KD_o53";
 
 /* =========================================================
-   2) PERSONNALISATION DE L'ÉVÉNEMENT — modifie ici
+   2) EVENT CONTENT — one block per language.
+   Edit the text on both sides so EN and AR say the same thing.
    ========================================================= */
 const EVENT = {
   monogram: 'JV',
+  ceremony_map_url: 'https://maps.google.com/?q=Jardins+de+l%27Olivier',   // put your real Google Maps link here
+  reception_map_url: 'https://maps.google.com/?q=Domaine+Beit+Zahra',      // put your real Google Maps link here
 
-  // Laisse vide ('') pour masquer la ligne des parents si tu ne la veux pas
-  parents_line: 'Famille Hobeika & Famille Fakhri',            // ex: 'Famille Hobeika & Famille Fakhri'
-  invite_copy: "Ont le plaisir de vous convier au mariage de",
+  en: {
+    parents_line: '',                     // e.g. 'The Hobeika & Fakhri Families' — leave '' to hide
+    invite_copy: 'Have the pleasure of inviting you to the wedding of',
+    names: 'Julien<span class="amp">&amp;</span>Vanessa',
+    date_day: 'Saturday',
+    date_big: 'September 12, 2026',
+    ceremony_place: "Jardins de l'Olivier",
+    ceremony_time: '5:30 PM',
+    reception_place: 'Domaine Beit Zahra',
+    reception_time: '8:00 PM',
+    deadline: 'Please confirm before August 25'
+  },
+  ar: {
+    parents_line: '',                     // مثال: 'عائلتا حبيقة وفخري' — اتركه فارغًا لإخفاء هذا السطر
+    invite_copy: 'يتشرفان بدعوتكم لحضور حفل زفاف',
+    names: 'جوليان<span class="amp">و</span>فانيسا',
+    date_day: 'السبت',
+    date_big: '12 سبتمبر 2026',
+    ceremony_place: 'حدائق الزيتون',
+    ceremony_time: '5:30 مساءً',
+    reception_place: 'دار بيت زهرة',
+    reception_time: '8:00 مساءً',
+    deadline: 'يرجى تأكيد الحضور قبل 25 آب'
+  }
+};
 
-  names: 'Julien<span class="amp">&amp;</span>Vanessa',
-
-  date_day: 'Samedi',
-  date_big: '12 SEPTEMBRE 2026',
-
-  ceremony_place: "Jardins de l'Olivier",
-  ceremony_time: '17h30',
-  ceremony_map_url: 'https://maps.google.com/?q=Jardins+de+l%27Olivier',   // mets ton vrai lien Google Maps ici
-
-  reception_place: 'Domaine Beit Zahra',
-  reception_time: '20h00',
-  reception_map_url: 'https://maps.google.com/?q=Domaine+Beit+Zahra',      // mets ton vrai lien Google Maps ici
-
-  deadline: 'Merci de confirmer avant le 25 août'
+const UI = {
+  en: {
+    ceremony_label: 'Ceremony',
+    reception_label: 'Reception',
+    rsvp_heading: 'Will you be there?',
+    attend_btn: "I'll be there",
+    decline_btn: "I can't make it",
+    submit_btn: 'Send my response',
+    saving: 'Saving…',
+    saved_ok: 'Thank you! Your response has been recorded.',
+    need_all: 'Please answer for each guest before sending.',
+    error_generic: 'Something went wrong, please try again.',
+    loading: 'Loading your invitation…',
+    incomplete_link: "This invitation link is incomplete.<br>Please use the link that was sent to you.",
+    not_found: 'Invitation not found.<br>Please check your link.'
+  },
+  ar: {
+    ceremony_label: 'حفل الزفاف',
+    reception_label: 'حفل الاستقبال',
+    rsvp_heading: 'هل ستكونون معنا؟',
+    attend_btn: 'سأكون حاضرًا',
+    decline_btn: 'لن أتمكن من الحضور',
+    submit_btn: 'إرسال ردّي',
+    saving: 'جارٍ الحفظ…',
+    saved_ok: 'شكرًا لكم! تم تسجيل ردّكم.',
+    need_all: 'يرجى الإجابة عن كل مدعو قبل الإرسال.',
+    error_generic: 'حدث خطأ، يرجى المحاولة مرة أخرى.',
+    loading: 'جارٍ تحميل الدعوة…',
+    incomplete_link: 'رابط الدعوة غير مكتمل.<br>يرجى استخدام الرابط الذي أُرسل إليكم.',
+    not_found: 'لم يتم العثور على الدعوة.<br>يرجى التحقق من الرابط.'
+  }
 };
 /* ========================================================= */
 
@@ -204,12 +272,53 @@ function getSlug(){
   const params = new URLSearchParams(window.location.search);
   return params.get('invite');
 }
+function getInitialLang(){
+  const params = new URLSearchParams(window.location.search);
+  const l = params.get('lang');
+  return (l === 'ar') ? 'ar' : 'en';
+}
+
+let currentLang = getInitialLang();
+let loadState = 'loading';   // 'loading' | 'ready' | 'empty-slug' | 'not-found'
+let cachedInvite = null;
+let cachedGuests = null;
+let draft = {}; // { guestId: 'attending'|'declined' } — persists across language switches
+
+function applyLangChrome(){
+  document.documentElement.lang = currentLang;
+  document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+  document.body.classList.toggle('lang-ar', currentLang === 'ar');
+  document.getElementById('btnEn').classList.toggle('active', currentLang === 'en');
+  document.getElementById('btnAr').classList.toggle('active', currentLang === 'ar');
+}
 
 function placeMarkup(name, url){
   return url ? `<a href="${url}" target="_blank" rel="noopener">${name}</a>` : name;
 }
 
+function paint(){
+  applyLangChrome();
+  const t = UI[currentLang];
+
+  if(loadState === 'loading'){
+    cardInner.innerHTML = `<div class="loading">${t.loading}</div>`;
+    return;
+  }
+  if(loadState === 'empty-slug'){
+    cardInner.innerHTML = `<div class="error-box">${t.incomplete_link}</div>`;
+    return;
+  }
+  if(loadState === 'not-found'){
+    cardInner.innerHTML = `<div class="error-box">${t.not_found}</div>`;
+    return;
+  }
+  renderShell(cachedInvite, cachedGuests);
+}
+
 function renderShell(invite, guests){
+  const t = UI[currentLang];
+  const e = EVENT[currentLang];
+
   cardInner.innerHTML = `
     <svg class="crown" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M10 50 L14 22 L30 38 L50 14 L70 38 L86 22 L90 50 Z" stroke="#d4af37" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
@@ -221,51 +330,47 @@ function renderShell(invite, guests){
 
     <div class="monogram">${EVENT.monogram}</div>
 
-    ${EVENT.parents_line ? `
-      <div class="eyebrow">Les familles de</div>
-      <div class="parents-line">${EVENT.parents_line}</div>
+    ${e.parents_line ? `
+      <div class="parents-line">${e.parents_line}</div>
     ` : ''}
 
-    <div class="invite-copy">${EVENT.invite_copy}</div>
+    <div class="invite-copy">${e.invite_copy}</div>
 
-    <div class="names">${EVENT.names}</div>
+    <div class="names">${e.names}</div>
     <p class="presented-by">${invite.note || ''}</p>
 
     <div class="rule"></div>
 
     <div class="date-block">
-      <div class="day">${EVENT.date_day}</div>
-      <div class="big">${EVENT.date_big}</div>
+      <div class="day">${e.date_day}</div>
+      <div class="big">${e.date_big}</div>
     </div>
 
     <div class="events">
       <div class="event">
-        <div class="label">Cérémonie</div>
-        <div class="place">${placeMarkup(EVENT.ceremony_place, EVENT.ceremony_map_url)}</div>
-        <div class="sub">${EVENT.ceremony_time}</div>
+        <div class="label">${t.ceremony_label}</div>
+        <div class="place">${placeMarkup(e.ceremony_place, EVENT.ceremony_map_url)}</div>
+        <div class="sub">${e.ceremony_time}</div>
       </div>
       <div class="event">
-        <div class="label">Réception</div>
-        <div class="place">${placeMarkup(EVENT.reception_place, EVENT.reception_map_url)}</div>
-        <div class="sub">${EVENT.reception_time}</div>
+        <div class="label">${t.reception_label}</div>
+        <div class="place">${placeMarkup(e.reception_place, EVENT.reception_map_url)}</div>
+        <div class="sub">${e.reception_time}</div>
       </div>
     </div>
 
     <div class="rule"></div>
 
     <div class="rsvp">
-      <h2>Serez-vous des nôtres ?</h2>
-      <div class="deadline">${EVENT.deadline}</div>
+      <h2>${t.rsvp_heading}</h2>
+      <div class="deadline">${e.deadline}</div>
       <div id="guestRows"></div>
       <div class="submit-row">
-        <button class="submit-btn" id="submitBtn">Envoyer ma réponse</button>
+        <button class="submit-btn" id="submitBtn">${t.submit_btn}</button>
         <div class="status-msg" id="statusMsg"></div>
       </div>
     </div>
   `;
-
-  const draft = {};
-  guests.forEach(g => { draft[g.id] = g.status; });
 
   function renderRows(){
     const rowsEl = document.getElementById('guestRows');
@@ -276,8 +381,8 @@ function renderShell(invite, guests){
       row.innerHTML = `
         <div class="guest-name">${g.member_name}</div>
         <div class="choice">
-          <button class="pill attend ${draft[g.id]==='attending'?'active':''}">Je serai présent·e</button>
-          <button class="pill decline ${draft[g.id]==='declined'?'active':''}">Je ne pourrai pas</button>
+          <button class="pill attend ${draft[g.id]==='attending'?'active':''}">${t.attend_btn}</button>
+          <button class="pill decline ${draft[g.id]==='declined'?'active':''}">${t.decline_btn}</button>
         </div>`;
       const [attendBtn, declineBtn] = row.querySelectorAll('.pill');
       attendBtn.onclick = () => { draft[g.id] = 'attending'; renderRows(); };
@@ -292,12 +397,12 @@ function renderShell(invite, guests){
     const submitBtn = document.getElementById('submitBtn');
     const allAnswered = guests.every(g => draft[g.id] === 'attending' || draft[g.id] === 'declined');
     if(!allAnswered){
-      statusMsg.textContent = "Merci de répondre pour chaque invité avant d'envoyer.";
+      statusMsg.textContent = t.need_all;
       statusMsg.className = 'status-msg error';
       return;
     }
     submitBtn.disabled = true;
-    statusMsg.textContent = 'Enregistrement…';
+    statusMsg.textContent = t.saving;
     statusMsg.className = 'status-msg';
 
     try{
@@ -308,21 +413,26 @@ function renderShell(invite, guests){
         if(error) throw error;
         g.status = draft[g.id];
       }
-      statusMsg.textContent = 'Merci ! Votre réponse a bien été enregistrée.';
+      statusMsg.textContent = t.saved_ok;
       statusMsg.className = 'status-msg';
-    }catch(e){
-      console.error(e);
-      statusMsg.textContent = "Une erreur est survenue, merci de réessayer.";
+    }catch(err){
+      console.error(err);
+      statusMsg.textContent = t.error_generic;
       statusMsg.className = 'status-msg error';
     }
     submitBtn.disabled = false;
   };
 }
 
+document.getElementById('btnEn').onclick = () => { currentLang = 'en'; paint(); };
+document.getElementById('btnAr').onclick = () => { currentLang = 'ar'; paint(); };
+
 async function init(){
+  applyLangChrome();
   const slug = getSlug();
   if(!slug){
-    cardInner.innerHTML = '<div class="error-box">Ce lien d\'invitation est incomplet.<br>Merci d\'utiliser le lien qui vous a été envoyé.</div>';
+    loadState = 'empty-slug';
+    paint();
     return;
   }
   try{
@@ -332,10 +442,15 @@ async function init(){
     const { data: guests, error: guestsErr } = await sb.from('guests').select('*').eq('invite_slug', slug).order('member_name');
     if(guestsErr) throw guestsErr;
 
-    renderShell(invite, guests);
+    cachedInvite = invite;
+    cachedGuests = guests;
+    guests.forEach(g => { draft[g.id] = g.status; });
+    loadState = 'ready';
+    paint();
   }catch(e){
     console.error(e);
-    cardInner.innerHTML = '<div class="error-box">Invitation introuvable.<br>Merci de vérifier votre lien.</div>';
+    loadState = 'not-found';
+    paint();
   }
 }
 
