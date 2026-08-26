@@ -56,7 +56,9 @@
 
   /* --- stats --- */
   .stat-row{ display:flex; gap:10px; margin:18px 0 24px; flex-wrap:wrap; }
-  .stat{ flex:1; min-width:100px; background:var(--parchment-2); border:1px solid var(--line); border-radius:8px; padding:11px 12px; text-align:center; }
+  .stat{ flex:1; min-width:100px; background:var(--parchment-2); border:1px solid var(--line); border-radius:8px; padding:11px 12px; text-align:center; cursor:pointer; transition:transform .12s ease, border-color .12s ease; }
+  .stat:hover{ border-color:var(--gold); }
+  .stat.active{ border-color:var(--gold-dark); border-width:2px; transform:translateY(-1px); }
   .stat .num{ font-size:24px; font-weight:600; }
   .stat .lbl{ font-size:10px; text-transform:uppercase; letter-spacing:0.09em; color:var(--ink-soft); }
   .stat.ok .num{ color:var(--ok-text); } .stat.no .num{ color:var(--no-text); } .stat.pending .num{ color:var(--pending-text); }
@@ -75,8 +77,10 @@
   .form-msg.error{ color:var(--no-text); }
   .form-msg.ok{ color:var(--ok-text); }
 
-  /* --- search --- */
-  .search-row{ margin-bottom:18px; }
+  /* --- search + filter --- */
+  .search-row{ margin-bottom:18px; display:flex; gap:10px; flex-wrap:wrap; }
+  .search-row input{ flex:2; min-width:180px; }
+  .search-row select{ flex:1; min-width:150px; }
 
   /* --- family cards --- */
   .fam-card{ border:1px solid var(--line); border-radius:10px; padding:16px 18px 18px; margin-bottom:14px; background:#fffdf7; }
@@ -133,7 +137,7 @@ const SUPABASE_URL = "https://dthppsntdwdtvqgwwbhm.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_Vv0Xsv71M5Xf--EUXXYm2A_r2KD_o53";
 
 // Code partagé entre toi et ta fiancée — changez-le, et ne le partagez à personne d'autre
-const ADMIN_PASSCODE = "1234";
+const ADMIN_PASSCODE = "changez-moi";
 /* ========================================================= */
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -161,6 +165,7 @@ function inviteUrl(slug){
 let invites = [];
 let guests = [];
 let memberRowCount = 0;
+let currentStatusFilter = 'all';
 
 async function fetchAll(){
   const { data: inv, error: e1 } = await sb.from('invites').select('*').order('family_name');
@@ -195,11 +200,11 @@ function renderDashboard(){
     <h1>Gestion des invités</h1>
     <p class="sub">${total} invité${total>1?'s':''} au total — modifiable directement ici</p>
 
-    <div class="stat-row">
-      <div class="stat"><div class="num">${total}</div><div class="lbl">Invités</div></div>
-      <div class="stat ok"><div class="num">${attending}</div><div class="lbl">Présents</div></div>
-      <div class="stat no"><div class="num">${declined}</div><div class="lbl">Déclinés</div></div>
-      <div class="stat pending"><div class="num">${pending}</div><div class="lbl">En attente</div></div>
+    <div class="stat-row" id="statRow">
+      <div class="stat" data-status="all"><div class="num">${total}</div><div class="lbl">Invités</div></div>
+      <div class="stat ok" data-status="attending"><div class="num">${attending}</div><div class="lbl">Présents</div></div>
+      <div class="stat no" data-status="declined"><div class="num">${declined}</div><div class="lbl">Déclinés</div></div>
+      <div class="stat pending" data-status="pending"><div class="num">${pending}</div><div class="lbl">En attente</div></div>
     </div>
 
     <div class="add-box">
@@ -225,6 +230,12 @@ function renderDashboard(){
 
     <div class="search-row">
       <input id="searchInput" placeholder="🔍 Rechercher une famille ou un invité…">
+      <select id="statusFilter">
+        <option value="all">Tous les statuts</option>
+        <option value="attending">✓ Présents</option>
+        <option value="declined">✕ Déclinés</option>
+        <option value="pending">… En attente</option>
+      </select>
     </div>
 
     <div id="familyList"></div>
@@ -236,7 +247,30 @@ function renderDashboard(){
   document.getElementById('saveFamilyBtn').onclick = handleSaveFamily;
   document.getElementById('searchInput').oninput = renderFamilyList;
 
+  document.getElementById('statusFilter').value = currentStatusFilter;
+  document.getElementById('statusFilter').onchange = (e) => {
+    currentStatusFilter = e.target.value;
+    syncStatFilterUI();
+    renderFamilyList();
+  };
+
+  document.querySelectorAll('.stat').forEach(el => {
+    el.onclick = () => {
+      currentStatusFilter = el.dataset.status;
+      document.getElementById('statusFilter').value = currentStatusFilter;
+      syncStatFilterUI();
+      renderFamilyList();
+    };
+  });
+  syncStatFilterUI();
+
   renderFamilyList();
+}
+
+function syncStatFilterUI(){
+  document.querySelectorAll('.stat').forEach(el => {
+    el.classList.toggle('active', el.dataset.status === currentStatusFilter);
+  });
 }
 
 function addMemberRow(){
