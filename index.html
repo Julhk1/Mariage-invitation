@@ -285,7 +285,7 @@ const EVENT = {
   },
 
   en: {
-    parents_line: '',
+    parents_line: 'Hobeika &amp; Fakhry',
     invite_copy: 'Have the pleasure of inviting you to the wedding of',
     names: 'Julien<span class="amp">&amp;</span>Vanessa',
     date_day: 'Saturday',
@@ -299,7 +299,7 @@ const EVENT = {
     deadline: 'Please confirm before October 15, 2026'
   },
   ar: {
-    parents_line: '',
+    parents_line: 'حبيقة وفخري',
     invite_copy: 'يتشرفان بدعوتكم لحضور حفل زفاف',
     names: 'جوليان<span class="amp">و</span>فانيسا',
     date_day: 'السبت',
@@ -319,6 +319,7 @@ const UI = {
     ceremony_label: 'Ceremony',
     reception_label: 'Reception',
     location_btn: 'Location Map',
+    families_label: 'The Families of',
     rsvp_heading: 'Will you be there?',
     countdown_lead: 'Time left to respond',
     days: 'Days', hours: 'Hours', mins: 'Min', secs: 'Sec',
@@ -343,6 +344,7 @@ const UI = {
     ceremony_label: 'حفل الزفاف',
     reception_label: 'حفل الاستقبال',
     location_btn: 'خريطة الموقع',
+    families_label: 'عائلتا',
     rsvp_heading: 'هل ستكونون معنا؟',
     countdown_lead: 'الوقت المتبقي للرد',
     days: 'يوم', hours: 'ساعة', mins: 'دقيقة', secs: 'ثانية',
@@ -436,17 +438,10 @@ function renderShell(invite, guests){
   const e = EVENT[currentLang];
 
   cardInner.innerHTML = `
-    <svg class="crown" viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M10 50 L14 22 L30 38 L50 14 L70 38 L86 22 L90 50 Z" stroke="#d4af37" stroke-width="2.2" stroke-linejoin="round" fill="none"/>
-      <circle cx="14" cy="20" r="3" fill="#d4af37"/>
-      <circle cx="50" cy="12" r="3.4" fill="#d4af37"/>
-      <circle cx="86" cy="20" r="3" fill="#d4af37"/>
-      <line x1="10" y1="53" x2="90" y2="53" stroke="#d4af37" stroke-width="2.2"/>
-    </svg>
-
-    <div class="monogram">${EVENT.monogram}</div>
-
-    ${e.parents_line ? `<div class="parents-line">${e.parents_line}</div>` : ''}
+    ${e.parents_line ? `
+      <div class="eyebrow">${t.families_label}</div>
+      <div class="parents-line">${e.parents_line}</div>
+    ` : `<div class="monogram">${EVENT.monogram}</div>`}
 
     <div class="invite-copy">${e.invite_copy}</div>
 
