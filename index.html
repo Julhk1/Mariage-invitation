@@ -142,18 +142,6 @@
   .rsvp .deadline{ font-style:italic; color:var(--ink-soft); font-size:14px; margin:2px 0 16px; }
   body.lang-ar .rsvp .deadline{ font-style:normal; font-size:16px; }
 
-  /* countdown */
-  .countdown{ display:flex; justify-content:center; gap:10px; margin:0 auto 24px; }
-  .countdown .unit{ display:flex; flex-direction:column; align-items:center; min-width:52px; }
-  .countdown .num{
-    font-family:'Cormorant Garamond', serif; font-weight:700; font-size:22px;
-    background:var(--emerald-2); color:var(--gold-light); border:1px solid var(--gold);
-    border-radius:6px; padding:8px 4px; width:100%; text-align:center;
-  }
-  body.lang-ar .countdown .num{ font-family:'Noto Naskh Arabic', serif; }
-  .countdown .lbl{ font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft); margin-top:5px; }
-  body.lang-ar .countdown .lbl{ font-size:12.5px; letter-spacing:0; text-transform:none; }
-
   .guest-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 2px; border-bottom:1px solid var(--line); text-align:left; flex-wrap:wrap; }
   body.lang-ar .guest-row{ text-align:right; }
   .guest-row:last-of-type{ border-bottom:none; }
@@ -219,9 +207,6 @@
     .event{ margin:0 auto; }
     .event + .event{ border-left:none; border-top:1px solid var(--line); padding-top:14px; }
     body.lang-ar .event + .event{ border-right:none; border-top:1px solid var(--line); }
-    .countdown{ gap:6px; }
-    .countdown .unit{ min-width:44px; }
-    .countdown .num{ font-size:18px; padding:7px 3px; }
   }
 </style>
 </head>
@@ -290,8 +275,8 @@ const EVENT = {
     parents_line: 'Hobeika &amp; Fakhry',
     invite_copy: 'Have the pleasure of inviting you to the wedding of',
     names: 'Julien<span class="amp">&amp;</span>Vanessa',
-    date_day: 'Saturday',
-    date_big: 'September 12, 2026',
+    date_day: 'Sunday',
+    date_big: 'November 1, 2026',
     ceremony_place: 'Église Maronite Saint-Élias',
     ceremony_addr: 'Fakhreddine Street, Kantari, Beirut',
     ceremony_time: '5:30 PM',
@@ -304,8 +289,8 @@ const EVENT = {
     parents_line: 'حبيقة وفخري',
     invite_copy: 'يتشرفان بدعوتكم لحضور حفل زفاف',
     names: 'جوليان <span class="amp">و</span>فانيسا',
-    date_day: 'السبت',
-    date_big: '12 سبتمبر 2026',
+    date_day: 'الأحد',
+    date_big: '1 نوفمبر 2026',
     ceremony_place: 'كنيسة مار الياس المارونية',
     ceremony_addr: 'شارع فخر الدين، القنطاري، بيروت',
     ceremony_time: '5:30 مساءً',
@@ -390,7 +375,6 @@ let loadState = 'loading';
 let cachedInvite = null;
 let cachedGuests = null;
 let draft = {};
-let countdownTimer = null;
 
 function applyLangChrome(){
   document.documentElement.lang = currentLang;
@@ -407,30 +391,6 @@ function paint(){
   if(loadState === 'empty-slug'){ cardInner.innerHTML = `<div class="error-box">${t.incomplete_link}</div>`; return; }
   if(loadState === 'not-found'){ cardInner.innerHTML = `<div class="error-box">${t.not_found}</div>`; return; }
   renderShell(cachedInvite, cachedGuests);
-}
-
-function startCountdown(){
-  if(countdownTimer) clearInterval(countdownTimer);
-  const target = new Date(EVENT.rsvp_deadline_iso).getTime();
-
-  function tick(){
-    const t = UI[currentLang];
-    const now = Date.now();
-    let diff = Math.max(0, target - now);
-    const d = Math.floor(diff / (1000*60*60*24));
-    const h = Math.floor((diff / (1000*60*60)) % 24);
-    const m = Math.floor((diff / (1000*60)) % 60);
-
-    const el = document.getElementById('countdownRow');
-    if(!el) { clearInterval(countdownTimer); return; }
-    el.innerHTML = `
-      <div class="unit"><div class="num">${d}</div><div class="lbl">${t.days}</div></div>
-      <div class="unit"><div class="num">${h}</div><div class="lbl">${t.hours}</div></div>
-      <div class="unit"><div class="num">${m}</div><div class="lbl">${t.mins}</div></div>
-    `;
-  }
-  tick();
-  countdownTimer = setInterval(tick, 30000);
 }
 
 function renderShell(invite, guests){
@@ -477,7 +437,6 @@ function renderShell(invite, guests){
     <div class="rsvp">
       <h2>${t.rsvp_heading}</h2>
       <div class="deadline">${e.deadline}</div>
-      <div class="countdown" id="countdownRow"></div>
       <div id="guestRows"></div>
       <div class="submit-row">
         <button class="submit-btn" id="submitBtn">${t.submit_btn}</button>
@@ -501,8 +460,6 @@ function renderShell(invite, guests){
       <a class="map-btn" href="${EVENT.gift.whish_url}" target="_blank" rel="noopener">${ICON_PIN}${t.whish_btn}</a>
     </div>
   `;
-
-  startCountdown();
 
   document.getElementById('copyBtn').onclick = async () => {
     const fb = document.getElementById('copyFeedback');
