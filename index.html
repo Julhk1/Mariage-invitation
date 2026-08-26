@@ -170,6 +170,19 @@
   body.lang-ar .submit-btn{ text-transform:none; letter-spacing:0; font-size:17px; }
   .submit-btn:hover{ background:var(--emerald-3); }
   .submit-btn:disabled{ opacity:0.5; cursor:not-allowed; }
+  .submit-btn.needs-attention{ animation: pulse-glow 1.6s ease-in-out infinite; }
+  @keyframes pulse-glow{
+    0%, 100% { box-shadow:0 0 0 0 rgba(212,175,55,0.55); }
+    50% { box-shadow:0 0 0 8px rgba(212,175,55,0); }
+  }
+  .unsaved-reminder{
+    font-size:12.5px; font-weight:600; color:var(--gold-deep);
+    background:var(--paper-edge); border:1px solid var(--gold-light);
+    border-radius:20px; padding:6px 14px; margin-bottom:4px;
+    display:none; text-align:center;
+  }
+  .unsaved-reminder.show{ display:block; }
+  body.lang-ar .unsaved-reminder{ font-size:14.5px; }
   .status-msg{ font-size:13.5px; color:var(--ok-text); font-style:italic; min-height:18px; }
   .status-msg.error{ color:var(--no-text); }
   body.lang-ar .status-msg{ font-size:15.5px; font-style:normal; }
@@ -317,6 +330,8 @@ const UI = {
     saved_ok: 'Thank you! Your response has been recorded.',
     need_all: 'Please answer for each guest before sending.',
     error_generic: 'Something went wrong, please try again.',
+    unsaved_reminder: "Don't forget to press \"Send my response\" below ↓",
+    leave_warning: 'Your response has not been sent yet. Are you sure you want to leave?',
     loading: 'Loading your invitation…',
     incomplete_link: "This invitation link is incomplete.<br>Please use the link that was sent to you.",
     not_found: 'Invitation not found.<br>Please check your link.',
@@ -342,6 +357,8 @@ const UI = {
     saved_ok: 'شكرًا لكم! تم تسجيل ردّكم.',
     need_all: 'يرجى الإجابة عن كل مدعو قبل الإرسال.',
     error_generic: 'حدث خطأ، يرجى المحاولة مرة أخرى.',
+    unsaved_reminder: 'لا تنسوا الضغط على "إرسال ردّي" أدناه ↓',
+    leave_warning: 'لم يتم إرسال ردّكم بعد. هل أنتم متأكدون من رغبتكم في المغادرة؟',
     loading: 'جارٍ تحميل الدعوة…',
     incomplete_link: 'رابط الدعوة غير مكتمل.<br>يرجى استخدام الرابط الذي أُرسل إليكم.',
     not_found: 'لم يتم العثور على الدعوة.<br>يرجى التحقق من الرابط.',
@@ -439,6 +456,7 @@ function renderShell(invite, guests){
       <div class="deadline">${e.deadline}</div>
       <div id="guestRows"></div>
       <div class="submit-row">
+        <div class="unsaved-reminder" id="unsavedReminder"></div>
         <button class="submit-btn" id="submitBtn">${t.submit_btn}</button>
         <div class="status-msg" id="statusMsg"></div>
       </div>
@@ -477,6 +495,20 @@ function renderShell(invite, guests){
     setTimeout(() => { fb.textContent = ''; }, 1800);
   };
 
+  function hasUnsavedChanges(){
+    return guests.some(g => draft[g.id] && draft[g.id] !== g.status);
+  }
+
+  function updateReminderState(){
+    const reminderEl = document.getElementById('unsavedReminder');
+    const submitBtn = document.getElementById('submitBtn');
+    if(!reminderEl || !submitBtn) return;
+    const unsaved = hasUnsavedChanges();
+    reminderEl.textContent = t.unsaved_reminder;
+    reminderEl.classList.toggle('show', unsaved);
+    submitBtn.classList.toggle('needs-attention', unsaved);
+  }
+
   function renderRows(){
     const rowsEl = document.getElementById('guestRows');
     rowsEl.innerHTML = '';
@@ -494,6 +526,7 @@ function renderShell(invite, guests){
       declineBtn.onclick = () => { draft[g.id] = 'declined'; renderRows(); };
       rowsEl.appendChild(row);
     });
+    updateReminderState();
   }
   renderRows();
 
@@ -519,6 +552,7 @@ function renderShell(invite, guests){
       }
       statusMsg.textContent = t.saved_ok;
       statusMsg.className = 'status-msg';
+      updateReminderState();
     }catch(err){
       console.error(err);
       statusMsg.textContent = t.error_generic;
@@ -530,6 +564,15 @@ function renderShell(invite, guests){
 
 document.getElementById('btnEn').onclick = () => { currentLang = 'en'; paint(); };
 document.getElementById('btnAr').onclick = () => { currentLang = 'ar'; paint(); };
+
+window.addEventListener('beforeunload', (e) => {
+  if(loadState !== 'ready' || !cachedGuests) return;
+  const unsaved = cachedGuests.some(g => draft[g.id] && draft[g.id] !== g.status);
+  if(unsaved){
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 
 async function init(){
   applyLangChrome();
