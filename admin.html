@@ -137,7 +137,7 @@ const SUPABASE_URL = "https://dthppsntdwdtvqgwwbhm.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_Vv0Xsv71M5Xf--EUXXYm2A_r2KD_o53";
 
 // Code partagé entre toi et ta fiancée — changez-le, et ne le partagez à personne d'autre
-const ADMIN_PASSCODE = "1234";
+const ADMIN_PASSCODE = "changez-moi";
 /* ========================================================= */
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -338,22 +338,34 @@ async function handleSaveFamily(){
 
 function renderFamilyList(){
   const search = (document.getElementById('searchInput').value || '').toLowerCase();
+  const statusFilter = currentStatusFilter;
   const listEl = document.getElementById('familyList');
   listEl.innerHTML = '';
 
-  const filtered = invites.filter(inv => {
+  const matchesSearch = (inv) => {
     if(!search) return true;
     if(inv.family_name.toLowerCase().includes(search)) return true;
     return guests.some(g => g.invite_slug === inv.slug && g.member_name.toLowerCase().includes(search));
+  };
+
+  const filtered = invites.filter(inv => {
+    if(!matchesSearch(inv)) return false;
+    if(statusFilter === 'all') return true;
+    // keep the family only if at least one guest matches the status filter
+    return guests.some(g => g.invite_slug === inv.slug && g.status === statusFilter);
   });
 
   if(filtered.length === 0){
-    listEl.innerHTML = '<div class="empty">Aucune famille trouvée.</div>';
+    const label = statusFilter === 'attending' ? 'présent' : statusFilter === 'declined' ? 'décliné' : statusFilter === 'pending' ? 'en attente' : '';
+    listEl.innerHTML = `<div class="empty">Aucun invité ${label ? label + ' ' : ''}trouvé.</div>`;
     return;
   }
 
   filtered.forEach(inv => {
-    const members = guests.filter(g => g.invite_slug === inv.slug).sort((a,b)=>a.member_name.localeCompare(b.member_name));
+    let members = guests.filter(g => g.invite_slug === inv.slug).sort((a,b)=>a.member_name.localeCompare(b.member_name));
+    if(statusFilter !== 'all'){
+      members = members.filter(g => g.status === statusFilter);
+    }
     const card = document.createElement('div');
     card.className = 'fam-card';
 
