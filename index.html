@@ -34,7 +34,7 @@
      classic elegance. Weight 500 keeps it present enough to read well on small screens. */
   body.lang-ar{ font-family:'Noto Naskh Arabic', serif; font-weight:500; line-height:1.9; }
   body.lang-ar .names, body.lang-ar .monogram, body.lang-ar .parents-line, body.lang-ar .rsvp h2, body.lang-ar .gift-heading{
-    font-family:'Aref Ruqaa', serif; font-weight:700;
+    font-family:'Aref Ruqaa', serif; font-weight:400;
   }
 
   body::before{
@@ -96,7 +96,7 @@
 
   .names{ font-family:'Parisienne', cursive; font-size:clamp(42px,12vw,58px); line-height:1.15; margin-bottom:16px; color:var(--ink); }
   .names .amp{ color:var(--gold-deep); font-size:0.65em; margin:0 4px; }
-  body.lang-ar .names{ font-size:clamp(40px,11vw,54px); }
+  body.lang-ar .names{ font-size:clamp(34px,9vw,46px); }
 
   .presented-by{ font-size:14.5px; color:var(--ink-soft); font-style:italic; max-width:340px; margin:0 auto 22px; line-height:1.55; }
   body.lang-ar .presented-by{ font-size:17px; font-style:normal; line-height:1.85; }
@@ -110,8 +110,8 @@
   body.lang-ar .date-block .day{ letter-spacing:0.03em; font-size:16px; }
   body.lang-ar .date-block .big{ letter-spacing:0; font-size:clamp(20px,5.5vw,25px); }
 
-  .events{ display:flex; justify-content:center; align-items:flex-start; gap:0; margin-bottom:4px; width:100%; }
-  .event{ flex:1 1 0; max-width:210px; padding:0 12px; margin:0 auto; }
+  .events{ display:flex; justify-content:center; align-items:stretch; gap:0; margin-bottom:4px; width:100%; }
+  .event{ flex:1 1 0; max-width:210px; padding:0 12px; margin:0 auto; display:flex; flex-direction:column; }
   .event + .event{ border-left:1px solid var(--line); }
   body.lang-ar .event + .event{ border-left:none; border-right:1px solid var(--line); }
   .event .label{ text-transform:uppercase; font-size:10.5px; letter-spacing:0.16em; color:var(--gold-deep); margin-bottom:6px; }
@@ -124,12 +124,14 @@
   body.lang-ar .event .sub{ font-size:15.5px; font-style:normal; }
 
   .map-btn{
-    display:inline-flex; align-items:center; gap:6px;
+    display:inline-flex; align-items:center; gap:6px; align-self:center;
     font-family:inherit; font-size:11.5px; font-weight:700; letter-spacing:0.05em;
     color:var(--gold-deep); background:transparent; border:1px solid var(--gold-deep);
-    border-radius:20px; padding:7px 14px; margin-top:10px; cursor:pointer;
+    border-radius:20px; padding:7px 14px; cursor:pointer;
     text-decoration:none; transition:all .15s ease;
   }
+  .event .map-btn{ margin-top:auto; align-self:center; padding-top:7px; }
+  .gift-section .map-btn{ margin-top:10px; }
   .map-btn:hover{ background:var(--gold-deep); color:var(--paper); }
   .map-btn svg{ width:12px; height:12px; flex-shrink:0; }
   body.lang-ar .map-btn{ font-size:14px; }
@@ -275,7 +277,7 @@ const SUPABASE_ANON_KEY = "sb_publishable_Vv0Xsv71M5Xf--EUXXYm2A_r2KD_o53";
 const EVENT = {
   monogram: 'JV',
   ceremony_map_url: 'https://maps.app.goo.gl/oxTBmFbUH9Ye2uDC8',
-  reception_map_url: 'https://www.google.com/travel/hotels/s/YRf6ZHUC8dN6zNtBA',
+  reception_map_url: 'https://maps.app.goo.gl/496NayzXRB9XhyNa8',
 
   rsvp_deadline_iso: '2026-10-15T23:59:59',
 
@@ -301,7 +303,7 @@ const EVENT = {
   ar: {
     parents_line: 'حبيقة وفخري',
     invite_copy: 'يتشرفان بدعوتكم لحضور حفل زفاف',
-    names: 'جوليان<span class="amp">و</span>فانيسا',
+    names: 'جوليان <span class="amp">و</span>فانيسا',
     date_day: 'السبت',
     date_big: '12 سبتمبر 2026',
     ceremony_place: 'كنيسة مار الياس المارونية',
@@ -418,7 +420,6 @@ function startCountdown(){
     const d = Math.floor(diff / (1000*60*60*24));
     const h = Math.floor((diff / (1000*60*60)) % 24);
     const m = Math.floor((diff / (1000*60)) % 60);
-    const s = Math.floor((diff / 1000) % 60);
 
     const el = document.getElementById('countdownRow');
     if(!el) { clearInterval(countdownTimer); return; }
@@ -426,11 +427,10 @@ function startCountdown(){
       <div class="unit"><div class="num">${d}</div><div class="lbl">${t.days}</div></div>
       <div class="unit"><div class="num">${h}</div><div class="lbl">${t.hours}</div></div>
       <div class="unit"><div class="num">${m}</div><div class="lbl">${t.mins}</div></div>
-      <div class="unit"><div class="num">${s}</div><div class="lbl">${t.secs}</div></div>
     `;
   }
   tick();
-  countdownTimer = setInterval(tick, 1000);
+  countdownTimer = setInterval(tick, 30000);
 }
 
 function renderShell(invite, guests){
