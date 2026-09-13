@@ -9,21 +9,22 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{
-    --emerald-1:#0d4433; --emerald-2:#062820; --emerald-3:#0a3428;
-    --paper:#fdf8ec; --paper-edge:#f6ecd3;
-    --ink:#2c2414; --ink-soft:#6e6248;
-    --gold:#d4af37; --gold-deep:#a9822b; --gold-light:#eeda9d; --line:#e6d9ae;
-    --ok-bg:#eaf1e6; --ok-text:#3f6b3a;
-    --no-bg:#f5e6e2; --no-text:#a24f3a;
+    --emerald-1:#4a1a2c; --emerald-2:#2b0f1c; --emerald-3:#3a1524;
+    --paper:#fdf6f2; --paper-edge:#f6e2de;
+    --ink:#3a2530; --ink-soft:#8a6672;
+    --gold:#c39a6e; --gold-deep:#9c6b52; --gold-light:#e8cdb3; --line:#e6c7cc;
+    --ok-bg:#eef1e6; --ok-text:#5c7a52;
+    --no-bg:#f5e0dc; --no-text:#9c4a48;
+    --rose:#c98fa0; --rose-deep:#8a3b52; --sage:#8a9a7c;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html,body{overflow-x:hidden;}
   body{
     min-height:100vh;
     background:
-      radial-gradient(circle at 50% 0%, rgba(212,175,55,0.10), transparent 55%),
-      radial-gradient(circle at 85% 90%, rgba(212,175,55,0.08), transparent 50%),
-      linear-gradient(160deg, var(--emerald-1) 0%, var(--emerald-2) 55%, #051d16 100%);
+      radial-gradient(circle at 50% 0%, rgba(201,143,160,0.14), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(138,59,82,0.12), transparent 50%),
+      linear-gradient(160deg, var(--emerald-1) 0%, var(--emerald-2) 55%, #1f0c14 100%);
     font-family:'Cormorant Garamond', serif;
     color:var(--ink);
     padding:22px 12px 50px;
@@ -41,15 +42,15 @@
     content:"";
     position:fixed; inset:0; z-index:0; pointer-events:none;
     background-image:
-      repeating-linear-gradient(45deg, rgba(212,175,55,0.045) 0 2px, transparent 2px 34px),
-      repeating-linear-gradient(-45deg, rgba(212,175,55,0.045) 0 2px, transparent 2px 34px);
+      repeating-linear-gradient(45deg, rgba(195,154,110,0.05) 0 2px, transparent 2px 34px),
+      repeating-linear-gradient(-45deg, rgba(195,154,110,0.05) 0 2px, transparent 2px 34px);
   }
 
   .card{
     width:100%; max-width:480px;
     background:var(--paper);
     border-radius:4px;
-    box-shadow:0 30px 70px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(212,175,55,0.25);
+    box-shadow:0 30px 70px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,143,160,0.30);
     overflow:hidden; position:relative; z-index:1;
   }
   .frame-outer{ position:absolute; inset:9px; border:2px solid var(--gold); pointer-events:none; z-index:3; }
@@ -80,7 +81,7 @@
   .lang-btn.active{ background:var(--emerald-2); color:var(--gold-light); border-color:var(--emerald-2); }
 
   .card-inner{
-    padding:clamp(26px,7vw,40px) clamp(22px,6vw,42px) clamp(34px,7vw,46px);
+    padding:clamp(10px,3vw,16px) clamp(22px,6vw,42px) clamp(34px,7vw,46px);
     text-align:center; position:relative; z-index:2;
   }
 
@@ -102,7 +103,8 @@
   body.lang-ar .presented-by{ font-size:17px; font-style:normal; line-height:1.85; }
 
   .rule{ width:64px; height:1px; background:linear-gradient(90deg, transparent, var(--gold), transparent); margin:20px auto; position:relative; }
-  .rule::before{ content:"❖"; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--paper); color:var(--gold-deep); font-size:12px; padding:0 8px; }
+  .rule::before{ content:"❀"; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--paper); color:var(--rose-deep); font-size:13px; padding:0 8px; }
+  .floral-header{ width:min(220px,70%); height:auto; margin:2px auto 6px; display:block; position:relative; z-index:2; }
 
   .date-block{ margin:6px 0 24px; }
   .date-block .day{ font-size:12.5px; letter-spacing:0.28em; text-transform:uppercase; color:var(--gold-deep); }
@@ -172,8 +174,8 @@
   .submit-btn:disabled{ opacity:0.5; cursor:not-allowed; }
   .submit-btn.needs-attention{ animation: pulse-glow 1.6s ease-in-out infinite; }
   @keyframes pulse-glow{
-    0%, 100% { box-shadow:0 0 0 0 rgba(212,175,55,0.55); }
-    50% { box-shadow:0 0 0 8px rgba(212,175,55,0); }
+    0%, 100% { box-shadow:0 0 0 0 rgba(201,143,160,0.55); }
+    50% { box-shadow:0 0 0 8px rgba(201,143,160,0); }
   }
   .unsaved-reminder{
     font-size:12.5px; font-weight:600; color:var(--gold-deep);
@@ -230,24 +232,24 @@
     <div class="frame-inner"></div>
 
     <svg class="corner tl" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 40 C4 20 20 4 40 4" stroke="#d4af37" stroke-width="1"/>
-      <path d="M4 30 C4 16 16 4 30 4" stroke="#d4af37" stroke-width="0.8"/>
-      <circle cx="4" cy="4" r="3" fill="#d4af37"/>
+      <path d="M4 40 C4 20 20 4 40 4" stroke="#b98b6a" stroke-width="1"/>
+      <path d="M4 30 C4 16 16 4 30 4" stroke="#b98b6a" stroke-width="0.8"/>
+      <circle cx="4" cy="4" r="3" fill="#b98b6a"/>
     </svg>
     <svg class="corner tr" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 40 C4 20 20 4 40 4" stroke="#d4af37" stroke-width="1"/>
-      <path d="M4 30 C4 16 16 4 30 4" stroke="#d4af37" stroke-width="0.8"/>
-      <circle cx="4" cy="4" r="3" fill="#d4af37"/>
+      <path d="M4 40 C4 20 20 4 40 4" stroke="#b98b6a" stroke-width="1"/>
+      <path d="M4 30 C4 16 16 4 30 4" stroke="#b98b6a" stroke-width="0.8"/>
+      <circle cx="4" cy="4" r="3" fill="#b98b6a"/>
     </svg>
     <svg class="corner bl" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 40 C4 20 20 4 40 4" stroke="#d4af37" stroke-width="1"/>
-      <path d="M4 30 C4 16 16 4 30 4" stroke="#d4af37" stroke-width="0.8"/>
-      <circle cx="4" cy="4" r="3" fill="#d4af37"/>
+      <path d="M4 40 C4 20 20 4 40 4" stroke="#b98b6a" stroke-width="1"/>
+      <path d="M4 30 C4 16 16 4 30 4" stroke="#b98b6a" stroke-width="0.8"/>
+      <circle cx="4" cy="4" r="3" fill="#b98b6a"/>
     </svg>
     <svg class="corner br" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 40 C4 20 20 4 40 4" stroke="#d4af37" stroke-width="1"/>
-      <path d="M4 30 C4 16 16 4 30 4" stroke="#d4af37" stroke-width="0.8"/>
-      <circle cx="4" cy="4" r="3" fill="#d4af37"/>
+      <path d="M4 40 C4 20 20 4 40 4" stroke="#b98b6a" stroke-width="1"/>
+      <path d="M4 30 C4 16 16 4 30 4" stroke="#b98b6a" stroke-width="0.8"/>
+      <circle cx="4" cy="4" r="3" fill="#b98b6a"/>
     </svg>
 
     <img class="watermark" src="royal-flourish-rings.png" alt="" />
@@ -256,6 +258,25 @@
       <button class="lang-btn" id="btnEn" type="button">EN</button>
       <button class="lang-btn" id="btnAr" type="button">AR · عربي</button>
     </div>
+
+    <svg class="floral-header" viewBox="0 0 220 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 35c40-18 70-18 90 0" stroke="#c98fa0" stroke-width="1" opacity="0.75"/>
+      <path d="M120 35c40-18 70-18 90 0" stroke="#c98fa0" stroke-width="1" opacity="0.75"/>
+      <g stroke="#8a3b52" stroke-width="1.1" fill="none" opacity="0.9">
+        <path d="M110 12c-4 6-4 12 0 18c4-6 4-12 0-18z"/>
+        <path d="M92 20c6-2 11 0 15 6c-6 2-11 0-15-6z"/>
+        <path d="M128 20c-6-2-11 0-15 6c6 2 11 0 15-6z"/>
+        <circle cx="110" cy="22" r="3" fill="#c39a6e" stroke="none"/>
+      </g>
+      <g stroke="#8a9a7c" stroke-width="1" fill="none" opacity="0.85">
+        <path d="M85 30c-2 6 1 11 6 14"/>
+        <path d="M135 30c2 6-1 11-6 14"/>
+      </g>
+      <circle cx="55" cy="35" r="2.4" fill="#c98fa0" stroke="none"/>
+      <circle cx="165" cy="35" r="2.4" fill="#c98fa0" stroke="none"/>
+      <circle cx="35" cy="33" r="1.6" fill="#e8cdb3" stroke="none"/>
+      <circle cx="185" cy="33" r="1.6" fill="#e8cdb3" stroke="none"/>
+    </svg>
 
     <div class="card-inner" id="cardInner">
       <div class="loading">Loading your invitation…</div>
@@ -581,7 +602,7 @@ async function init(){
   try{
     const { data: invite, error: inviteErr } = await sb.from('invites').select('*').eq('slug', slug).single();
     if(inviteErr || !invite) throw new Error('invite not found');
-    const { data: guests, error: guestsErr } = await sb.from('guests').select('*').eq('invite_slug', slug).order('member_name');
+    const { data: guests, error: guestsErr } = await sb.from('guests').select('*').eq('invite_slug', slug).order('id', { ascending: true });
     if(guestsErr) throw guestsErr;
 
     cachedInvite = invite;
