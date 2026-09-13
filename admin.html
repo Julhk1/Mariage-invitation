@@ -168,9 +168,9 @@ let memberRowCount = 0;
 let currentStatusFilter = 'all';
 
 async function fetchAll(){
-  const { data: inv, error: e1 } = await sb.from('invites').select('*').order('family_name');
+  const { data: inv, error: e1 } = await sb.from('invites').select('*').order('id', { ascending: true });
   if(e1) throw e1;
-  const { data: gs, error: e2 } = await sb.from('guests').select('*');
+  const { data: gs, error: e2 } = await sb.from('guests').select('*').order('id', { ascending: true });
   if(e2) throw e2;
   invites = inv || [];
   guests = gs || [];
@@ -362,7 +362,7 @@ function renderFamilyList(){
   }
 
   filtered.forEach(inv => {
-    let members = guests.filter(g => g.invite_slug === inv.slug).sort((a,b)=>a.member_name.localeCompare(b.member_name));
+    let members = guests.filter(g => g.invite_slug === inv.slug);
     if(statusFilter !== 'all'){
       members = members.filter(g => g.status === statusFilter);
     }
