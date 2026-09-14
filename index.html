@@ -7,7 +7,6 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Julien & Vanessa — Wedding Invitation">
 <meta property="og:description" content="You are warmly invited to celebrate our wedding on Sunday, November 1, 2026. Kindly confirm your attendance by October 15, 2026.">
-<!-- Replace this image with an absolute URL to a couple photo for the richest WhatsApp/iMessage preview card. -->
 <meta property="og:image" content="https://mariage-invitation-rho.vercel.app/royal-flourish-rings.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,33 +14,34 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{
-    --ivory:#faf6ec; --ivory-deep:#f1e9d6; --ivory-panel:#fffdf7;
-    --green-1:#15301f; --green-2:#0a1e12; --green-3:#1e4029;
-    --gold:#b8935b; --gold-deep:#93713f; --gold-light:#e6d3a8;
-    --ink:#26291f; --ink-soft:#736a56;
-    --line:#e1d3ac;
-    --ok-text:#4f7a4a; --ok-bg:#eef2e7;
-    --no-text:#8a4d3a; --no-bg:#f4e9df;
+    --emerald-1:#4a1a2c; --emerald-2:#2b0f1c; --emerald-3:#3a1524;
+    --paper:#fdf6f2; --paper-edge:#f6e2de;
+    --ink:#3a2530; --ink-soft:#8a6672;
+    --gold:#c39a6e; --gold-deep:#9c6b52; --gold-light:#e8cdb3; --line:#e6c7cc;
+    --ok-bg:#eef1e6; --ok-text:#5c7a52;
+    --no-bg:#f5e0dc; --no-text:#9c4a48;
+    --rose:#c98fa0; --rose-deep:#8a3b52; --sage:#8a9a7c;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html,body{overflow-x:hidden;}
   body{
     min-height:100vh;
     background:
-      radial-gradient(circle at 18% 6%, rgba(184,147,91,0.10), transparent 45%),
-      radial-gradient(circle at 88% 92%, rgba(21,48,31,0.06), transparent 50%),
-      var(--ivory);
+      radial-gradient(circle at 50% 0%, rgba(201,143,160,0.14), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(138,59,82,0.12), transparent 50%),
+      linear-gradient(160deg, var(--emerald-1) 0%, var(--emerald-2) 55%, #1f0c14 100%);
     font-family:'Cormorant Garamond', serif;
     color:var(--ink);
-    padding:0;
+    padding:22px 12px 50px;
     display:flex; flex-direction:column; align-items:center;
   }
+
   body::before{
     content:"";
     position:fixed; inset:0; z-index:0; pointer-events:none;
     background-image:
-      repeating-linear-gradient(45deg, rgba(184,147,91,0.035) 0 1px, transparent 1px 30px),
-      repeating-linear-gradient(-45deg, rgba(184,147,91,0.035) 0 1px, transparent 1px 30px);
+      repeating-linear-gradient(45deg, rgba(195,154,110,0.05) 0 2px, transparent 2px 34px),
+      repeating-linear-gradient(-45deg, rgba(195,154,110,0.05) 0 2px, transparent 2px 34px);
   }
 
   /* =========================================================
@@ -49,7 +49,10 @@
      ========================================================= */
   .envelope-screen{
     position:fixed; inset:0; z-index:50;
-    background:var(--ivory);
+    background:
+      radial-gradient(circle at 50% 0%, rgba(201,143,160,0.14), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(138,59,82,0.12), transparent 50%),
+      linear-gradient(160deg, var(--emerald-1) 0%, var(--emerald-2) 55%, #1f0c14 100%);
     display:flex; flex-direction:column; align-items:center; justify-content:center;
     gap:22px; padding:24px;
     transition:opacity 900ms cubic-bezier(.65,0,.35,1), visibility 900ms;
@@ -63,9 +66,9 @@
   }
   .envelope{
     position:relative; width:100%; height:100%;
-    background:var(--ivory-panel);
+    background:var(--paper);
     border:1px solid var(--gold);
-    box-shadow:0 24px 50px -24px rgba(10,30,18,0.35);
+    box-shadow:0 24px 50px -24px rgba(10,5,8,0.55);
     overflow:visible;
   }
   .envelope::after{
@@ -73,7 +76,7 @@
   }
   .envelope-flap{
     position:absolute; top:0; left:0; right:0; height:60%;
-    background:var(--green-1);
+    background:var(--emerald-1);
     clip-path:polygon(0 0, 100% 0, 50% 100%);
     transform-origin:top center; transform-style:preserve-3d; backface-visibility:hidden;
     transition:transform 950ms cubic-bezier(.65,0,.35,1);
@@ -86,154 +89,130 @@
     width:56px; height:56px; border-radius:50%; z-index:4;
     background:radial-gradient(circle at 35% 30%, var(--gold-light), var(--gold-deep) 72%);
     display:flex; align-items:center; justify-content:center;
-    box-shadow:0 8px 18px -6px rgba(10,30,18,0.45);
+    box-shadow:0 8px 18px -6px rgba(10,5,8,0.5);
     transition:opacity 500ms ease, transform 500ms ease;
     animation:sealPulse 2.6s ease-in-out infinite;
   }
-  .seal span{ font-family:'Parisienne', cursive; font-size:22px; color:var(--green-2); line-height:1; }
+  .seal span{ font-family:'Parisienne', cursive; font-size:22px; color:var(--emerald-2); line-height:1; }
   .envelope.opening .seal{ opacity:0; transform:translate(-50%,-50%) scale(.5); animation:none; }
   @keyframes sealPulse{
-    0%,100%{ box-shadow:0 8px 18px -6px rgba(10,30,18,0.45), 0 0 0 0 rgba(184,147,91,0.35); }
-    50%{ box-shadow:0 8px 18px -6px rgba(10,30,18,0.45), 0 0 0 9px rgba(184,147,91,0); }
+    0%,100%{ box-shadow:0 8px 18px -6px rgba(10,5,8,0.5), 0 0 0 0 rgba(201,143,160,0.4); }
+    50%{ box-shadow:0 8px 18px -6px rgba(10,5,8,0.5), 0 0 0 9px rgba(201,143,160,0); }
   }
 
   .tap-hint{
     font-size:11px; letter-spacing:0.28em; text-transform:uppercase;
-    color:var(--gold-deep); text-align:center;
+    color:var(--gold-light); text-align:center;
     transition:opacity 500ms ease;
   }
   .envelope-screen.hide .tap-hint{ opacity:0; }
 
-  /* =========================================================
-     INVITATION SHELL
-     ========================================================= */
-  .page{ width:100%; display:flex; justify-content:center; padding:34px 14px 60px; position:relative; z-index:1; }
-  .invitation{
-    width:100%; max-width:500px;
-    background:var(--ivory-panel);
-    position:relative;
-    box-shadow:0 40px 90px -40px rgba(10,30,18,0.35);
+  .card{
+    width:100%; max-width:480px;
+    background:var(--paper);
+    border-radius:4px;
+    box-shadow:0 30px 70px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(201,143,160,0.30);
+    overflow:hidden; position:relative; z-index:1;
   }
-  .invitation::before{ content:""; position:absolute; inset:0; border:1px solid var(--gold); opacity:.55; pointer-events:none; z-index:3; }
+  .frame-outer{ position:absolute; inset:9px; border:2px solid var(--gold); pointer-events:none; z-index:3; }
+  .frame-inner{ position:absolute; inset:14px; border:1px solid var(--gold-deep); pointer-events:none; z-index:3; opacity:0.6; }
 
-  .bracket{ position:absolute; width:22px; height:22px; z-index:4; pointer-events:none; }
-  .bracket.tl{ top:12px; left:12px; border-top:1px solid var(--gold); border-left:1px solid var(--gold); }
-  .bracket.tr{ top:12px; right:12px; border-top:1px solid var(--gold); border-right:1px solid var(--gold); }
-  .bracket.bl{ bottom:12px; left:12px; border-bottom:1px solid var(--gold); border-left:1px solid var(--gold); }
-  .bracket.br{ bottom:12px; right:12px; border-bottom:1px solid var(--gold); border-right:1px solid var(--gold); }
+  .corner{ position:absolute; width:38px; height:38px; z-index:3; pointer-events:none; }
+  .corner.tl{ top:6px; left:6px; }
+  .corner.tr{ top:6px; right:6px; transform:scaleX(-1); }
+  .corner.bl{ bottom:6px; left:6px; transform:scaleY(-1); }
+  .corner.br{ bottom:6px; right:6px; transform:scale(-1,-1); }
 
   .watermark{
-    position:absolute; top:46%; left:50%; transform:translate(-50%,-50%);
-    width:58%; max-width:240px; opacity:0.10; z-index:1; pointer-events:none;
-    object-fit:contain; filter:sepia(15%) saturate(90%);
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:62%; max-width:260px; opacity:0.20; z-index:1; pointer-events:none;
+    object-fit:contain;
   }
 
-  .content{
-    padding:clamp(48px,10vw,64px) clamp(26px,7vw,48px) clamp(46px,8vw,58px);
+
+  .card-inner{
+    padding:clamp(14px,4vw,20px) clamp(22px,6vw,42px) clamp(34px,7vw,46px);
     text-align:center; position:relative; z-index:2;
   }
 
-  /* hero entrance elements — hidden until envelope opens */
-  .hero-el{ opacity:0; }
-  body.revealed .hero-el{
-    animation:riseIn 1200ms cubic-bezier(.19,1,.22,1) both;
-    animation-delay:calc(var(--d,0) * 150ms);
-  }
-  @keyframes riseIn{ from{ opacity:0; transform:translateY(20px); } to{ opacity:1; transform:translateY(0); } }
+  .crown{ width:40px; height:auto; margin:0 auto 10px; display:block; }
+  .monogram{ font-family:'Parisienne', cursive; font-size:clamp(34px,9vw,44px); color:var(--gold-deep); margin-bottom:18px; }
 
-  .mono-badge{
-    width:64px; height:64px; border-radius:50%; margin:0 auto 22px;
-    border:1px solid var(--gold); display:flex; align-items:center; justify-content:center;
-    background:var(--ivory-deep); position:relative;
-  }
-  .mono-badge::before{ content:""; position:absolute; inset:5px; border:1px solid var(--gold-deep); border-radius:50%; opacity:.5; }
-  .mono-badge span{ font-family:'Parisienne', cursive; font-size:26px; color:var(--green-1); }
+  .eyebrow{ font-size:11.5px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:10px; }
+  .parents-line{ font-family:'Parisienne', cursive; font-size:clamp(21px,5.5vw,26px); color:var(--ink); margin-bottom:20px; line-height:1.3; }
 
-  .eyebrow{ font-size:11px; letter-spacing:0.34em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:10px; }
-  .parents-line{ font-family:'Parisienne', cursive; font-size:clamp(20px,5.5vw,25px); color:var(--green-1); margin-bottom:22px; line-height:1.3; }
+  .invite-copy{ font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft); line-height:1.9; max-width:320px; margin:0 auto 22px; }
 
-  .invite-copy{ font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--ink-soft); line-height:2; max-width:320px; margin:0 auto 22px; }
+  .names{ font-family:'Parisienne', cursive; font-size:clamp(42px,12vw,58px); line-height:1.15; margin-bottom:16px; color:var(--ink); }
+  .names .amp{ color:var(--gold-deep); font-size:0.65em; margin:0 4px; }
 
-  .names{ font-family:'Parisienne', cursive; font-size:clamp(44px,13vw,64px); line-height:1.15; margin-bottom:18px; color:var(--green-1); }
-  .names .amp{ color:var(--gold); font-size:0.62em; margin:0 6px; }
+  .presented-by{ font-size:14.5px; color:var(--ink-soft); font-style:italic; max-width:340px; margin:0 auto 22px; line-height:1.55; }
 
-  .presented-by{ font-size:14.5px; color:var(--ink-soft); font-style:italic; max-width:340px; margin:0 auto 6px; line-height:1.6; }
+  .rule{ width:64px; height:1px; background:linear-gradient(90deg, transparent, var(--gold), transparent); margin:20px auto; position:relative; }
+  .rule::before{ content:"❀"; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--paper); color:var(--rose-deep); font-size:13px; padding:0 8px; }
+  .floral-header{ width:min(220px,70%); height:auto; margin:28px auto 6px; display:block; position:relative; z-index:2; }
 
-  .rule{ width:56px; height:1px; background:var(--gold); opacity:.55; margin:30px auto; position:relative; }
-  .rule::before{ content:"§"; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%) rotate(90deg); background:var(--ivory-panel); color:var(--gold-deep); font-size:12px; padding:0 10px; font-style:italic; }
+  .date-block{ margin:6px 0 24px; }
+  .date-block .day{ font-size:12.5px; letter-spacing:0.28em; text-transform:uppercase; color:var(--gold-deep); }
+  .date-block .big{ font-size:clamp(20px,5.5vw,26px); letter-spacing:0.08em; margin-top:6px; font-weight:600; }
 
-  /* scroll reveal (post-load sections) */
-  .reveal{ opacity:0; transform:translateY(26px); transition:opacity 1000ms cubic-bezier(.19,1,.22,1), transform 1000ms cubic-bezier(.19,1,.22,1); }
-  .reveal.in-view{ opacity:1; transform:translateY(0); }
-
-  /* date staged like a printed insert card */
-  .date-card{
-    margin:8px auto 32px; max-width:250px; padding:20px 22px 22px;
-    border:1px solid var(--gold); background:var(--ivory-deep);
-    position:relative; transform:rotate(-0.6deg);
-    box-shadow:0 18px 36px -22px rgba(10,30,18,0.40);
-  }
-  .date-card::before{ content:""; position:absolute; inset:5px; border:1px solid var(--gold-deep); opacity:.45; }
-  .date-card .day{ font-size:11.5px; letter-spacing:0.3em; text-transform:uppercase; color:var(--gold-deep); position:relative; z-index:1; }
-  .date-card .big{ font-family:'Cormorant Garamond', serif; font-size:clamp(20px,5.5vw,25px); letter-spacing:0.05em; margin-top:8px; font-weight:600; color:var(--green-1); position:relative; z-index:1; }
-
-  .events{ display:flex; justify-content:center; align-items:stretch; gap:0; margin-bottom:6px; width:100%; }
-  .event{ flex:1 1 0; max-width:220px; padding:0 14px; margin:0 auto; display:flex; flex-direction:column; }
+  .events{ display:flex; justify-content:center; align-items:stretch; gap:0; margin-bottom:4px; width:100%; }
+  .event{ flex:1 1 0; max-width:210px; padding:0 12px; margin:0 auto; display:flex; flex-direction:column; }
   .event + .event{ border-left:1px solid var(--line); }
-  .event .label{ text-transform:uppercase; font-size:10.5px; letter-spacing:0.18em; color:var(--gold-deep); margin-bottom:8px; }
-  .event .place{ font-size:16.5px; font-weight:600; line-height:1.35; color:var(--green-1); }
-  .event .addr{ font-size:12px; color:var(--ink-soft); line-height:1.5; margin-top:3px; }
-  .event .sub{ font-size:13.5px; color:var(--ink-soft); font-style:italic; margin-top:4px; }
+  .event .label{ text-transform:uppercase; font-size:10.5px; letter-spacing:0.16em; color:var(--gold-deep); margin-bottom:6px; }
+  .event .place{ font-size:16px; font-weight:600; line-height:1.3; }
+  .event .addr{ font-size:12px; color:var(--ink-soft); line-height:1.4; margin-top:2px; }
+  .event .sub{ font-size:13.5px; color:var(--ink-soft); font-style:italic; margin-top:3px; }
 
   .map-btn{
-    display:inline-flex; align-items:center; gap:7px; align-self:center;
-    font-family:inherit; font-size:11px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase;
+    display:inline-flex; align-items:center; gap:6px; align-self:center;
+    font-family:inherit; font-size:11.5px; font-weight:700; letter-spacing:0.05em;
     color:var(--gold-deep); background:transparent; border:1px solid var(--gold-deep);
-    padding:9px 16px; cursor:pointer;
-    text-decoration:none; transition:background 450ms ease, color 450ms ease, border-color 450ms ease;
+    border-radius:20px; padding:7px 14px; cursor:pointer;
+    text-decoration:none; transition:all .15s ease;
   }
-  .event .map-btn{ margin-top:14px; align-self:center; }
-  .gift-section .map-btn{ margin-top:12px; }
-  .map-btn:hover{ background:var(--green-1); color:var(--ivory); border-color:var(--green-1); }
+  .event .map-btn{ margin-top:auto; align-self:center; padding-top:7px; }
+  .gift-section .map-btn{ margin-top:10px; }
+  .map-btn:hover{ background:var(--gold-deep); color:var(--paper); }
   .map-btn svg{ width:12px; height:12px; flex-shrink:0; }
 
-  .rsvp{ margin-top:8px; }
-  .rsvp h2{ font-family:'Parisienne', cursive; font-weight:400; font-size:clamp(27px,7vw,33px); color:var(--green-1); }
-  .rsvp .deadline{ font-style:italic; color:var(--ink-soft); font-size:14px; margin:4px 0 20px; }
+  .rsvp{ margin-top:32px; }
+  .rsvp h2{ font-family:'Parisienne', cursive; font-weight:400; font-size:clamp(26px,7vw,32px); }
+  .rsvp .deadline{ font-style:italic; color:var(--ink-soft); font-size:14px; margin:2px 0 16px; }
 
-  .guest-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:16px 2px; border-bottom:1px solid var(--line); text-align:left; flex-wrap:wrap; }
+  .guest-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 2px; border-bottom:1px solid var(--line); text-align:left; flex-wrap:wrap; }
   .guest-row:last-of-type{ border-bottom:none; }
-  .guest-name{ font-size:17px; font-weight:600; flex:1 1 100%; color:var(--green-1); }
+  .guest-name{ font-size:17px; font-weight:600; flex:1 1 100%; }
 
-  .choice{ display:flex; gap:0; width:100%; border:1px solid var(--line); }
+  .choice{ display:flex; gap:8px; width:100%; }
   .pill{
-    font-family:inherit; font-weight:600; font-size:12.5px; letter-spacing:0.06em; text-transform:uppercase;
-    padding:13px 10px; border:none; border-right:1px solid var(--line);
-    background:var(--ivory-panel); color:var(--ink-soft); cursor:pointer;
-    transition:background 450ms ease, color 450ms ease; flex:1; min-height:46px;
+    font-family:inherit; font-weight:600; font-size:13.5px;
+    padding:11px 10px; border-radius:24px; border:1.5px solid var(--line);
+    background:var(--paper); color:var(--ink-soft); cursor:pointer;
+    transition:all .15s ease; flex:1; min-height:44px;
   }
-  .pill:last-child{ border-right:none; }
-  .pill.attend.active{ background:var(--green-1); color:var(--ivory); }
-  .pill.decline.active{ background:var(--ivory-deep); color:var(--no-text); }
+  .pill:active{ transform:scale(0.97); }
+  .pill.attend.active{ background:var(--ok-bg); border-color:var(--ok-text); color:var(--ok-text); }
+  .pill.decline.active{ background:var(--no-bg); border-color:var(--no-text); color:var(--no-text); }
 
-  .submit-row{ margin-top:30px; display:flex; flex-direction:column; align-items:center; gap:12px; }
+  .submit-row{ margin-top:26px; display:flex; flex-direction:column; align-items:center; gap:10px; }
   .submit-btn{
-    font-family:inherit; text-transform:uppercase; letter-spacing:0.22em;
-    font-size:12px; font-weight:700; background:var(--green-1); color:var(--gold-light);
-    border:1px solid var(--gold); padding:17px 10px; cursor:pointer;
-    transition:background 500ms ease, box-shadow 500ms ease; width:100%; max-width:290px; min-height:48px;
+    font-family:inherit; text-transform:uppercase; letter-spacing:0.18em;
+    font-size:12.5px; font-weight:700; background:var(--emerald-2); color:var(--gold-light);
+    border:1px solid var(--gold); padding:15px 10px; border-radius:4px; cursor:pointer;
+    transition:background .15s ease; width:100%; max-width:280px; min-height:48px;
   }
-  .submit-btn:hover{ background:var(--green-2); }
+  .submit-btn:hover{ background:var(--emerald-3); }
   .submit-btn:disabled{ opacity:0.5; cursor:not-allowed; }
-  .submit-btn.needs-attention{ animation:breathe 2.4s ease-in-out infinite; }
-  @keyframes breathe{
-    0%,100%{ box-shadow:0 0 0 0 rgba(184,147,91,0.35); }
-    50%{ box-shadow:0 0 0 7px rgba(184,147,91,0); }
+  .submit-btn.needs-attention{ animation: pulse-glow 1.6s ease-in-out infinite; }
+  @keyframes pulse-glow{
+    0%, 100% { box-shadow:0 0 0 0 rgba(201,143,160,0.55); }
+    50% { box-shadow:0 0 0 8px rgba(201,143,160,0); }
   }
   .unsaved-reminder{
-    font-size:12px; font-weight:600; letter-spacing:0.03em; color:var(--gold-deep);
-    background:var(--ivory-deep); border:1px solid var(--gold-light);
-    padding:7px 16px; margin-bottom:2px;
+    font-size:12.5px; font-weight:600; color:var(--gold-deep);
+    background:var(--paper-edge); border:1px solid var(--gold-light);
+    border-radius:20px; padding:6px 14px; margin-bottom:4px;
     display:none; text-align:center;
   }
   .unsaved-reminder.show{ display:block; }
@@ -241,31 +220,31 @@
   .status-msg.error{ color:var(--no-text); }
 
   /* gift registry */
-  .gift-section{ margin-top:8px; }
-  .gift-heading{ font-family:'Parisienne', cursive; font-weight:400; font-size:clamp(27px,7vw,33px); color:var(--green-1); }
-  .gift-msg{ font-size:14.5px; color:var(--ink-soft); line-height:1.7; max-width:340px; margin:12px auto 22px; }
+  .gift-section{ margin-top:32px; }
+  .gift-heading{ font-family:'Parisienne', cursive; font-weight:400; font-size:clamp(26px,7vw,32px); }
+  .gift-msg{ font-size:14.5px; color:var(--ink-soft); line-height:1.6; max-width:340px; margin:10px auto 20px; }
 
   .acct-box{
-    display:flex; align-items:center; justify-content:center; gap:12px;
-    background:var(--ivory-deep); border:1px solid var(--line);
-    padding:14px 18px; max-width:280px; margin:0 auto 18px;
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    background:var(--paper-edge); border:1px solid var(--line); border-radius:8px;
+    padding:12px 16px; max-width:280px; margin:0 auto 16px;
   }
-  .acct-label{ font-size:10px; text-transform:uppercase; letter-spacing:0.12em; color:var(--gold-deep); display:block; margin-bottom:3px; }
-  .acct-number{ font-size:18px; font-weight:700; letter-spacing:0.05em; color:var(--green-1); }
+  .acct-label{ font-size:10.5px; text-transform:uppercase; letter-spacing:0.1em; color:var(--gold-deep); display:block; margin-bottom:2px; }
+  .acct-number{ font-size:18px; font-weight:700; letter-spacing:0.04em; }
   .copy-btn{
-    font-family:inherit; font-size:10.5px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase;
-    background:var(--green-1); color:var(--gold-light); border:none;
-    padding:9px 15px; cursor:pointer; flex-shrink:0; transition:background 450ms ease;
+    font-family:inherit; font-size:11px; font-weight:700; letter-spacing:0.04em;
+    background:var(--emerald-2); color:var(--gold-light); border:none;
+    border-radius:16px; padding:8px 14px; cursor:pointer; flex-shrink:0; transition:background .15s ease;
   }
-  .copy-btn:hover{ background:var(--green-2); }
-  .copy-feedback{ font-size:12.5px; color:var(--ok-text); font-weight:600; min-height:16px; margin-bottom:8px; }
+  .copy-btn:hover{ background:var(--emerald-3); }
+  .copy-feedback{ font-size:12.5px; color:var(--ok-text); font-weight:600; min-height:16px; margin-bottom:6px; }
 
-  .loading, .error-box{ color:var(--ink-soft); font-style:italic; padding:60px 20px; text-align:center; }
+  .loading, .error-box{ color:var(--ink-soft); font-style:italic; padding:48px 20px; text-align:center; }
 
   @media (max-width:400px){
-    .events{ flex-direction:column; gap:20px; }
+    .events{ flex-direction:column; gap:16px; }
     .event{ margin:0 auto; }
-    .event + .event{ border-left:none; border-top:1px solid var(--line); padding-top:16px; }
+    .event + .event{ border-left:none; border-top:1px solid var(--line); padding-top:14px; }
   }
 </style>
 </head>
@@ -281,18 +260,54 @@
     <div class="tap-hint">Tap to open your invitation</div>
   </div>
 
-  <div class="page">
-    <div class="invitation">
-      <span class="bracket tl"></span>
-      <span class="bracket tr"></span>
-      <span class="bracket bl"></span>
-      <span class="bracket br"></span>
+  <div class="card">
+    <div class="frame-outer"></div>
+    <div class="frame-inner"></div>
 
-      <img class="watermark" src="royal-flourish-rings.png" alt="" />
+    <svg class="corner tl" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 40 C4 20 20 4 40 4" stroke="#b98b6a" stroke-width="1"/>
+      <path d="M4 30 C4 16 16 4 30 4" stroke="#b98b6a" stroke-width="0.8"/>
+      <circle cx="4" cy="4" r="3" fill="#b98b6a"/>
+    </svg>
+    <svg class="corner tr" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 40 C4 20 20 4 40 4" stroke="#b98b6a" stroke-width="1"/>
+      <path d="M4 30 C4 16 16 4 30 4" stroke="#b98b6a" stroke-width="0.8"/>
+      <circle cx="4" cy="4" r="3" fill="#b98b6a"/>
+    </svg>
+    <svg class="corner bl" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 40 C4 20 20 4 40 4" stroke="#b98b6a" stroke-width="1"/>
+      <path d="M4 30 C4 16 16 4 30 4" stroke="#b98b6a" stroke-width="0.8"/>
+      <circle cx="4" cy="4" r="3" fill="#b98b6a"/>
+    </svg>
+    <svg class="corner br" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 40 C4 20 20 4 40 4" stroke="#b98b6a" stroke-width="1"/>
+      <path d="M4 30 C4 16 16 4 30 4" stroke="#b98b6a" stroke-width="0.8"/>
+      <circle cx="4" cy="4" r="3" fill="#b98b6a"/>
+    </svg>
 
-      <div class="content" id="cardInner">
-        <div class="loading">Loading your invitation…</div>
-      </div>
+    <img class="watermark" src="royal-flourish-rings.png" alt="" />
+
+    <svg class="floral-header" viewBox="0 0 220 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 35c40-18 70-18 90 0" stroke="#c98fa0" stroke-width="1" opacity="0.75"/>
+      <path d="M120 35c40-18 70-18 90 0" stroke="#c98fa0" stroke-width="1" opacity="0.75"/>
+      <g stroke="#8a3b52" stroke-width="1.1" fill="none" opacity="0.9">
+        <path d="M110 12c-4 6-4 12 0 18c4-6 4-12 0-18z"/>
+        <path d="M92 20c6-2 11 0 15 6c-6 2-11 0-15-6z"/>
+        <path d="M128 20c-6-2-11 0-15 6c6 2 11 0 15-6z"/>
+        <circle cx="110" cy="22" r="3" fill="#c39a6e" stroke="none"/>
+      </g>
+      <g stroke="#8a9a7c" stroke-width="1" fill="none" opacity="0.85">
+        <path d="M85 30c-2 6 1 11 6 14"/>
+        <path d="M135 30c2 6-1 11-6 14"/>
+      </g>
+      <circle cx="55" cy="35" r="2.4" fill="#c98fa0" stroke="none"/>
+      <circle cx="165" cy="35" r="2.4" fill="#c98fa0" stroke="none"/>
+      <circle cx="35" cy="33" r="1.6" fill="#e8cdb3" stroke="none"/>
+      <circle cx="185" cy="33" r="1.6" fill="#e8cdb3" stroke="none"/>
+    </svg>
+
+    <div class="card-inner" id="cardInner">
+      <div class="loading">Loading your invitation…</div>
     </div>
   </div>
 
@@ -304,7 +319,7 @@ const SUPABASE_URL = "https://dthppsntdwdtvqgwwbhm.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_Vv0Xsv71M5Xf--EUXXYm2A_r2KD_o53";
 
 /* =========================================================
-   2) EVENT CONTENT
+   2) EVENT CONTENT — one block per language.
    ========================================================= */
 const EVENT = {
   monogram: 'JV',
@@ -341,6 +356,8 @@ const UI = {
     location_btn: 'Location Map',
     families_label: 'The Families of',
     rsvp_heading: 'Will you be there?',
+    countdown_lead: 'Time left to respond',
+    days: 'Days', hours: 'Hours', mins: 'Min', secs: 'Sec',
     attend_btn: "I'll be there",
     decline_btn: "I can't make it",
     submit_btn: 'Send my response',
@@ -366,6 +383,15 @@ const UI = {
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const cardInner = document.getElementById('cardInner');
 
+function openEnvelope(){
+  const screen = document.getElementById('envelopeScreen');
+  const envelope = document.getElementById('envelopeEl');
+  if(!screen || envelope.classList.contains('opening')) return;
+  envelope.classList.add('opening');
+  setTimeout(() => { screen.classList.add('hide'); }, 550);
+}
+document.getElementById('envelopeBtn').addEventListener('click', openEnvelope);
+
 const ICON_PIN = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22s7-7.5 7-13a7 7 0 10-14 0c0 5.5 7 13 7 13z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="9" r="2.4" stroke="currentColor" stroke-width="1.6"/></svg>';
 const ICON_CHURCH = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v4M10 4h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 6l9 6v10H3V12l9-6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 22v-6h4v6" stroke="currentColor" stroke-width="1.6"/></svg>';
 
@@ -380,39 +406,6 @@ let cachedInvite = null;
 let cachedGuests = null;
 let draft = {};
 
-/* =========================================================
-   ENVELOPE INTRO
-   ========================================================= */
-function openEnvelope(){
-  const screen = document.getElementById('envelopeScreen');
-  const envelope = document.getElementById('envelopeEl');
-  if(!screen || envelope.classList.contains('opening')) return;
-  envelope.classList.add('opening');
-  document.body.classList.add('revealed');
-  setTimeout(() => { screen.classList.add('hide'); }, 550);
-}
-document.getElementById('envelopeBtn').addEventListener('click', openEnvelope);
-
-/* =========================================================
-   SCROLL REVEAL
-   ========================================================= */
-function initScrollReveal(){
-  const els = document.querySelectorAll('.reveal');
-  if(!('IntersectionObserver' in window)){
-    els.forEach(el => el.classList.add('in-view'));
-    return;
-  }
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if(entry.isIntersecting){
-        entry.target.classList.add('in-view');
-        io.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.15 });
-  els.forEach(el => io.observe(el));
-}
-
 function paint(){
   const t = UI[currentLang];
   if(loadState === 'loading'){ cardInner.innerHTML = `<div class="loading">${t.loading}</div>`; return; }
@@ -426,26 +419,24 @@ function renderShell(invite, guests){
   const e = EVENT[currentLang];
 
   cardInner.innerHTML = `
-    <div class="mono-badge hero-el" style="--d:0"><span>${EVENT.monogram}</span></div>
-
     ${e.parents_line ? `
-      <div class="eyebrow hero-el" style="--d:1">${t.families_label}</div>
-      <div class="parents-line hero-el" style="--d:1">${e.parents_line}</div>
-    ` : ``}
+      <div class="eyebrow">${t.families_label}</div>
+      <div class="parents-line">${e.parents_line}</div>
+    ` : `<div class="monogram">${EVENT.monogram}</div>`}
 
-    <div class="invite-copy hero-el" style="--d:2">${e.invite_copy}</div>
+    <div class="invite-copy">${e.invite_copy}</div>
 
-    <div class="names hero-el" style="--d:3">${e.names}</div>
-    <p class="presented-by hero-el" style="--d:4">${invite.note || ''}</p>
+    <div class="names">${e.names}</div>
+    <p class="presented-by">${invite.note || ''}</p>
 
     <div class="rule"></div>
 
-    <div class="date-card reveal">
+    <div class="date-block">
       <div class="day">${e.date_day}</div>
       <div class="big">${e.date_big}</div>
     </div>
 
-    <div class="events reveal">
+    <div class="events">
       <div class="event">
         <div class="label">${t.ceremony_label}</div>
         <div class="place">${e.ceremony_place}</div>
@@ -464,7 +455,7 @@ function renderShell(invite, guests){
 
     <div class="rule"></div>
 
-    <div class="rsvp reveal">
+    <div class="rsvp">
       <h2>${t.rsvp_heading}</h2>
       <div class="deadline">${e.deadline}</div>
       <div id="guestRows"></div>
@@ -477,7 +468,7 @@ function renderShell(invite, guests){
 
     <div class="rule"></div>
 
-    <div class="gift-section reveal">
+    <div class="gift-section">
       <div class="gift-heading">${t.gift_heading}</div>
       <p class="gift-msg">${t.gift_msg}</p>
       <div class="copy-feedback" id="copyFeedback"></div>
@@ -491,8 +482,6 @@ function renderShell(invite, guests){
       <a class="map-btn" href="${EVENT.gift.whish_url}" target="_blank" rel="noopener">${ICON_PIN}${t.whish_btn}</a>
     </div>
   `;
-
-  requestAnimationFrame(initScrollReveal);
 
   document.getElementById('copyBtn').onclick = async () => {
     const fb = document.getElementById('copyFeedback');
