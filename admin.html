@@ -112,6 +112,16 @@
   .link-box input{ font-size:12px; color:var(--ink-soft); background:var(--parchment-2); }
   .copied-tag{ font-size:12px; color:var(--ok-text); font-weight:600; }
 
+  .msg-panel{ margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); display:none; }
+  .msg-panel.open{ display:block; }
+  .msg-panel-label{ font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-soft); margin-bottom:8px; }
+  .name-picker{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+  .name-chip{ display:inline-flex; align-items:center; gap:6px; background:var(--parchment-2); border:1px solid var(--line); border-radius:20px; padding:6px 12px 6px 8px; font-size:13.5px; cursor:pointer; user-select:none; transition:border-color .12s ease; }
+  .name-chip:hover{ border-color:var(--gold); }
+  .name-chip input{ width:auto; margin:0; accent-color:var(--gold-dark); }
+  .msg-preview{ font-family:'Cormorant Garamond', serif; font-size:14.5px; line-height:1.6; white-space:pre-wrap; min-height:160px; background:#fff; }
+  .msg-panel-actions{ display:flex; gap:10px; align-items:center; margin-top:10px; flex-wrap:wrap; }
+
   .loading{ text-align:center; color:var(--ink-soft); font-style:italic; padding:30px; }
   .empty{ text-align:center; color:var(--ink-soft); font-style:italic; padding:20px; }
 </style>
@@ -138,6 +148,13 @@ const SUPABASE_ANON_KEY = "sb_publishable_Vv0Xsv71M5Xf--EUXXYm2A_r2KD_o53";
 
 // Code partagé entre toi et ta fiancée — changez-le, et ne le partagez à personne d'autre
 const ADMIN_PASSCODE = "1234";
+
+// Contenu du message d'accompagnement (mêmes infos que sur index.html)
+const WEDDING = {
+  coupleSignature: 'Julien & Vanessa',
+  weddingDateLong: 'Sunday, November 1, 2026',
+  rsvpDeadlineLong: 'October 15, 2026'
+};
 /* ========================================================= */
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -389,7 +406,17 @@ function renderFamilyList(){
           <input type="text" readonly value="${inviteUrl(inv.slug)}" data-role="link-input">
         </div>
         <button class="btn small" data-role="copy-link">Copier le lien</button>
+        <button class="btn secondary small" data-role="toggle-message">✉️ Message</button>
         <span class="copied-tag" data-role="copied-tag" style="display:none;">Copié ✓</span>
+      </div>
+      <div class="msg-panel" data-role="msg-panel">
+        <div class="msg-panel-label">Qui saluer dans le message ? (décoche ceux que tu ne veux pas nommer)</div>
+        <div class="name-picker" data-role="name-picker"></div>
+        <textarea class="msg-preview" data-role="msg-preview" readonly></textarea>
+        <div class="msg-panel-actions">
+          <button class="btn small" data-role="copy-message">Copier le message</button>
+          <span class="copied-tag" data-role="copied-msg-tag" style="display:none;">Copié ✓</span>
+        </div>
       </div>
     `;
 
@@ -486,6 +513,73 @@ function renderFamilyList(){
       }catch(e){
         const linkInput = card.querySelector('[data-role="link-input"]');
         linkInput.select();
+        document.execCommand('copy');
+      }
+      tag.style.display = 'inline';
+      setTimeout(() => { tag.style.display = 'none'; }, 1800);
+    };
+
+    // ----- personalized WhatsApp message -----
+    const namePickerEl = card.querySelector('[data-role="name-picker"]');
+    const msgPreviewEl = card.querySelector('[data-role="msg-preview"]');
+    const msgPanelEl = card.querySelector('[data-role="msg-panel"]');
+
+    function joinNames(names){
+      if(names.length === 0) return '';
+      if(names.length === 1) return names[0];
+      if(names.length === 2) return names[0] + ' & ' + names[1];
+      return names.slice(0, -1).join(', ') + ' & ' + names[names.length - 1];
+    }
+
+    function buildMessage(){
+      const checked = Array.from(namePickerEl.querySelectorAll('input[type="checkbox"]:checked'))
+        .map(cb => cb.dataset.name);
+      const greetNames = joinNames(checked);
+      const greeting = greetNames ? `Hello ${greetNames},` : 'Hello,';
+      const link = inviteUrl(inv.slug);
+      return `${greeting}
+
+It is with great joy that we share the news of our upcoming wedding.
+We would be truly honored to have you join us as we celebrate the beginning of this new chapter together.
+
+You are warmly invited to celebrate with us on *${WEDDING.weddingDateLong}*.
+
+Kindly view your invitation and confirm your attendance by *${WEDDING.rsvpDeadlineLong}* via the link below:
+${link}
+
+Your presence would add a special meaning to this day, and we would be truly delighted to create memories we will cherish forever.
+
+We look forward to celebrating with you! 🤍
+
+— · ✦ · —
+${WEDDING.coupleSignature}`;
+    }
+
+    function refreshMessagePreview(){
+      msgPreviewEl.value = buildMessage();
+    }
+
+    namePickerEl.innerHTML = '';
+    members.forEach(m => {
+      const chip = document.createElement('label');
+      chip.className = 'name-chip';
+      chip.innerHTML = `<input type="checkbox" checked data-name="${m.member_name}"> ${m.member_name}`;
+      chip.querySelector('input').addEventListener('change', refreshMessagePreview);
+      namePickerEl.appendChild(chip);
+    });
+    refreshMessagePreview();
+
+    card.querySelector('[data-role="toggle-message"]').onclick = () => {
+      msgPanelEl.classList.toggle('open');
+      if(msgPanelEl.classList.contains('open')) refreshMessagePreview();
+    };
+
+    card.querySelector('[data-role="copy-message"]').onclick = async () => {
+      const tag = card.querySelector('[data-role="copied-msg-tag"]');
+      try{
+        await navigator.clipboard.writeText(msgPreviewEl.value);
+      }catch(e){
+        msgPreviewEl.select();
         document.execCommand('copy');
       }
       tag.style.display = 'inline';
