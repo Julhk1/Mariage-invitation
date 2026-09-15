@@ -14,23 +14,19 @@
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{
-    --emerald-1:#4a5f9e; --emerald-2:#2a3660; --emerald-3:#5d72b0;
-    --paper:#fdfcf9; --paper-edge:#eef1fa;
-    --ink:#2f3b5c; --ink-soft:#6d7899;
-    --gold:#c39a6e; --gold-deep:#9c6b52; --gold-light:#e8cdb3; --line:#d7def0;
-    --ok-bg:#eef1e6; --ok-text:#5c7a52;
-    --no-bg:#f2e4de; --no-text:#8a4a3a;
-    --rose:#93a8dd; --rose-deep:#4a5f9e; --sage:#8a9ac0;
+    --emerald-1:#294532; --emerald-2:#1f3325; --emerald-3:#345940;
+    --paper:#faf5e8; --paper-edge:#f3ecda;
+    --ink:#2b271e; --ink-soft:#5b5646;
+    --gold:#b8935b; --gold-deep:#9c7a48; --gold-light:#e6d7ab; --line:#d9cba4;
+    --ok-bg:#e4efe1; --ok-text:#3c6b41;
+    --no-bg:#f3e3de; --no-text:#a2503e;
+    --rose:#b8935b; --rose-deep:#9c7a48; --sage:#6f8a6a;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html,body{overflow-x:hidden;}
   body{
     min-height:100vh;
-    background:
-      radial-gradient(circle at 50% 0%, rgba(232,205,179,0.10), transparent 55%),
-      radial-gradient(circle at 85% 90%, rgba(74,95,158,0.10), transparent 50%),
-      radial-gradient(rgba(232,205,179,0.35) 1px, transparent 1.5px) 0 0/42px 42px,
-      linear-gradient(160deg, var(--emerald-1) 0%, var(--emerald-2) 55%, #1c2444 100%);
+    background:linear-gradient(180deg, #1f3325, #294532);
     font-family:'Cormorant Garamond', serif;
     color:var(--ink);
     padding:22px 12px 50px;
@@ -43,12 +39,10 @@
   .envelope-screen{
     position:fixed; inset:0; z-index:50;
     background:
-      radial-gradient(circle at 50% 42%, rgba(74,95,158,0.20), transparent 62%),
-      radial-gradient(circle, transparent 0 32px, rgba(232,205,179,0.16) 32px 33px, transparent 33px 100%) 23px 20px/46px 46px,
-      radial-gradient(circle, transparent 0 32px, rgba(232,205,179,0.16) 32px 33px, transparent 33px 100%) 0 0/46px 46px,
-      #35427c;
+      radial-gradient(circle at 50% 40%, rgba(184,147,91,0.12), transparent 60%),
+      linear-gradient(180deg, #1f3325, #294532);
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:22px; padding:24px;
+    gap:24px; padding:24px;
     transition:opacity 900ms cubic-bezier(.65,0,.35,1), visibility 900ms;
   }
   .envelope-screen.hide{ opacity:0; visibility:hidden; pointer-events:none; }
@@ -60,26 +54,19 @@
   }
   .envelope{
     position:relative; width:100%; height:100%;
-    background:
-      repeating-linear-gradient(45deg, rgba(74,95,158,0.06) 0 1px, transparent 1px 9px),
-      repeating-linear-gradient(-45deg, rgba(74,95,158,0.06) 0 1px, transparent 1px 9px),
-      var(--paper);
-    border:2.5px solid var(--gold);
+    background:var(--paper);
+    border:1.5px solid var(--gold);
     box-shadow:
-      0 30px 60px -22px rgba(10,5,8,0.6),
-      0 10px 26px -10px rgba(40,50,90,0.35),
-      0 0 0 5px rgba(232,205,179,0.06);
+      0 30px 60px -22px rgba(0,0,0,0.65),
+      0 0 0 5px rgba(232,213,168,0.05);
     overflow:visible;
   }
   .envelope::after{
-    content:""; position:absolute; inset:8px; border:2px solid var(--gold-deep); opacity:.5; pointer-events:none;
+    content:""; position:absolute; inset:7px; border:1px solid var(--gold-deep); opacity:.55; pointer-events:none;
   }
   .envelope-flap{
     position:absolute; top:0; left:0; right:0; height:60%;
-    background:
-      repeating-linear-gradient(45deg, rgba(232,205,179,0.06) 0 1px, transparent 1px 9px),
-      repeating-linear-gradient(-45deg, rgba(232,205,179,0.06) 0 1px, transparent 1px 9px),
-      linear-gradient(160deg, var(--emerald-1) 0%, var(--emerald-2) 100%);
+    background:linear-gradient(160deg, var(--emerald-1) 0%, var(--emerald-2) 100%);
     clip-path:polygon(0 0, 100% 0, 50% 100%);
     transform-origin:top center; transform-style:preserve-3d; backface-visibility:hidden;
     transition:transform 950ms cubic-bezier(.65,0,.35,1);
@@ -89,43 +76,43 @@
     content:"";
     position:absolute; top:12px; left:12px; right:12px; bottom:0;
     clip-path:polygon(0 0, 100% 0, 50% 96%);
-    border-top:1.5px solid rgba(232,205,179,0.32);
+    border-top:1px solid rgba(232,213,168,0.3);
     pointer-events:none;
   }
   .envelope.opening .envelope-flap{ transform:rotateX(180deg); }
 
   .seal{
     position:absolute; top:52%; left:50%; transform:translate(-50%,-50%);
-    width:56px; height:56px; border-radius:50%; z-index:4;
+    width:54px; height:54px; border-radius:50%; z-index:4;
     background:radial-gradient(circle at 35% 30%, var(--gold-light), var(--gold-deep) 72%);
     display:flex; align-items:center; justify-content:center;
     box-shadow:
-      0 10px 22px -6px rgba(10,5,8,0.55),
-      inset 0 1px 1px rgba(255,255,255,0.5),
-      inset 0 -3px 5px rgba(0,0,0,0.25);
+      0 10px 22px -6px rgba(0,0,0,0.5),
+      inset 0 1px 1px rgba(255,255,255,0.4),
+      inset 0 -3px 5px rgba(0,0,0,0.2);
     transition:opacity 500ms ease, transform 500ms ease;
-    animation:sealPulse 2.6s ease-in-out infinite;
+    animation:sealBreathe 3.6s ease-in-out infinite;
     overflow:hidden;
   }
   .seal::before{
     content:"";
     position:absolute; inset:-40%;
-    background:linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.55) 50%, transparent 60%);
-    animation:sealShine 4.5s ease-in-out infinite;
+    background:linear-gradient(115deg, transparent 42%, rgba(255,255,255,0.4) 50%, transparent 58%);
+    animation:sealShine 7s ease-in-out infinite;
   }
   @keyframes sealShine{
-    0%, 30%{ transform:translateX(-60%) translateY(-60%); }
-    60%, 100%{ transform:translateX(60%) translateY(60%); }
+    0%, 40%{ transform:translateX(-60%) translateY(-60%); }
+    70%, 100%{ transform:translateX(60%) translateY(60%); }
   }
-  .seal span{ font-family:'Parisienne', cursive; font-size:22px; color:var(--emerald-2); line-height:1; position:relative; z-index:1; }
+  .seal span{ font-family:'Parisienne', cursive; font-size:21px; color:var(--emerald-2); line-height:1; position:relative; z-index:1; }
   .envelope.opening .seal{ opacity:0; transform:translate(-50%,-50%) scale(.5); animation:none; }
-  @keyframes sealPulse{
-    0%,100%{ box-shadow:0 10px 22px -6px rgba(10,5,8,0.55), inset 0 1px 1px rgba(255,255,255,0.5), inset 0 -3px 5px rgba(0,0,0,0.25), 0 0 0 0 rgba(195,154,110,0.4); }
-    50%{ box-shadow:0 10px 22px -6px rgba(10,5,8,0.55), inset 0 1px 1px rgba(255,255,255,0.5), inset 0 -3px 5px rgba(0,0,0,0.25), 0 0 0 9px rgba(195,154,110,0); }
+  @keyframes sealBreathe{
+    0%,100%{ box-shadow:0 10px 22px -6px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.4), inset 0 -3px 5px rgba(0,0,0,0.2), 0 0 0 0 rgba(189,154,95,0.35); }
+    50%{ box-shadow:0 10px 22px -6px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.4), inset 0 -3px 5px rgba(0,0,0,0.2), 0 0 0 7px rgba(189,154,95,0); }
   }
 
   .tap-hint{
-    font-size:11px; letter-spacing:0.28em; text-transform:uppercase;
+    font-size:10.5px; letter-spacing:0.32em; text-transform:uppercase;
     color:var(--gold-light); text-align:center;
     transition:opacity 500ms ease;
   }
@@ -134,17 +121,17 @@
   .card{
     width:100%; max-width:480px;
     background:var(--paper);
-    border-radius:4px;
+    border-radius:2px;
     box-shadow:
-      0 40px 80px -24px rgba(0,0,0,0.55),
-      0 16px 40px -18px rgba(40,50,90,0.25),
-      0 0 0 1px rgba(195,154,110,0.30);
+      0 40px 80px -24px rgba(0,0,0,0.6),
+      0 16px 40px -18px rgba(0,0,0,0.3),
+      0 0 0 1px rgba(189,154,95,0.35);
     overflow:hidden; position:relative; z-index:1;
   }
-  .frame-outer{ position:absolute; inset:9px; border:2px solid var(--gold); pointer-events:none; z-index:3; }
-  .frame-inner{ position:absolute; inset:14px; border:1px solid var(--gold-deep); pointer-events:none; z-index:3; opacity:0.6; }
+  .frame-outer{ position:absolute; inset:9px; border:1.5px solid var(--gold); pointer-events:none; z-index:3; }
+  .frame-inner{ position:absolute; inset:14px; border:1px solid var(--gold-deep); pointer-events:none; z-index:3; opacity:0.55; }
 
-  .corner{ position:absolute; width:38px; height:38px; z-index:3; pointer-events:none; }
+  .corner{ position:absolute; width:34px; height:34px; z-index:3; pointer-events:none; }
   .corner.tl{ top:6px; left:6px; }
   .corner.tr{ top:6px; right:6px; transform:scaleX(-1); }
   .corner.bl{ bottom:6px; left:6px; transform:scaleY(-1); }
@@ -311,7 +298,7 @@
     <svg class="corner tl" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="cornerGold" x1="0" y1="60" x2="60" y2="0" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stop-color="#4a5f9e"/>
+          <stop offset="0%" stop-color="#294532"/>
           <stop offset="45%" stop-color="#e8cdb3"/>
           <stop offset="100%" stop-color="#9c6b52"/>
         </linearGradient>
@@ -351,7 +338,7 @@
         <ellipse cx="152" cy="15.5" rx="7" ry="2.8" transform="rotate(6 152 15.5)"/>
         <ellipse cx="132" cy="16" rx="6.5" ry="2.7" transform="rotate(-10 132 16)"/>
       </g>
-      <rect x="106" y="26" width="8" height="8" transform="rotate(45 110 30)" fill="#4a5f9e"/>
+      <rect x="106" y="26" width="8" height="8" transform="rotate(45 110 30)" fill="#294532"/>
     </svg>
 
     <div class="card-inner" id="cardInner">
