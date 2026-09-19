@@ -1,262 +1,238 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Julien & Vanessa — Invitation de Mariage</title>
-
+<title>Julien & Vanessa — Invitation</title>
 <meta property="og:type" content="website">
-<meta property="og:title" content="Julien & Vanessa — Invitation de Mariage">
-<meta property="og:description" content="Vous êtes chaleureusement invités à célébrer notre mariage le Dimanche 1er Novembre 2026. Merci de confirmer votre présence.">
+<meta property="og:title" content="Julien & Vanessa — Wedding Invitation">
+<meta property="og:description" content="You are warmly invited to celebrate our wedding on Sunday, November 1, 2026. Kindly confirm your attendance by October 15, 2026.">
 <meta property="og:image" content="https://mariage-invitation-rho.vercel.app/envelope-preview.png">
-
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Parisienne&display=swap" rel="stylesheet">
-
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-
 <style>
-  :root {
-    --emerald-1: #294532;
-    --emerald-2: #1f3325;
-    --emerald-3: #345940;
-    --paper: #faf5e8;
-    --paper-edge: #f3ecda;
-    --gold: #b8935b;
-    --gold-dark: #9c7a48;
-    --ink: #2b271e;
-    --ink-soft: #5b5646;
+  :root{
+    --emerald-1:#294532; --emerald-2:#1f3325; --emerald-3:#345940;
+    --paper:#faf5e8; --paper-edge:#f3ecda;
+    --ink:#2b271e; --ink-soft:#5b5646;
+    --gold:#b8935b; --gold-deep:#9c7a48; --gold-light:#e6d7ab; --line:#d9cba4;
+    --ok-bg:#e4efe1; --ok-text:#3c6b41;
+    --no-bg:#f3e3de; --no-text:#a2503e;
+    --rose:#b8935b; --rose-deep:#9c7a48; --sage:#6f8a6a;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html,body{overflow-x:hidden;}
+  body{
+    min-height:100vh;
+    background:linear-gradient(180deg, #1f3325, #294532);
+    font-family:'Cormorant Garamond', serif;
+    color:var(--ink);
+    padding:22px 12px 50px;
+    display:flex; flex-direction:column; align-items:center;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    min-height: 100vh;
-    background: linear-gradient(180deg, var(--emerald-1), var(--emerald-2));
-    font-family: 'Cormorant Garamond', serif;
-    color: var(--ink);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px 10px;
-    overflow-x: hidden;
+  /* =========================================================
+     ENVELOPE INTRO (VIDÉO)
+     ========================================================= */
+  .envelope-screen{
+    position:fixed; inset:0; z-index:50;
+    background:#0f1611;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:20px; padding:24px;
+    transition:opacity 800ms cubic-bezier(.65,0,.35,1), visibility 800ms;
+    cursor:pointer;
   }
+  .envelope-screen.hide{ opacity:0; visibility:hidden; pointer-events:none; }
 
-  /* ÉCRAN D'OUVERTURE DE L'ENVELOPPE */
-  .envelope-screen {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    background: #121a14;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: opacity 0.6s ease, visibility 0.6s ease;
-  }
-
-  .envelope-screen.hidden {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
-
+  /* Masque le bas de la vidéo avec les secondes */
   .envelope-media-box {
-    width: min(360px, 88vw);
-    border-radius: 8px;
+    width: min(340px, 85vw);
+    aspect-ratio: 9 / 18.2;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+    box-shadow: 0 25px 50px rgba(0,0,0,0.7);
+    position: relative;
+    background: #000;
   }
 
   .envelope-video {
     width: 100%;
-    height: auto;
+    height: 108%;
     display: block;
     object-fit: cover;
+    margin-bottom: -8%;
   }
 
-  .tap-hint {
-    color: #e6d7ab;
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-top: 20px;
-    animation: pulse 1.8s infinite;
+  .tap-hint{
+    font-size:10.5px; letter-spacing:0.32em; text-transform:uppercase;
+    color:var(--gold-light); text-align:center;
+    transition:opacity 500ms ease;
+    animation: pulseHint 1.8s infinite;
   }
-
-  @keyframes pulse {
+  @keyframes pulseHint {
     0%, 100% { opacity: 0.5; }
     50% { opacity: 1; }
   }
 
-  /* CARTE FAIRE-PART PRINCIPALE */
-  .card-container {
-    width: min(540px, 100%);
-    background: var(--paper);
-    padding: 35px 25px;
-    border-radius: 4px;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    border: 1px solid var(--gold);
-    position: relative;
-    text-align: center;
+  .card{
+    width:100%; max-width:480px;
+    background:var(--paper);
+    border-radius:2px;
+    box-shadow:
+      0 40px 80px -24px rgba(0,0,0,0.6),
+      0 16px 40px -18px rgba(0,0,0,0.3),
+      0 0 0 1px rgba(189,154,95,0.35);
+    overflow:hidden; position:relative; z-index:1;
+  }
+  .frame-outer{ position:absolute; inset:9px; border:1.5px solid var(--gold); pointer-events:none; z-index:3; }
+  .frame-inner{ position:absolute; inset:14px; border:1px solid var(--gold-deep); pointer-events:none; z-index:3; opacity:0.55; }
+
+  .corner{ position:absolute; width:34px; height:34px; z-index:3; pointer-events:none; }
+  .corner.tl{ top:6px; left:6px; }
+  .corner.tr{ top:6px; right:6px; transform:scaleX(-1); }
+  .corner.bl{ bottom:6px; left:6px; transform:scaleY(-1); }
+  .corner.br{ bottom:6px; right:6px; transform:scale(-1,-1); }
+
+  .watermark{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:62%; max-width:260px; opacity:0.20; z-index:1; pointer-events:none;
+    object-fit:contain;
   }
 
-  .lang-switcher {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    display: flex;
-    gap: 8px;
+  .card-inner{
+    padding:clamp(14px,4vw,20px) clamp(22px,6vw,42px) clamp(34px,7vw,46px);
+    text-align:center; position:relative; z-index:2;
   }
 
-  .lang-btn {
-    background: transparent;
-    border: 1px solid var(--gold);
-    color: var(--gold-dark);
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 2px;
-    cursor: pointer;
-  }
+  .crown{ width:40px; height:auto; margin:0 auto 10px; display:block; }
+  .monogram{ font-family:'Parisienne', cursive; font-size:clamp(34px,9vw,44px); color:var(--gold-deep); margin-bottom:18px; }
 
-  .lang-btn.active {
-    background: var(--gold);
-    color: #fff;
-  }
+  .eyebrow{ font-size:11.5px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-deep); margin-bottom:10px; }
+  .parents-line{ font-family:'Parisienne', cursive; font-size:clamp(21px,5.5vw,26px); color:var(--ink); margin-bottom:20px; line-height:1.3; }
 
-  .rings-icon {
-    width: 60px;
-    height: 60px;
-    margin: 0 auto 10px;
-  }
+  .invite-copy{ font-size:11.5px; letter-spacing:0.1em; text-transform:uppercase; color:var(--ink-soft); line-height:1.9; max-width:320px; margin:0 auto 22px; }
 
-  h1.title {
-    font-family: 'Parisienne', cursive;
-    font-size: 46px;
-    color: var(--emerald-2);
-    font-weight: normal;
-    line-height: 1.1;
+  .names{
+    font-family:'Parisienne', cursive; font-size:clamp(42px,12vw,58px); line-height:1.4; margin-bottom:16px;
+    padding-top:0.12em;
+    color:var(--emerald-1);
   }
+  .names .amp{ color:var(--gold-deep); font-size:0.65em; margin:0 4px; }
 
-  .subtitle {
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    font-size: 12px;
-    color: var(--gold-dark);
-    margin-top: 8px;
+  .presented-by{ font-size:14.5px; color:var(--ink-soft); font-style:italic; max-width:340px; margin:0 auto 22px; line-height:1.55; }
+
+  .rule{ width:64px; height:1px; background:linear-gradient(90deg, transparent, var(--gold), transparent); margin:20px auto; position:relative; }
+  .rule::before{ content:"❖"; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:var(--paper); color:var(--gold-deep); font-size:12px; padding:0 8px; }
+  .floral-header{ width:min(220px,70%); height:auto; margin:28px auto 6px; display:block; position:relative; z-index:2; }
+
+  .date-block{ margin:6px 0 24px; position:relative; }
+  .date-block .day{ font-size:12.5px; letter-spacing:0.28em; text-transform:uppercase; color:var(--gold-deep); }
+  .date-block .big{
+    font-size:clamp(20px,5.5vw,26px); letter-spacing:0.1em; margin-top:8px; font-weight:600;
+    display:inline-block; padding:0 6px; position:relative;
   }
-
-  .divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    margin: 20px 0;
+  .date-block .big::before, .date-block .big::after{
+    content:""; position:absolute; top:50%; width:22px; height:1px;
+    background:linear-gradient(90deg, transparent, var(--gold));
   }
+  .date-block .big::before{ left:-26px; }
+  .date-block .big::after{ right:-26px; transform:scaleX(-1); }
 
-  .date-box {
-    font-size: 18px;
-    letter-spacing: 1px;
-    color: var(--ink);
-    margin-bottom: 20px;
+  .events{ display:flex; justify-content:center; align-items:stretch; gap:0; margin-bottom:4px; width:100%; }
+  .event{ flex:1 1 0; max-width:210px; padding:0 12px; margin:0 auto; display:flex; flex-direction:column; }
+  .event + .event{ border-left:1px solid var(--line); }
+  .event .label{ text-transform:uppercase; font-size:10.5px; letter-spacing:0.16em; color:var(--gold-deep); margin-bottom:6px; }
+  .event .place{ font-size:16px; font-weight:600; line-height:1.3; }
+  .event .addr{ font-size:12px; color:var(--ink-soft); line-height:1.4; margin-top:2px; }
+  .event .sub{ font-size:13.5px; color:var(--ink-soft); font-style:italic; margin-top:3px; }
+
+  .map-btn{
+    display:inline-flex; align-items:center; gap:6px; align-self:center;
+    font-family:inherit; font-size:11.5px; font-weight:700; letter-spacing:0.05em;
+    color:var(--gold-deep); background:transparent; border:1px solid var(--gold-deep);
+    border-radius:20px; padding:7px 14px; cursor:pointer;
+    text-decoration:none; transition:background .25s ease, color .25s ease, box-shadow .25s ease, transform .15s ease;
   }
+  .event .map-btn{ margin-top:auto; align-self:center; padding-top:7px; }
+  .gift-section .map-btn{ margin-top:10px; }
+  .map-btn:hover{ background:var(--gold-deep); color:var(--paper); box-shadow:0 8px 18px -8px rgba(156,107,82,0.6); transform:translateY(-1px); }
+  .map-btn svg{ width:12px; height:12px; flex-shrink:0; }
 
-  /* RSVP SECTION */
-  .guest-list {
-    margin: 20px 0;
-    text-align: left;
+  .rsvp{ margin-top:32px; }
+  .rsvp h2{ font-family:'Parisienne', cursive; font-weight:400; font-size:clamp(26px,7vw,32px); }
+  .rsvp .deadline{ font-style:italic; color:var(--ink-soft); font-size:14px; margin:2px 0 16px; }
+
+  .guest-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:13px 2px; border-bottom:1px solid var(--line); text-align:left; flex-wrap:wrap; }
+  .guest-row:last-of-type{ border-bottom:none; }
+  .guest-name{ font-size:17px; font-weight:600; flex:1 1 100%; }
+
+  .choice{ display:flex; gap:8px; width:100%; }
+  .pill{
+    font-family:inherit; font-weight:600; font-size:13.5px;
+    padding:11px 10px; border-radius:24px; border:1.5px solid var(--line);
+    background:var(--paper); color:var(--ink-soft); cursor:pointer;
+    transition:all .15s ease; flex:1; min-height:44px;
   }
+  .pill:active{ transform:scale(0.97); }
+  .pill.attend.active{ background:var(--ok-bg); border-color:var(--ok-text); color:var(--ok-text); box-shadow:0 4px 12px -6px rgba(92,122,82,0.5); }
+  .pill.decline.active{ background:var(--no-bg); border-color:var(--no-text); color:var(--no-text); box-shadow:0 4px 12px -6px rgba(156,74,72,0.5); }
 
-  .guest-item {
-    background: #fff;
-    border: 1px solid #e2d7ba;
-    padding: 12px 15px;
-    border-radius: 4px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .submit-row{ margin-top:26px; display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .submit-btn{
+    font-family:inherit; text-transform:uppercase; letter-spacing:0.18em;
+    font-size:12.5px; font-weight:700; color:var(--gold-light);
+    background:linear-gradient(160deg, var(--emerald-1) 0%, var(--emerald-2) 100%);
+    border:1px solid var(--gold); padding:15px 10px; border-radius:4px; cursor:pointer;
+    box-shadow:0 10px 24px -12px rgba(42,54,96,0.65), inset 0 1px 0 rgba(232,205,179,0.15);
+    transition:background .25s ease, box-shadow .25s ease, transform .15s ease;
+    width:100%; max-width:280px; min-height:48px;
   }
-
-  .guest-name {
-    font-weight: 600;
-    font-size: 16px;
+  .submit-btn:hover{ background:linear-gradient(160deg, var(--emerald-3) 0%, var(--emerald-2) 100%); box-shadow:0 14px 30px -12px rgba(42,54,96,0.75), inset 0 1px 0 rgba(232,205,179,0.2); }
+  .submit-btn:active{ transform:translateY(1px); }
+  .submit-btn:disabled{ opacity:0.5; cursor:not-allowed; }
+  .submit-btn.needs-attention{ animation: pulse-glow 1.6s ease-in-out infinite; }
+  @keyframes pulse-glow{
+    0%, 100% { box-shadow:0 0 0 0 rgba(195,154,110,0.55); }
+    50% { box-shadow:0 0 0 8px rgba(195,154,110,0); }
   }
-
-  .rsvp-btns {
-    display: flex;
-    gap: 6px;
+  .unsaved-reminder{
+    font-size:12.5px; font-weight:600; color:var(--gold-deep);
+    background:var(--paper-edge); border:1px solid var(--gold-light);
+    border-radius:20px; padding:6px 14px; margin-bottom:4px;
+    display:none; text-align:center;
   }
+  .unsaved-reminder.show{ display:block; }
+  .status-msg{ font-size:13.5px; color:var(--ok-text); font-style:italic; min-height:18px; }
+  .status-msg.error{ color:var(--no-text); }
 
-  .rsvp-btn {
-    border: 1px solid #ccc;
-    background: #fdfdfd;
-    padding: 6px 12px;
-    font-size: 12px;
-    border-radius: 3px;
-    cursor: pointer;
+  /* gift registry */
+  .gift-section{ margin-top:32px; }
+  .gift-heading{ font-family:'Parisienne', cursive; font-weight:400; font-size:clamp(26px,7vw,32px); }
+  .gift-msg{ font-size:14.5px; color:var(--ink-soft); line-height:1.6; max-width:340px; margin:10px auto 20px; }
+
+  .acct-box{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    background:var(--paper-edge); border:1px solid var(--line); border-radius:8px;
+    padding:12px 16px; max-width:280px; margin:0 auto 16px;
   }
-
-  .rsvp-btn.yes.selected {
-    background: #294532;
-    color: #fff;
-    border-color: #294532;
+  .acct-label{ font-size:10.5px; text-transform:uppercase; letter-spacing:0.1em; color:var(--gold-deep); display:block; margin-bottom:2px; }
+  .acct-number{ font-size:18px; font-weight:700; letter-spacing:0.04em; }
+  .copy-btn{
+    font-family:inherit; font-size:11px; font-weight:700; letter-spacing:0.04em;
+    background:var(--emerald-2); color:var(--gold-light); border:none;
+    border-radius:16px; padding:8px 14px; cursor:pointer; flex-shrink:0; transition:background .15s ease;
   }
+  .copy-btn:hover{ background:var(--emerald-3); }
+  .copy-feedback{ font-size:12.5px; color:var(--ok-text); font-weight:600; min-height:16px; margin-bottom:6px; }
 
-  .rsvp-btn.no.selected {
-    background: #8a3028;
-    color: #fff;
-    border-color: #8a3028;
-  }
+  .loading, .error-box{ color:var(--ink-soft); font-style:italic; padding:48px 20px; text-align:center; }
 
-  .btn-submit {
-    background: var(--gold);
-    color: #fff;
-    border: none;
-    padding: 12px 28px;
-    font-size: 14px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    border-radius: 3px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 10px;
-  }
-
-  .btn-submit:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
-  .status-msg {
-    margin-top: 12px;
-    font-size: 14px;
-    color: var(--emerald-3);
-  }
-  .status-msg.error { color: #8a3028; }
-
-  /* SECTIONS LIEU & REGISTRE */
-  .section-title {
-    font-size: 20px;
-    color: var(--emerald-2);
-    margin-top: 25px;
-    margin-bottom: 10px;
-  }
-
-  .map-iframe {
-    width: 100%;
-    height: 200px;
-    border: 1px solid var(--gold);
-    border-radius: 4px;
-    margin-top: 10px;
-  }
-
-  .wish-box {
-    background: #f3ecda;
-    border: 1px dashed var(--gold);
-    padding: 15px;
-    border-radius: 4px;
-    margin-top: 15px;
-    font-size: 14px;
+  @media (max-width:400px){
+    .events{ flex-direction:column; gap:16px; }
+    .event{ margin:0 auto; }
+    .event + .event{ border-left:none; border-top:1px solid var(--line); padding-top:14px; }
   }
 </style>
 </head>
@@ -264,195 +240,344 @@
 
   <div class="envelope-screen" id="envelopeScreen">
     <div class="envelope-media-box">
-      <video class="envelope-video" id="envelopeVideo" autoplay loop muted playsinline>
-        <source src="http://googleusercontent.com/generated_video_content/14136145781005190810" type="video/mp4">
+      <video class="envelope-video" autoplay loop muted playsinline>
+        <source src="Enregistrement 2026-09-19 104323.mp4" type="video/mp4">
       </video>
     </div>
-    <div class="tap-hint" id="tapHintText">Cliquer pour ouvrir</div>
+    <div class="tap-hint">Tap to open your invitation</div>
   </div>
 
-  <div class="card-container">
-    <div class="lang-switcher">
-      <button class="lang-btn active" id="btnFr">FR</button>
-      <button class="lang-btn" id="btnEn">EN</button>
-    </div>
+  <div class="card">
+    <div class="frame-outer"></div>
+    <div class="frame-inner"></div>
 
-    <svg class="rings-icon" viewBox="0 0 100 100" fill="none">
-      <circle cx="38" cy="50" r="22" stroke="#b8935b" stroke-width="3"/>
-      <circle cx="62" cy="50" r="22" stroke="#9c7a48" stroke-width="3"/>
-      <path d="M50 25 L53 32 L60 33 L55 38 L56 45 L50 41 L44 45 L45 38 L40 33 L47 32 Z" fill="#b8935b"/>
+    <svg class="corner tl" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="cornerGold" x1="0" y1="60" x2="60" y2="0" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stop-color="#294532"/>
+          <stop offset="45%" stop-color="#e8cdb3"/>
+          <stop offset="100%" stop-color="#9c6b52"/>
+        </linearGradient>
+      </defs>
+      <path d="M4 40 C4 20 20 4 40 4" stroke="url(#cornerGold)" stroke-width="1.1"/>
+      <path d="M4 30 C4 16 16 4 30 4" stroke="url(#cornerGold)" stroke-width="0.8"/>
+      <circle cx="4" cy="4" r="3" fill="url(#cornerGold)"/>
+    </svg>
+    <svg class="corner tr" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 40 C4 20 20 4 40 4" stroke="url(#cornerGold)" stroke-width="1.1"/>
+      <path d="M4 30 C4 16 16 4 30 4" stroke="url(#cornerGold)" stroke-width="0.8"/>
+      <circle cx="4" cy="4" r="3" fill="url(#cornerGold)"/>
+    </svg>
+    <svg class="corner bl" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 40 C4 20 20 4 40 4" stroke="url(#cornerGold)" stroke-width="1.1"/>
+      <path d="M4 30 C4 16 16 4 30 4" stroke="url(#cornerGold)" stroke-width="0.8"/>
+      <circle cx="4" cy="4" r="3" fill="url(#cornerGold)"/>
+    </svg>
+    <svg class="corner br" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 40 C4 20 20 4 40 4" stroke="url(#cornerGold)" stroke-width="1.1"/>
+      <path d="M4 30 C4 16 16 4 30 4" stroke="url(#cornerGold)" stroke-width="0.8"/>
+      <circle cx="4" cy="4" r="3" fill="url(#cornerGold)"/>
     </svg>
 
-    <h1 class="title">Julien & Vanessa</h1>
-    <div class="subtitle" id="subtitleText">Célébration de Mariage</div>
+    <img class="watermark" src="royal-flourish-rings.png" alt="" />
 
-    <div class="divider"></div>
+    <svg class="floral-header" viewBox="0 0 220 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="30" y1="20" x2="94" y2="20" stroke="#b8935b" stroke-width="1.2"/>
+      <line x1="126" y1="20" x2="190" y2="20" stroke="#b8935b" stroke-width="1.2"/>
+      <rect x="105" y="10" width="10" height="10" transform="rotate(45 110 15)" fill="#294532"/>
+      <circle cx="60" cy="20" r="2.5" fill="#b8935b"/>
+      <circle cx="160" cy="20" r="2.5" fill="#b8935b"/>
+    </svg>
 
-    <div class="date-box" id="dateText">
-      Dimanche 1er Novembre 2026<br>
-      <small style="font-size:14px; color: var(--ink-soft);">Église Maronite Saint-Élias, Beyrouth</small>
-    </div>
-
-    <div class="divider"></div>
-    <div class="section-title" id="rsvpTitle">Confirmation de Présence</div>
-    <div id="rsvpContent">Chargement des invités...</div>
-
-    <div class="divider"></div>
-    <div class="section-title" id="locationTitle">Lieu de Célébration</div>
-    <p style="font-size:14px; color:var(--ink-soft);" id="locationDesc">Église Maronite Saint-Élias, Kantari, Beyrouth</p>
-    <iframe class="map-iframe" src="https://maps.app.goo.gl/oxTBmFbUH9Ye2uDC8" loading="lazy"></iframe>
-
-    <div class="wish-box">
-      <strong id="wishTitle">Registre de Mariage</strong>
-      <p id="wishDesc" style="margin-top:5px; font-size:13px; color:var(--ink-soft);">
-        Votre présence est notre plus beau cadeau. Si vous désirez participer, un compte Wish Money est à disposition.
-      </p>
+    <div class="card-inner" id="cardInner">
+      <div class="loading">Loading your invitation…</div>
     </div>
   </div>
 
 <script>
-  // SUPABASE CONFIGURATION
-  const SUPABASE_URL = "https://dthppsntdwdtvqgwwbhm.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_Vv0Xsv71M5Xf--EUXXYm2A_r2KD_o53";
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+/* =========================================================
+   1) CONFIGURATION — Supabase project keys
+   ========================================================= */
+const SUPABASE_URL = "https://dthppsntdwdtvqgwwbhm.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_Vv0Xsv71M5Xf--EUXXYm2A_r2KD_o53";
 
-  // OUVERTURE DE L'ENVELOPPE AU CLIC
+/* =========================================================
+   2) EVENT CONTENT — one block per language.
+   ========================================================= */
+const EVENT = {
+  monogram: 'JV',
+  ceremony_map_url: 'https://maps.app.goo.gl/oxTBmFbUH9Ye2uDC8',
+  reception_map_url: 'https://maps.app.goo.gl/496NayzXRB9XhyNa8',
+
+  rsvp_deadline_iso: '2026-10-15T23:59:59',
+
+  gift: {
+    account_number: '123456789',
+    whish_url: 'https://www.whish.money/locations'
+  },
+
+  en: {
+    parents_line: 'Hobeika & Fakhry',
+    invite_copy: 'Have the pleasure of inviting you to the wedding of',
+    names: 'Julien<span class="amp">&</span>Vanessa',
+    date_day: 'Sunday',
+    date_big: 'November 1, 2026',
+    ceremony_place: 'Église Maronite Saint-Élias',
+    ceremony_addr: 'Fakhreddine Street, Kantari, Beirut',
+    ceremony_time: '5:30 PM',
+    reception_place: 'Country Lodge Club & Resort',
+    reception_addr: 'Bsalim, North Metn',
+    reception_time: '8:00 PM',
+    deadline: 'Please confirm before October 15, 2026'
+  }
+};
+
+const UI = {
+  en: {
+    ceremony_label: 'Ceremony',
+    reception_label: 'Reception',
+    location_btn: 'Location Map',
+    families_label: 'The Families of',
+    rsvp_heading: 'Will you be there?',
+    countdown_lead: 'Time left to respond',
+    days: 'Days', hours: 'Hours', mins: 'Min', secs: 'Sec',
+    attend_btn: "I'll be there",
+    decline_btn: "I can't make it",
+    submit_btn: 'Send my response',
+    saving: 'Saving…',
+    saved_ok: 'Thank you! Your response has been recorded.',
+    need_all: 'Please answer for each guest before sending.',
+    error_generic: 'Something went wrong, please try again.',
+    unsaved_reminder: "Don't forget to press \"Send my response\" below ↓",
+    leave_warning: 'Your response has not been sent yet. Are you sure you want to leave?',
+    loading: 'Loading your invitation…',
+    incomplete_link: "This invitation link is incomplete.<br>Please use the link that was sent to you.",
+    not_found: 'Invitation not found.<br>Please check your link.',
+    gift_heading: 'Gift Registry',
+    gift_msg: 'Sharing our joy with you is what matters most. For those who wish, a gift may be sent via Whish Money.',
+    account_label: 'Account Number',
+    copy_btn: 'Copy',
+    copied_msg: 'Copied to clipboard ✓',
+    whish_btn: 'Whish Locations'
+  }
+};
+/* ========================================================= */
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const cardInner = document.getElementById('cardInner');
+
+function openEnvelope(){
   const screen = document.getElementById('envelopeScreen');
-  screen.addEventListener('click', () => {
-    screen.classList.add('hidden');
-  });
+  if(!screen || screen.classList.contains('hide')) return;
+  screen.classList.add('hide');
+}
+document.getElementById('envelopeScreen').addEventListener('click', openEnvelope);
 
-  // MULTILINGUE
-  let currentLang = 'fr';
-  const dict = {
-    fr: {
-      tapHint: "Cliquer pour ouvrir",
-      subtitle: "Célébration de Mariage",
-      date: "Dimanche 1er Novembre 2026",
-      rsvpTitle: "Confirmation de Présence",
-      yes: "Présent(e)",
-      no: "Absent(e)",
-      submit: "Enregistrer mes choix",
-      saved: "Merci ! Votre réponse a été enregistrée.",
-      locationTitle: "Lieu de Célébration",
-      wishTitle: "Registre de Mariage",
-      wishDesc: "Votre présence est notre plus beau cadeau. Si vous désirez participer, un compte Wish Money est à disposition."
-    },
-    en: {
-      tapHint: "Click to open",
-      subtitle: "Wedding Celebration",
-      date: "Sunday, November 1, 2026",
-      rsvpTitle: "RSVP & Confirmation",
-      yes: "Attending",
-      no: "Declining",
-      submit: "Save Responses",
-      saved: "Thank you! Your response has been saved.",
-      locationTitle: "Venue Location",
-      wishTitle: "Wedding Registry",
-      wishDesc: "Your presence is our greatest gift. If you wish to contribute, a Wish Money account is available."
+const ICON_PIN = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22s7-7.5 7-13a7 7 0 10-14 0c0 5.5 7 13 7 13z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="9" r="2.4" stroke="currentColor" stroke-width="1.6"/></svg>';
+const ICON_CHURCH = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v4M10 4h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 6l9 6v10H3V12l9-6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 22v-6h4v6" stroke="currentColor" stroke-width="1.6"/></svg>';
+
+function getSlug(){
+  const params = new URLSearchParams(window.location.search);
+  return params.get('invite');
+}
+
+const currentLang = 'en';
+let loadState = 'loading';
+let cachedInvite = null;
+let cachedGuests = null;
+let draft = {};
+
+function paint(){
+  const t = UI[currentLang];
+  if(loadState === 'loading'){ cardInner.innerHTML = `<div class="loading">${t.loading}</div>`; return; }
+  if(loadState === 'empty-slug'){ cardInner.innerHTML = `<div class="error-box">${t.incomplete_link}</div>`; return; }
+  if(loadState === 'not-found'){ cardInner.innerHTML = `<div class="error-box">${t.not_found}</div>`; return; }
+  renderShell(cachedInvite, cachedGuests);
+}
+
+function renderShell(invite, guests){
+  const t = UI[currentLang];
+  const e = EVENT[currentLang];
+
+  cardInner.innerHTML = `
+    ${e.parents_line ? `
+      <div class="eyebrow">${t.families_label}</div>
+      <div class="parents-line">${e.parents_line}</div>
+    ` : `<div class="monogram">${EVENT.monogram}</div>`}
+
+    <div class="invite-copy">${e.invite_copy}</div>
+
+    <div class="names">${e.names}</div>
+    <p class="presented-by">${invite.note || ''}</p>
+
+    <div class="rule"></div>
+
+    <div class="date-block">
+      <div class="day">${e.date_day}</div>
+      <div class="big">${e.date_big}</div>
+    </div>
+
+    <div class="events">
+      <div class="event">
+        <div class="label">${t.ceremony_label}</div>
+        <div class="place">${e.ceremony_place}</div>
+        <div class="addr">${e.ceremony_addr}</div>
+        <div class="sub">${e.ceremony_time}</div>
+        <a class="map-btn" href="${EVENT.ceremony_map_url}" target="_blank" rel="noopener">${ICON_CHURCH}${t.location_btn}</a>
+      </div>
+      <div class="event">
+        <div class="label">${t.reception_label}</div>
+        <div class="place">${e.reception_place}</div>
+        <div class="addr">${e.reception_addr}</div>
+        <div class="sub">${e.reception_time}</div>
+        <a class="map-btn" href="${EVENT.reception_map_url}" target="_blank" rel="noopener">${ICON_PIN}${t.location_btn}</a>
+      </div>
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="rsvp">
+      <h2>${t.rsvp_heading}</h2>
+      <div class="deadline">${e.deadline}</div>
+      <div id="guestRows"></div>
+      <div class="submit-row">
+        <div class="unsaved-reminder" id="unsavedReminder"></div>
+        <button class="submit-btn" id="submitBtn">${t.submit_btn}</button>
+        <div class="status-msg" id="statusMsg"></div>
+      </div>
+    </div>
+
+    <div class="rule"></div>
+
+    <div class="gift-section">
+      <div class="gift-heading">${t.gift_heading}</div>
+      <p class="gift-msg">${t.gift_msg}</p>
+      <div class="copy-feedback" id="copyFeedback"></div>
+      <div class="acct-box">
+        <div>
+          <span class="acct-label">${t.account_label}</span>
+          <span class="acct-number">${EVENT.gift.account_number}</span>
+        </div>
+        <button class="copy-btn" id="copyBtn">${t.copy_btn}</button>
+      </div>
+      <a class="map-btn" href="${EVENT.gift.whish_url}" target="_blank" rel="noopener">${ICON_PIN}${t.whish_btn}</a>
+    </div>
+  `;
+
+  document.getElementById('copyBtn').onclick = async () => {
+    const fb = document.getElementById('copyFeedback');
+    try{
+      await navigator.clipboard.writeText(EVENT.gift.account_number);
+    }catch(err){
+      const tmp = document.createElement('input');
+      tmp.value = EVENT.gift.account_number;
+      document.body.appendChild(tmp);
+      tmp.select();
+      document.execCommand('copy');
+      document.body.removeChild(tmp);
     }
+    fb.textContent = t.copied_msg;
+    setTimeout(() => { fb.textContent = ''; }, 1800);
   };
 
-  document.getElementById('btnFr').onclick = () => switchLang('fr');
-  document.getElementById('btnEn').onclick = () => switchLang('en');
-
-  function switchLang(lang) {
-    currentLang = lang;
-    document.getElementById('btnFr').classList.toggle('active', lang==='fr');
-    document.getElementById('btnEn').classList.toggle('active', lang==='en');
-    const t = dict[lang];
-    document.getElementById('tapHintText').textContent = t.tapHint;
-    document.getElementById('subtitleText').textContent = t.subtitle;
-    document.getElementById('rsvpTitle').textContent = t.rsvpTitle;
-    document.getElementById('locationTitle').textContent = t.locationTitle;
-    document.getElementById('wishTitle').textContent = t.wishTitle;
-    document.getElementById('wishDesc').textContent = t.wishDesc;
-    if(cachedGuests) renderRSVP();
+  function hasUnsavedChanges(){
+    return guests.some(g => draft[g.id] && draft[g.id] !== g.status);
   }
 
-  // CHARGEMENT INVITES DEPUIS SUPABASE
-  let cachedGuests = [];
-  let draft = {};
-
-  function getSlug() {
-    const p = new URLSearchParams(window.location.search);
-    return p.get('i') || p.get('invite') || '';
+  function updateReminderState(){
+    const reminderEl = document.getElementById('unsavedReminder');
+    const submitBtn = document.getElementById('submitBtn');
+    if(!reminderEl || !submitBtn) return;
+    const unsaved = hasUnsavedChanges();
+    reminderEl.textContent = t.unsaved_reminder;
+    reminderEl.classList.toggle('show', unsaved);
+    submitBtn.classList.toggle('needs-attention', unsaved);
   }
 
-  async function loadInvite() {
-    const slug = getSlug();
-    const rsvpContainer = document.getElementById('rsvpContent');
+  function renderRows(){
+    const rowsEl = document.getElementById('guestRows');
+    rowsEl.innerHTML = '';
+    guests.forEach(g => {
+      const row = document.createElement('div');
+      row.className = 'guest-row';
+      row.innerHTML = `
+        <div class="guest-name">${g.member_name}</div>
+        <div class="choice">
+          <button class="pill attend ${draft[g.id]==='attending'?'active':''}">${t.attend_btn}</button>
+          <button class="pill decline ${draft[g.id]==='declined'?'active':''}">${t.decline_btn}</button>
+        </div>`;
+      const [attendBtn, declineBtn] = row.querySelectorAll('.pill');
+      attendBtn.onclick = () => { draft[g.id] = 'attending'; renderRows(); };
+      declineBtn.onclick = () => { draft[g.id] = 'declined'; renderRows(); };
+      rowsEl.appendChild(row);
+    });
+    updateReminderState();
+  }
+  renderRows();
 
-    if(!slug) {
-      rsvpContainer.innerHTML = `<p style="font-size:14px; color:var(--ink-soft);">Veuillez utiliser le lien d'invitation reçu par message.</p>`;
+  document.getElementById('submitBtn').onclick = async () => {
+    const statusMsg = document.getElementById('statusMsg');
+    const submitBtn = document.getElementById('submitBtn');
+    const allAnswered = guests.every(g => draft[g.id] === 'attending' || draft[g.id] === 'declined');
+    if(!allAnswered){
+      statusMsg.textContent = t.need_all;
+      statusMsg.className = 'status-msg error';
       return;
     }
-
-    try {
-      const { data: guests, error } = await sb.from('guests').select('*').eq('invite_slug', slug);
-      if(error || !guests || guests.length === 0) {
-        rsvpContainer.innerHTML = `<p style="font-size:14px; color:var(--ink-soft);">Invitation introuvable.</p>`;
-        return;
+    submitBtn.disabled = true;
+    statusMsg.textContent = t.saving;
+    statusMsg.className = 'status-msg';
+    try{
+      for(const g of guests){
+        const { error } = await sb.from('guests')
+          .update({ status: draft[g.id], responded_at: new Date().toISOString() })
+          .eq('id', g.id);
+        if(error) throw error;
+        g.status = draft[g.id];
       }
-
-      cachedGuests = guests;
-      guests.forEach(g => draft[g.id] = g.status || 'pending');
-      renderRSVP();
-    } catch(err) {
+      statusMsg.textContent = t.saved_ok;
+      statusMsg.className = 'status-msg';
+      updateReminderState();
+    }catch(err){
       console.error(err);
-      rsvpContainer.innerHTML = `<p style="font-size:14px; color:#8a3028;">Erreur de chargement.</p>`;
+      statusMsg.textContent = t.error_generic;
+      statusMsg.className = 'status-msg error';
     }
-  }
-
-  function renderRSVP() {
-    const t = dict[currentLang];
-    const container = document.getElementById('rsvpContent');
-    
-    let html = `<div class="guest-list">`;
-    cachedGuests.forEach(g => {
-      const st = draft[g.id];
-      html += `
-        <div class="guest-item">
-          <div class="guest-name">${g.member_name}</div>
-          <div class="rsvp-btns">
-            <button class="rsvp-btn yes ${st==='attending'||st==='confirmed'?'selected':''}" onclick="setGuestStatus('${g.id}', 'attending')">${t.yes}</button>
-            <button class="rsvp-btn no ${st==='declined'?'selected':''}" onclick="setGuestStatus('${g.id}', 'declined')">${t.no}</button>
-          </div>
-        </div>
-      `;
-    });
-    html += `</div>`;
-    html += `<button class="btn-submit" id="btnSubmitRSVP" onclick="submitRSVP()">${t.submit}</button>`;
-    html += `<div id="statusMsg"></div>`;
-
-    container.innerHTML = html;
-  }
-
-  window.setGuestStatus = function(id, status) {
-    draft[id] = status;
-    renderRSVP();
+    submitBtn.disabled = false;
   };
+}
 
-  window.submitRSVP = async function() {
-    const btn = document.getElementById('btnSubmitRSVP');
-    const msg = document.getElementById('statusMsg');
-    btn.disabled = true;
+window.addEventListener('beforeunload', (e) => {
+  if(loadState !== 'ready' || !cachedGuests) return;
+  const unsaved = cachedGuests.some(g => draft[g.id] && draft[g.id] !== g.status);
+  if(unsaved){
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
 
-    try {
-      for(let g of cachedGuests) {
-        await sb.from('guests').update({ status: draft[g.id], responded_at: new Date().toISOString() }).eq('id', g.id);
-      }
-      msg.className = 'status-msg';
-      msg.textContent = dict[currentLang].saved;
-    } catch(e) {
-      console.error(e);
-      msg.className = 'status-msg error';
-      msg.textContent = "Erreur lors de la sauvegarde.";
-    }
-    btn.disabled = false;
-  };
+async function init(){
+  const slug = getSlug();
+  if(!slug){ loadState = 'empty-slug'; paint(); return; }
+  try{
+    const { data: invite, error: inviteErr } = await sb.from('invites').select('*').eq('slug', slug).single();
+    if(inviteErr || !invite) throw new Error('invite not found');
+    const { data: guests, error: guestsErr } = await sb.from('guests').select('*').eq('invite_slug', slug);
+    if(guestsErr) throw guestsErr;
 
-  loadInvite();
+    cachedInvite = invite;
+    cachedGuests = guests;
+    guests.forEach(g => { draft[g.id] = g.status; });
+    loadState = 'ready';
+    paint();
+  }catch(e){
+    console.error(e);
+    loadState = 'not-found';
+    paint();
+  }
+}
+
+init();
 </script>
 </body>
 </html>
