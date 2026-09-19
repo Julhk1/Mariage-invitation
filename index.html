@@ -7,10 +7,9 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="Julien & Vanessa — Wedding Invitation">
 <meta property="og:description" content="You are warmly invited to celebrate our wedding on Sunday, November 1, 2026. Kindly confirm your attendance by October 15, 2026.">
-<meta property="og:image" content="https://mariage-invitation-rho.vercel.app/envelope-preview.png">
-<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Parisienne&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Parisienne&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <style>
   :root{
@@ -31,49 +30,6 @@
     color:var(--ink);
     padding:22px 12px 50px;
     display:flex; flex-direction:column; align-items:center;
-  }
-
-  /* =========================================================
-     ENVELOPE INTRO (VIDÉO)
-     ========================================================= */
-  .envelope-screen{
-    position:fixed; inset:0; z-index:50;
-    background:#0f1611;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:20px; padding:24px;
-    transition:opacity 800ms cubic-bezier(.65,0,.35,1), visibility 800ms;
-    cursor:pointer;
-  }
-  .envelope-screen.hide{ opacity:0; visibility:hidden; pointer-events:none; }
-
-  /* Masque le bas de la vidéo avec les secondes */
-  .envelope-media-box {
-    width: min(340px, 85vw);
-    aspect-ratio: 9 / 18.2;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 25px 50px rgba(0,0,0,0.7);
-    position: relative;
-    background: #000;
-  }
-
-  .envelope-video {
-    width: 100%;
-    height: 108%;
-    display: block;
-    object-fit: cover;
-    margin-bottom: -8%;
-  }
-
-  .tap-hint{
-    font-size:10.5px; letter-spacing:0.32em; text-transform:uppercase;
-    color:var(--gold-light); text-align:center;
-    transition:opacity 500ms ease;
-    animation: pulseHint 1.8s infinite;
-  }
-  @keyframes pulseHint {
-    0%, 100% { opacity: 0.5; }
-    50% { opacity: 1; }
   }
 
   .card{
@@ -100,6 +56,7 @@
     width:62%; max-width:260px; opacity:0.20; z-index:1; pointer-events:none;
     object-fit:contain;
   }
+
 
   .card-inner{
     padding:clamp(14px,4vw,20px) clamp(22px,6vw,42px) clamp(34px,7vw,46px);
@@ -229,6 +186,61 @@
 
   .loading, .error-box{ color:var(--ink-soft); font-style:italic; padding:48px 20px; text-align:center; }
 
+  .verse{ font-size:16px; line-height:2; color:var(--gold-deep); max-width:320px; margin:0 auto 24px; }
+
+  /* =========================================================
+     VERSION ARABE (RTL)
+     ========================================================= */
+  body.ar{ font-family:'Cormorant Garamond','Amiri','Noto Naskh Arabic','Traditional Arabic',serif; }
+  body.ar .card-inner{ line-height:1.9; }
+
+  /* en arabe : pas d'espacement entre lettres ni de majuscules (cela casse la liaison des lettres) */
+  body.ar .eyebrow, body.ar .invite-copy, body.ar .date-block .day, body.ar .date-block .big,
+  body.ar .event .label, body.ar .acct-label, body.ar .submit-btn, body.ar .map-btn,
+  body.ar .copy-btn, body.ar .pill{ letter-spacing:0; text-transform:none; }
+
+  /* pas d'italique en arabe */
+  body.ar .presented-by, body.ar .rsvp .deadline, body.ar .event .sub,
+  body.ar .status-msg, body.ar .loading, body.ar .error-box{ font-style:normal; }
+
+  body.ar .verse{ font-size:18px; line-height:2.05; margin-bottom:26px; }
+  body.ar .eyebrow{ font-size:17px; font-weight:700; margin-bottom:4px; }
+  body.ar .invite-copy{ font-size:17.5px; line-height:2; max-width:340px; margin-bottom:20px; color:var(--ink-soft); }
+  body.ar .presented-by{ font-size:16.5px; }
+  body.ar .verse, body.ar .invite-copy, body.ar .rsvp .deadline, body.ar .gift-msg,
+  body.ar .event .place, body.ar .event .addr, body.ar .presented-by{ text-wrap:balance; }
+
+  /* les noms (latins) gardent leur sens de lecture et leur police calligraphique */
+  body.ar .parents-line, body.ar .names{ direction:ltr; unicode-bidi:isolate; }
+
+  body.ar .date-block .day{ font-size:17.5px; font-weight:700; letter-spacing:0; }
+  body.ar .date-block .big{ font-size:clamp(22px,6vw,28px); letter-spacing:0; font-weight:700; }
+
+  body.ar .event .label{ font-size:16px; font-weight:700; margin-bottom:4px; }
+  body.ar .event .place{ font-size:18.5px; font-weight:700; line-height:1.5; }
+  body.ar .event .addr{ font-size:15px; line-height:1.6; }
+  body.ar .event .sub{ font-size:16.5px; line-height:1.6; margin-top:4px; }
+  body.ar .event + .event{ border-left:none; border-right:1px solid var(--line); }
+  body.ar .map-btn{ font-size:14px; padding:6px 16px; }
+
+  body.ar .rsvp h2, body.ar .gift-heading{ font-family:'Aref Ruqaa','Amiri',serif; font-weight:400; font-size:clamp(30px,8vw,36px); line-height:1.6; }
+  body.ar .rsvp .deadline{ font-size:16px; }
+  body.ar .guest-row{ text-align:right; }
+  body.ar .guest-name{ font-size:18px; }
+  body.ar .pill{ font-size:16.5px; font-weight:700; }
+  body.ar .submit-btn{ font-size:17px; font-weight:700; }
+  body.ar .unsaved-reminder{ font-size:14.5px; }
+  body.ar .status-msg{ font-size:15px; }
+
+  body.ar .gift-msg{ font-size:16.5px; line-height:1.9; }
+  body.ar .acct-label{ font-size:14px; font-weight:700; }
+  body.ar .copy-btn{ font-size:14px; }
+  body.ar .copy-feedback{ font-size:14px; }
+
+  @media (max-width:400px){
+    body.ar .event + .event{ border-right:none; border-top:1px solid var(--line); }
+  }
+
   @media (max-width:400px){
     .events{ flex-direction:column; gap:16px; }
     .event{ margin:0 auto; }
@@ -237,15 +249,6 @@
 </style>
 </head>
 <body>
-
-  <div class="envelope-screen" id="envelopeScreen">
-    <div class="envelope-media-box">
-      <video class="envelope-video" autoplay loop muted playsinline>
-        <source src="Enregistrement 2026-09-19 104323.mp4" type="video/mp4">
-      </video>
-    </div>
-    <div class="tap-hint">Tap to open your invitation</div>
-  </div>
 
   <div class="card">
     <div class="frame-outer"></div>
@@ -312,14 +315,14 @@ const EVENT = {
   rsvp_deadline_iso: '2026-10-15T23:59:59',
 
   gift: {
-    account_number: '123456789',
+    account_number: '20660456-03',
     whish_url: 'https://www.whish.money/locations'
   },
 
   en: {
-    parents_line: 'Hobeika & Fakhry',
+    parents_line: 'Hobeika &amp; Fakhry',
     invite_copy: 'Have the pleasure of inviting you to the wedding of',
-    names: 'Julien<span class="amp">&</span>Vanessa',
+    names: 'Julien<span class="amp">&amp;</span>Vanessa',
     date_day: 'Sunday',
     date_big: 'November 1, 2026',
     ceremony_place: 'Église Maronite Saint-Élias',
@@ -329,6 +332,22 @@ const EVENT = {
     reception_addr: 'Bsalim, North Metn',
     reception_time: '8:00 PM',
     deadline: 'Please confirm before October 15, 2026'
+  },
+
+  ar: {
+    verse: 'في عرس قانا كنت ضيفاً،<br>فكن في عرسنا صاحب الدعوة.',
+    parents_line: 'Hobeika &amp; Fakhry',
+    invite_copy: 'تتشرفان بدعوتكم لحضور إكليل ولديهما',
+    names: 'Julien<span class="amp">&amp;</span>Vanessa',
+    date_day: 'وذلك نهار الأحد الواقع فيه',
+    date_big: '١ تشرين الثاني ٢٠٢٦',
+    ceremony_place: 'كنيسة مار الياس المارونية',
+    ceremony_addr: 'شارع فخر الدين، القنطاري، بيروت',
+    ceremony_time: 'الساعة الخامسة والنصف مساءً',
+    reception_place: 'كانتري لودج كلوب آند ريزورت',
+    reception_addr: 'بسالم، المتن الشمالي',
+    reception_time: 'الساعة الثامنة مساءً',
+    deadline: 'يرجى تأكيد الحضور أو الاعتذار قبل ١٥ تشرين الأول ٢٠٢٦'
   }
 };
 
@@ -359,19 +378,39 @@ const UI = {
     copy_btn: 'Copy',
     copied_msg: 'Copied to clipboard ✓',
     whish_btn: 'Whish Locations'
+  },
+  ar: {
+    ceremony_label: 'الإكليل',
+    reception_label: 'حفل العشاء',
+    location_btn: 'الموقع على الخريطة',
+    families_label: 'عائلتا',
+    rsvp_heading: 'هل ستشاركوننا الفرحة؟',
+    countdown_lead: 'الوقت المتبقي للرد',
+    days: 'أيام', hours: 'ساعات', mins: 'دقائق', secs: 'ثوانٍ',
+    attend_btn: 'سأحضر',
+    decline_btn: 'أعتذر عن الحضور',
+    submit_btn: 'إرسال ردّي',
+    saving: 'جارٍ الحفظ…',
+    saved_ok: 'شكراً لكم! تم تسجيل ردّكم.',
+    need_all: 'يرجى الإجابة عن كل مدعو قبل الإرسال.',
+    error_generic: 'حدث خطأ ما، يرجى المحاولة مرة أخرى.',
+    unsaved_reminder: 'لا تنسوا الضغط على «إرسال ردّي» في الأسفل ↓',
+    leave_warning: 'لم يتم إرسال ردّكم بعد. هل أنتم متأكدون من المغادرة؟',
+    loading: 'جارٍ تحميل دعوتكم…',
+    incomplete_link: 'رابط الدعوة هذا غير مكتمل.<br>يرجى استخدام الرابط الذي أُرسل إليكم.',
+    not_found: 'الدعوة غير موجودة.<br>يرجى التحقق من الرابط.',
+    gift_heading: 'لائحة الهدايا',
+    gift_msg: 'مشاركتكم لنا فرحتنا هي الأهم. ولمن يرغب في تقديم هدية، يمكن إرسالها عبر Whish Money بكل سهولة.',
+    account_label: 'رقم الحساب',
+    copy_btn: 'نسخ',
+    copied_msg: 'تم النسخ ✓',
+    whish_btn: 'فروع Whish'
   }
 };
 /* ========================================================= */
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const cardInner = document.getElementById('cardInner');
-
-function openEnvelope(){
-  const screen = document.getElementById('envelopeScreen');
-  if(!screen || screen.classList.contains('hide')) return;
-  screen.classList.add('hide');
-}
-document.getElementById('envelopeScreen').addEventListener('click', openEnvelope);
 
 const ICON_PIN = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22s7-7.5 7-13a7 7 0 10-14 0c0 5.5 7 13 7 13z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="9" r="2.4" stroke="currentColor" stroke-width="1.6"/></svg>';
 const ICON_CHURCH = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v4M10 4h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 6l9 6v10H3V12l9-6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 22v-6h4v6" stroke="currentColor" stroke-width="1.6"/></svg>';
@@ -381,7 +420,13 @@ function getSlug(){
   return params.get('invite');
 }
 
-const currentLang = 'en';
+const currentLang = new URLSearchParams(window.location.search).get('lang') === 'ar' ? 'ar' : 'en';
+if(currentLang === 'ar'){
+  document.documentElement.lang = 'ar';
+  document.documentElement.dir = 'rtl';
+  document.body.classList.add('ar');
+  document.title = 'Julien & Vanessa — دعوة زفاف';
+}
 let loadState = 'loading';
 let cachedInvite = null;
 let cachedGuests = null;
@@ -400,6 +445,7 @@ function renderShell(invite, guests){
   const e = EVENT[currentLang];
 
   cardInner.innerHTML = `
+    ${e.verse ? `<div class="verse">${e.verse}</div>` : ''}
     ${e.parents_line ? `
       <div class="eyebrow">${t.families_label}</div>
       <div class="parents-line">${e.parents_line}</div>
@@ -408,7 +454,7 @@ function renderShell(invite, guests){
     <div class="invite-copy">${e.invite_copy}</div>
 
     <div class="names">${e.names}</div>
-    <p class="presented-by">${invite.note || ''}</p>
+    <p class="presented-by" dir="auto">${invite.note || ''}</p>
 
     <div class="rule"></div>
 
@@ -456,7 +502,7 @@ function renderShell(invite, guests){
       <div class="acct-box">
         <div>
           <span class="acct-label">${t.account_label}</span>
-          <span class="acct-number">${EVENT.gift.account_number}</span>
+          <span class="acct-number" dir="ltr">${EVENT.gift.account_number}</span>
         </div>
         <button class="copy-btn" id="copyBtn">${t.copy_btn}</button>
       </div>
@@ -501,7 +547,7 @@ function renderShell(invite, guests){
       const row = document.createElement('div');
       row.className = 'guest-row';
       row.innerHTML = `
-        <div class="guest-name">${g.member_name}</div>
+        <div class="guest-name" dir="auto">${g.member_name}</div>
         <div class="choice">
           <button class="pill attend ${draft[g.id]==='attending'?'active':''}">${t.attend_btn}</button>
           <button class="pill decline ${draft[g.id]==='declined'?'active':''}">${t.decline_btn}</button>
@@ -565,8 +611,19 @@ async function init(){
     const { data: guests, error: guestsErr } = await sb.from('guests').select('*').eq('invite_slug', slug);
     if(guestsErr) throw guestsErr;
 
+    // ordre choisi dans l'admin (colonne "position") ; sans position, l'ordre d'origine est conservé
+    const ordered = (guests || []).map((g, i) => ({ g, i })).sort((a, b) => {
+      const pa = a.g.position, pb = b.g.position;
+      const ha = pa !== null && pa !== undefined;
+      const hb = pb !== null && pb !== undefined;
+      if(ha && hb && pa !== pb) return pa - pb;
+      if(ha && !hb) return -1;
+      if(!ha && hb) return 1;
+      return a.i - b.i;
+    }).map(x => x.g);
+
     cachedInvite = invite;
-    cachedGuests = guests;
+    cachedGuests = ordered;
     guests.forEach(g => { draft[g.id] = g.status; });
     loadState = 'ready';
     paint();
