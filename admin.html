@@ -165,9 +165,7 @@ const ADMIN_PASSCODE = "1234";
 const WEDDING = {
   coupleSignature: 'Julien & Vanessa',
   weddingDateLong: 'Sunday, November 1, 2026',
-  rsvpDeadlineLong: 'October 15, 2026',
-  weddingDateLongAr: 'الأحد ١ تشرين الثاني ٢٠٢٦',
-  rsvpDeadlineLongAr: '١٥ تشرين الأول ٢٠٢٦'
+  rsvpDeadlineLong: 'October 15, 2026'
 };
 /* ========================================================= */
 
@@ -549,58 +547,32 @@ function renderFamilyList(){
     const msgPanelEl = card.querySelector('[data-role="msg-panel"]');
 
     function joinNames(names){
-      const isAr = familyLang[inv.slug] === 'ar';
-      const and = isAr ? ' و ' : ' & ';
-      const comma = isAr ? '، ' : ', ';
       if(names.length === 0) return '';
       if(names.length === 1) return names[0];
-      if(names.length === 2) return names[0] + and + names[1];
-      return names.slice(0, -1).join(comma) + and + names[names.length - 1];
+      if(names.length === 2) return names[0] + ' & ' + names[1];
+      return names.slice(0, -1).join(', ') + ' & ' + names[names.length - 1];
     }
 
     function buildMessage(){
       const checked = Array.from(namePickerEl.querySelectorAll('input[type="checkbox"]:checked'))
         .map(cb => cb.dataset.name);
-      const greetNames = joinNames(checked);
       const lang = familyLang[inv.slug] === 'ar' ? 'ar' : 'en';
       const link = inviteUrl(inv.slug, lang);
 
       if(lang === 'ar'){
-        const greetingAr = greetNames ? `مرحباً ${greetNames}،` : 'مرحباً،';
-        return `${greetingAr}
-
-بكل فرح نشارككم خبر زفافنا القريب.
-يشرّفنا أن تكونوا معنا ونحن نحتفل ببداية فصل جديد في حياتنا.
-
-يسرّنا أن ندعوكم لمشاركتنا فرحتنا يوم *${WEDDING.weddingDateLongAr}*.
-
-يرجى الاطّلاع على دعوتكم وتأكيد حضوركم قبل *${WEDDING.rsvpDeadlineLongAr}* عبر الرابط التالي:
-${link}
-
-حضوركم سيمنح هذا اليوم معنىً خاصاً، وسنكون سعداء بصنع ذكريات لن ننساها أبداً.
-
-بانتظاركم لنحتفل معاً! 🤍
-
-— · ✦ · —
-${WEDDING.coupleSignature}`;
+        return `نتشرّف بدعوتكم لحضور حفل زفاف
+${WEDDING.coupleSignature} 🤍
+للاطلاع على تفاصيل الدعوة وتأكيد الحضور، يرجى الضغط على الرابط:
+${link}`;
       }
 
+      const greetNames = joinNames(checked);
       const greeting = greetNames ? `Hello ${greetNames},` : 'Hello,';
       return `${greeting}
-
-It is with great joy that we share the news of our upcoming wedding.
-We would be truly honored to have you join us as we celebrate the beginning of this new chapter together.
-
-You are warmly invited to celebrate with us on *${WEDDING.weddingDateLong}*.
-
-Kindly view your invitation and confirm your attendance by *${WEDDING.rsvpDeadlineLong}* via the link below:
+We’re delighted to invite you to our wedding on ${WEDDING.weddingDateLong}. 🤍
+Please view your invitation and confirm your attendance by ${WEDDING.rsvpDeadlineLong} via the link below:
 ${link}
-
-Your presence would add a special meaning to this day, and we would be truly delighted to create memories we will cherish forever.
-
-We look forward to celebrating with you! 🤍
-
-— · ✦ · —
+We look forward to celebrating with you!
 ${WEDDING.coupleSignature}`;
     }
 
