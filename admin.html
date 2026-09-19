@@ -559,22 +559,29 @@ function renderFamilyList(){
       const lang = familyLang[inv.slug] === 'ar' ? 'ar' : 'en';
       const link = inviteUrl(inv.slug, lang);
 
-      if(lang === 'ar'){
-        return `نتشرّف بدعوتكم لحضور حفل زفاف
-${WEDDING.coupleSignature} 🤍
-للاطلاع على تفاصيل الدعوة وتأكيد الحضور، يرجى الضغط على الرابط:
-${link}`;
-      }
+  if(lang === 'ar'){
+  return `نتشرّف بدعوتكم لحضور حفل زفاف
 
-      const greetNames = joinNames(checked);
-      const greeting = greetNames ? `Hello ${greetNames},` : 'Hello,';
-      return `${greeting}
+${WEDDING.coupleSignature} 🤍
+
+للاطلاع على تفاصيل الدعوة وتأكيد الحضور، يرجى الضغط على الرابط:
+
+${link}`;
+}
+
+const greetNames = joinNames(checked);
+const greeting = greetNames ? `Hello ${greetNames},` : 'Hello,';
+return `${greeting}
+
 We’re delighted to invite you to our wedding on ${WEDDING.weddingDateLong}. 🤍
+
 Please view your invitation and confirm your attendance by ${WEDDING.rsvpDeadlineLong} via the link below:
+
 ${link}
+
 We look forward to celebrating with you!
+
 ${WEDDING.coupleSignature}`;
-    }
 
     function refreshMessagePreview(){
       msgPreviewEl.value = buildMessage();
