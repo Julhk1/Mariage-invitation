@@ -27,7 +27,6 @@
   h1{ font-family:'Parisienne', cursive; font-weight:400; font-size:34px; margin-bottom:2px; }
   .sub{ color:var(--ink-soft); font-style:italic; font-size:14px; margin-bottom:20px; }
 
-  /* --- lock screen --- */
   .lock-screen{ text-align:center; padding:30px 10px; }
   .lock-screen input{ width:100%; max-width:220px; text-align:center; margin:14px 0; }
   .lock-screen button{ font-family:'Cormorant Garamond', serif; background:var(--ink); color:var(--parchment); border:none; padding:10px 28px; border-radius:30px; cursor:pointer; font-weight:600; letter-spacing:0.05em; }
@@ -54,7 +53,6 @@
   .btn.small{ padding:6px 14px; font-size:12px; }
   .btn:disabled{ opacity:0.5; cursor:not-allowed; }
 
-  /* --- stats --- */
   .stat-row{ display:flex; gap:10px; margin:18px 0 24px; flex-wrap:wrap; }
   .stat{ flex:1; min-width:100px; background:var(--parchment-2); border:1px solid var(--line); border-radius:8px; padding:11px 12px; text-align:center; cursor:pointer; transition:transform .12s ease, border-color .12s ease; }
   .stat:hover{ border-color:var(--gold); }
@@ -63,7 +61,6 @@
   .stat .lbl{ font-size:10px; text-transform:uppercase; letter-spacing:0.09em; color:var(--ink-soft); }
   .stat.ok .num{ color:var(--ok-text); } .stat.no .num{ color:var(--no-text); } .stat.pending .num{ color:var(--pending-text); }
 
-  /* --- add family box --- */
   .add-box{ background:var(--parchment-2); border:1px dashed var(--gold); border-radius:10px; padding:18px 18px 20px; margin-bottom:26px; }
   .add-box h2{ font-family:'Parisienne', cursive; font-weight:400; font-size:24px; margin-bottom:12px; }
   .field{ margin-bottom:12px; }
@@ -77,12 +74,10 @@
   .form-msg.error{ color:var(--no-text); }
   .form-msg.ok{ color:var(--ok-text); }
 
-  /* --- search + filter --- */
   .search-row{ margin-bottom:18px; display:flex; gap:10px; flex-wrap:wrap; }
   .search-row input{ flex:2; min-width:180px; }
   .search-row select{ flex:1; min-width:150px; }
 
-  /* --- family cards --- */
   .fam-card{ border:1px solid var(--line); border-radius:10px; padding:16px 18px 18px; margin-bottom:14px; background:#fffdf7; }
   .fam-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:6px; flex-wrap:wrap; }
   .fam-title{ font-size:20px; font-weight:600; cursor:pointer; }
@@ -104,12 +99,10 @@
   .del-member-btn{ background:none; border:none; color:var(--ink-soft); font-size:16px; padding:2px 6px; }
   .del-member-btn:hover{ color:var(--no-text); }
 
-  /* --- réorganisation des invités (appui long + glisser) --- */
   .member-item-name{ -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; }
   .member-item.dragging{ position:relative; z-index:10; background:#fff; border-radius:8px; padding-left:10px; padding-right:10px; box-shadow:0 8px 22px rgba(0,0,0,0.22); cursor:grabbing; transition:none; }
   .member-item.press-hold{ background:var(--parchment-2); }
 
-  /* --- choix de la version envoyée (English / العربية) --- */
   .lang-row{ display:flex; align-items:center; gap:10px; margin-top:14px; flex-wrap:wrap; }
   .lang-label{ font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-soft); }
   .lang-switch{ display:inline-flex; border:1px solid var(--line); border-radius:20px; overflow:hidden; background:var(--parchment-2); }
@@ -152,22 +145,16 @@
   </div>
 
 <script>
-/* =========================================================
-   CONFIGURATION — mêmes valeurs que dans index.html
-   ========================================================= */
 const SUPABASE_URL = "https://dthppsntdwdtvqgwwbhm.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_Vv0Xsv71M5Xf--EUXXYm2A_r2KD_o53";
 
-// Code partagé entre toi et ta fiancée — changez-le, et ne le partagez à personne d'autre
 const ADMIN_PASSCODE = "1234";
 
-// Contenu du message d'accompagnement (mêmes infos que sur index.html)
 const WEDDING = {
   coupleSignature: 'Julien & Vanessa',
   weddingDateLong: 'Sunday, November 1, 2026',
   rsvpDeadlineLong: 'October 15, 2026'
 };
-/* ========================================================= */
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const panel = document.getElementById('panel');
@@ -177,6 +164,7 @@ document.getElementById('unlockBtn').onclick = () => {
   if(val === ADMIN_PASSCODE){ loadDashboard(); }
   else{ document.getElementById('lockMsg').textContent = 'Code incorrect.'; }
 };
+
 document.getElementById('passInput').addEventListener('keydown', (e) => {
   if(e.key === 'Enter') document.getElementById('unlockBtn').click();
 });
@@ -195,19 +183,22 @@ let invites = [];
 let guests = [];
 let memberRowCount = 0;
 let currentStatusFilter = 'all';
-let familyLang = {};   // slug -> 'en' | 'ar' (anglais par défaut)
+let familyLang = {};
 
 async function fetchAll(){
   const { data: inv, error: e1 } = await sb.from('invites').select('*');
   if(e1) throw e1;
+
   const { data: gs, error: e2 } = await sb.from('guests').select('*');
   if(e2) throw e2;
+
   invites = inv || [];
   guests = gs || [];
 }
 
 async function loadDashboard(){
   panel.innerHTML = '<div class="loading">Chargement…</div>';
+
   try{
     await fetchAll();
     renderDashboard();
@@ -219,8 +210,10 @@ async function loadDashboard(){
 
 function renderDashboard(){
   let total=0, attending=0, declined=0, pending=0;
+
   guests.forEach(g => {
     total++;
+
     if(g.status==='attending') attending++;
     else if(g.status==='declined') declined++;
     else pending++;
@@ -239,19 +232,23 @@ function renderDashboard(){
 
     <div class="add-box">
       <h2>Ajouter une famille</h2>
+
       <div class="field">
         <label>Nom de la famille</label>
         <input id="newFamilyName" placeholder="Ex : Famille Martin">
       </div>
+
       <div class="field">
         <label>Message personnalisé (optionnel)</label>
         <textarea id="newFamilyNote" placeholder="Ex : Chers Sophie et Thomas, votre présence compterait tant pour nous."></textarea>
       </div>
+
       <div class="field">
         <label>Invités de ce foyer</label>
         <div class="member-rows" id="memberRows"></div>
         <button class="btn secondary small" id="addRowBtn" type="button">+ Ajouter un invité</button>
       </div>
+
       <div class="add-box-actions">
         <button class="btn" id="saveFamilyBtn">Enregistrer la famille</button>
         <div class="form-msg" id="formMsg"></div>
@@ -260,6 +257,7 @@ function renderDashboard(){
 
     <div class="search-row">
       <input id="searchInput" placeholder="🔍 Rechercher une famille ou un invité…">
+
       <select id="statusFilter">
         <option value="all">Tous les statuts</option>
         <option value="attending">✓ Présents</option>
@@ -272,12 +270,15 @@ function renderDashboard(){
   `;
 
   memberRowCount = 0;
-  addMemberRow(); addMemberRow();
+  addMemberRow();
+  addMemberRow();
+
   document.getElementById('addRowBtn').onclick = () => addMemberRow();
   document.getElementById('saveFamilyBtn').onclick = handleSaveFamily;
   document.getElementById('searchInput').oninput = renderFamilyList;
 
   document.getElementById('statusFilter').value = currentStatusFilter;
+
   document.getElementById('statusFilter').onchange = (e) => {
     currentStatusFilter = e.target.value;
     syncStatFilterUI();
@@ -292,8 +293,8 @@ function renderDashboard(){
       renderFamilyList();
     };
   });
-  syncStatFilterUI();
 
+  syncStatFilterUI();
   renderFamilyList();
 }
 
@@ -305,13 +306,17 @@ function syncStatFilterUI(){
 
 function addMemberRow(){
   memberRowCount++;
+
   const rows = document.getElementById('memberRows');
   const row = document.createElement('div');
+
   row.className = 'member-row';
+
   row.innerHTML = `
     <input type="text" placeholder="Prénom Nom">
     <button class="remove-row-btn" type="button" title="Retirer">✕</button>
   `;
+
   row.querySelector('.remove-row-btn').onclick = () => row.remove();
   rows.appendChild(row);
 }
@@ -324,14 +329,17 @@ async function handleSaveFamily(){
 
   const familyName = nameInput.value.trim();
   const note = noteInput.value.trim();
+
   const memberNames = Array.from(document.querySelectorAll('#memberRows input'))
-    .map(i => i.value.trim()).filter(Boolean);
+    .map(i => i.value.trim())
+    .filter(Boolean);
 
   if(!familyName){
     formMsg.textContent = 'Merci d\'indiquer un nom de famille.';
     formMsg.className = 'form-msg error';
     return;
   }
+
   if(memberNames.length === 0){
     formMsg.textContent = 'Ajoute au moins un invité.';
     formMsg.className = 'form-msg error';
@@ -340,6 +348,7 @@ async function handleSaveFamily(){
 
   let slug = slugify(familyName);
   const existingSlugs = new Set(invites.map(i => i.slug));
+
   if(existingSlugs.has(slug)){
     let n = 2;
     while(existingSlugs.has(slug + '-' + n)) n++;
@@ -351,17 +360,30 @@ async function handleSaveFamily(){
   formMsg.className = 'form-msg';
 
   try{
-    const { error: e1 } = await sb.from('invites').insert({ slug, family_name: familyName, note });
+    const { error: e1 } = await sb
+      .from('invites')
+      .insert({ slug, family_name: familyName, note });
+
     if(e1) throw e1;
-    const { error: e2 } = await sb.from('guests').insert(memberNames.map(n => ({ invite_slug: slug, member_name: n })));
+
+    const { error: e2 } = await sb
+      .from('guests')
+      .insert(memberNames.map(n => ({
+        invite_slug: slug,
+        member_name: n
+      })));
+
     if(e2) throw e2;
 
     await fetchAll();
     renderDashboard();
+
   }catch(e){
     console.error(e);
+
     formMsg.textContent = "Erreur lors de l'enregistrement. Vérifie que le script de permissions a bien été exécuté dans Supabase.";
     formMsg.className = 'form-msg error';
+
     saveBtn.disabled = false;
   }
 }
@@ -370,32 +392,54 @@ function renderFamilyList(){
   const search = (document.getElementById('searchInput').value || '').toLowerCase();
   const statusFilter = currentStatusFilter;
   const listEl = document.getElementById('familyList');
+
   listEl.innerHTML = '';
 
   const matchesSearch = (inv) => {
     if(!search) return true;
+
     if(inv.family_name.toLowerCase().includes(search)) return true;
-    return guests.some(g => g.invite_slug === inv.slug && g.member_name.toLowerCase().includes(search));
+
+    return guests.some(g =>
+      g.invite_slug === inv.slug &&
+      g.member_name.toLowerCase().includes(search)
+    );
   };
 
   const filtered = invites.filter(inv => {
     if(!matchesSearch(inv)) return false;
+
     if(statusFilter === 'all') return true;
-    // keep the family only if at least one guest matches the status filter
-    return guests.some(g => g.invite_slug === inv.slug && g.status === statusFilter);
+
+    // CORRECTION : null / undefined = pending
+    return guests.some(g =>
+      g.invite_slug === inv.slug &&
+      (g.status || 'pending') === statusFilter
+    );
   });
 
   if(filtered.length === 0){
-    const label = statusFilter === 'attending' ? 'présent' : statusFilter === 'declined' ? 'décliné' : statusFilter === 'pending' ? 'en attente' : '';
-    listEl.innerHTML = `<div class="empty">Aucun invité ${label ? label + ' ' : ''}trouvé.</div>`;
+    const label =
+      statusFilter === 'attending' ? 'présent' :
+      statusFilter === 'declined' ? 'décliné' :
+      statusFilter === 'pending' ? 'en attente' : '';
+
+    listEl.innerHTML =
+      `<div class="empty">Aucun invité ${label ? label + ' ' : ''}trouvé.</div>`;
+
     return;
   }
 
   filtered.forEach(inv => {
     let members = sortedGuestsOf(inv.slug);
+
     if(statusFilter !== 'all'){
-      members = members.filter(g => g.status === statusFilter);
+      // CORRECTION : null / undefined = pending
+      members = members.filter(g =>
+        (g.status || 'pending') === statusFilter
+      );
     }
+
     const card = document.createElement('div');
     card.className = 'fam-card';
 
@@ -405,34 +449,46 @@ function renderFamilyList(){
           <div class="fam-title" data-role="edit-name" title="Cliquer pour modifier">${inv.family_name}</div>
           <div class="fam-note" data-role="edit-note" title="Cliquer pour modifier">${inv.note ? inv.note : '+ Ajouter un message personnalisé'}</div>
         </div>
+
         <div class="fam-actions">
           <button class="btn danger small" data-role="delete-family">Supprimer la famille</button>
         </div>
       </div>
+
       <div class="member-list" data-role="member-list"></div>
+
       <div class="add-member-row">
         <input type="text" placeholder="Ajouter un invité à ce foyer…" data-role="new-member-input">
         <button class="btn secondary small" data-role="add-member">Ajouter</button>
       </div>
+
       <div class="lang-row">
         <span class="lang-label">Version à envoyer</span>
+
         <div class="lang-switch">
           <button type="button" class="lang-btn ${familyLang[inv.slug] === 'ar' ? '' : 'active'}" data-role="lang-btn" data-lang="en">English</button>
           <button type="button" class="lang-btn ${familyLang[inv.slug] === 'ar' ? 'active' : ''}" data-role="lang-btn" data-lang="ar">العربية</button>
         </div>
       </div>
+
       <div class="fam-footer">
         <div class="link-box">
           <input type="text" readonly value="${inviteUrl(inv.slug, familyLang[inv.slug])}" data-role="link-input">
         </div>
+
         <button class="btn small" data-role="copy-link">Copier le lien</button>
         <button class="btn secondary small" data-role="toggle-message">✉️ Message</button>
+
         <span class="copied-tag" data-role="copied-tag" style="display:none;">Copié ✓</span>
       </div>
+
       <div class="msg-panel" data-role="msg-panel">
         <div class="msg-panel-label">Qui saluer dans le message ? (décoche ceux que tu ne veux pas nommer)</div>
+
         <div class="name-picker" data-role="name-picker"></div>
+
         <textarea class="msg-preview" data-role="msg-preview" readonly dir="auto"></textarea>
+
         <div class="msg-panel-actions">
           <button class="btn small" data-role="copy-message">Copier le message</button>
           <span class="copied-tag" data-role="copied-msg-tag" style="display:none;">Copié ✓</span>
@@ -440,96 +496,169 @@ function renderFamilyList(){
       </div>
     `;
 
-    // members
     const memberListEl = card.querySelector('[data-role="member-list"]');
+
     if(members.length === 0){
-      memberListEl.innerHTML = '<div class="empty" style="padding:8px 0;">Aucun invité pour l\'instant.</div>';
+      memberListEl.innerHTML =
+        '<div class="empty" style="padding:8px 0;">Aucun invité pour l\'instant.</div>';
     }
+
     members.forEach(m => {
-      const label = m.status==='attending' ? 'Présent·e' : (m.status==='declined' ? 'Décliné' : 'En attente');
+
+      // CORRECTION : null / undefined = pending
+      const normalizedStatus = m.status || 'pending';
+
+      const label =
+        normalizedStatus === 'attending'
+          ? 'Présent·e'
+          : normalizedStatus === 'declined'
+            ? 'Décliné'
+            : 'En attente';
+
       const item = document.createElement('div');
       item.className = 'member-item';
       item.dataset.id = m.id;
+
       item.innerHTML = `
-        <div class="member-item-name" title="Cliquer pour renommer">${m.member_name}<span class="badge ${m.status}">${label}</span></div>
+        <div class="member-item-name" title="Cliquer pour renommer">
+          ${m.member_name}
+          <span class="badge ${normalizedStatus}">${label}</span>
+        </div>
+
         <div class="member-item-right">
           <button class="del-member-btn" title="Retirer cet invité">✕</button>
         </div>
       `;
-      item.querySelector('.member-item-name').onclick = () => renameMember(m, item);
-      item.querySelector('.del-member-btn').onclick = () => deleteMember(m);
+
+      item.querySelector('.member-item-name').onclick =
+        () => renameMember(m, item);
+
+      item.querySelector('.del-member-btn').onclick =
+        () => deleteMember(m);
+
       memberListEl.appendChild(item);
     });
+
     enableMemberDrag(memberListEl, inv);
 
-    // add member
     card.querySelector('[data-role="add-member"]').onclick = async () => {
       const input = card.querySelector('[data-role="new-member-input"]');
       const name = input.value.trim();
+
       if(!name) return;
+
       try{
-        const { error } = await sb.from('guests').insert({ invite_slug: inv.slug, member_name: name });
+        const { error } = await sb
+          .from('guests')
+          .insert({
+            invite_slug: inv.slug,
+            member_name: name
+          });
+
         if(error) throw error;
+
         await fetchAll();
         renderFamilyList();
-      }catch(e){ console.error(e); alert("Erreur lors de l'ajout de l'invité."); }
+
+      }catch(e){
+        console.error(e);
+        alert("Erreur lors de l'ajout de l'invité.");
+      }
     };
 
-    // edit family name
     card.querySelector('[data-role="edit-name"]').onclick = (ev) => {
       const el = ev.currentTarget;
       const input = document.createElement('input');
+
       input.value = inv.family_name;
       input.style.fontSize = '18px';
+
       el.replaceWith(input);
       input.focus();
+
       const commit = async () => {
         const newVal = input.value.trim() || inv.family_name;
+
         try{
-          const { error } = await sb.from('invites').update({ family_name: newVal }).eq('slug', inv.slug);
+          const { error } = await sb
+            .from('invites')
+            .update({ family_name: newVal })
+            .eq('slug', inv.slug);
+
           if(error) throw error;
+
           await fetchAll();
           renderFamilyList();
-        }catch(e){ console.error(e); renderFamilyList(); }
+
+        }catch(e){
+          console.error(e);
+          renderFamilyList();
+        }
       };
+
       input.addEventListener('blur', commit);
-      input.addEventListener('keydown', (e) => { if(e.key==='Enter') input.blur(); });
+
+      input.addEventListener('keydown', (e) => {
+        if(e.key==='Enter') input.blur();
+      });
     };
 
-    // edit note
     card.querySelector('[data-role="edit-note"]').onclick = (ev) => {
       const el = ev.currentTarget;
       const textarea = document.createElement('textarea');
+
       textarea.value = inv.note || '';
+
       el.replaceWith(textarea);
       textarea.focus();
+
       const commit = async () => {
         const newVal = textarea.value.trim();
+
         try{
-          const { error } = await sb.from('invites').update({ note: newVal }).eq('slug', inv.slug);
+          const { error } = await sb
+            .from('invites')
+            .update({ note: newVal })
+            .eq('slug', inv.slug);
+
           if(error) throw error;
+
           await fetchAll();
           renderFamilyList();
-        }catch(e){ console.error(e); renderFamilyList(); }
+
+        }catch(e){
+          console.error(e);
+          renderFamilyList();
+        }
       };
+
       textarea.addEventListener('blur', commit);
     };
 
-    // delete family
     card.querySelector('[data-role="delete-family"]').onclick = async () => {
       if(!confirm(`Supprimer "${inv.family_name}" et tous ses invités ? Cette action est irréversible.`)) return;
+
       try{
-        const { error } = await sb.from('invites').delete().eq('slug', inv.slug);
+        const { error } = await sb
+          .from('invites')
+          .delete()
+          .eq('slug', inv.slug);
+
         if(error) throw error;
+
         await fetchAll();
         renderFamilyList();
-      }catch(e){ console.error(e); alert('Erreur lors de la suppression.'); }
+
+      }catch(e){
+        console.error(e);
+        alert('Erreur lors de la suppression.');
+      }
     };
 
-    // copy link
     card.querySelector('[data-role="copy-link"]').onclick = async () => {
       const url = inviteUrl(inv.slug, familyLang[inv.slug]);
       const tag = card.querySelector('[data-role="copied-tag"]');
+
       try{
         await navigator.clipboard.writeText(url);
       }catch(e){
@@ -537,11 +666,14 @@ function renderFamilyList(){
         linkInput.select();
         document.execCommand('copy');
       }
+
       tag.style.display = 'inline';
-      setTimeout(() => { tag.style.display = 'none'; }, 1800);
+
+      setTimeout(() => {
+        tag.style.display = 'none';
+      }, 1800);
     };
 
-    // ----- personalized WhatsApp message -----
     const namePickerEl = card.querySelector('[data-role="name-picker"]');
     const msgPreviewEl = card.querySelector('[data-role="msg-preview"]');
     const msgPanelEl = card.querySelector('[data-role="msg-panel"]');
@@ -550,16 +682,21 @@ function renderFamilyList(){
       if(names.length === 0) return '';
       if(names.length === 1) return names[0];
       if(names.length === 2) return names[0] + ' & ' + names[1];
-      return names.slice(0, -1).join(', ') + ' & ' + names[names.length - 1];
+
+      return names.slice(0, -1).join(', ') +
+        ' & ' +
+        names[names.length - 1];
     }
 
     function buildMessage(){
-      const checked = Array.from(namePickerEl.querySelectorAll('input[type="checkbox"]:checked'))
-        .map(cb => cb.dataset.name);
+      const checked = Array.from(
+        namePickerEl.querySelectorAll('input[type="checkbox"]:checked')
+      ).map(cb => cb.dataset.name);
+
       const lang = familyLang[inv.slug] === 'ar' ? 'ar' : 'en';
       const link = inviteUrl(inv.slug, lang);
 
-        if(lang === 'ar'){
+      if(lang === 'ar'){
         return `نتشرّف بدعوتكم لحضور حفل زفاف
 ${WEDDING.coupleSignature} 🤍
 
@@ -569,6 +706,7 @@ ${link}`;
 
       const greetNames = joinNames(checked);
       const greeting = greetNames ? `Hello ${greetNames},` : 'Hello,';
+
       return `${greeting}
 
 We’re delighted to invite you to our wedding on ${WEDDING.weddingDateLong}. 🤍
@@ -580,82 +718,124 @@ We look forward to celebrating with you!
 
 ${WEDDING.coupleSignature}`;
     }
+
     function refreshMessagePreview(){
       msgPreviewEl.value = buildMessage();
     }
 
     namePickerEl.innerHTML = '';
+
     members.forEach(m => {
       const chip = document.createElement('label');
       chip.className = 'name-chip';
-      chip.innerHTML = `<input type="checkbox" checked data-name="${m.member_name}"> ${m.member_name}`;
-      chip.querySelector('input').addEventListener('change', refreshMessagePreview);
+
+      chip.innerHTML =
+        `<input type="checkbox" checked data-name="${m.member_name}"> ${m.member_name}`;
+
+      chip.querySelector('input').addEventListener(
+        'change',
+        refreshMessagePreview
+      );
+
       namePickerEl.appendChild(chip);
     });
+
     refreshMessagePreview();
 
-    // ----- choix de la version envoyée (English / العربية) -----
     card.querySelectorAll('[data-role="lang-btn"]').forEach(btn => {
       btn.onclick = () => {
         familyLang[inv.slug] = btn.dataset.lang;
-        card.querySelectorAll('[data-role="lang-btn"]').forEach(b => b.classList.toggle('active', b === btn));
-        card.querySelector('[data-role="link-input"]').value = inviteUrl(inv.slug, familyLang[inv.slug]);
+
+        card.querySelectorAll('[data-role="lang-btn"]').forEach(b =>
+          b.classList.toggle('active', b === btn)
+        );
+
+        card.querySelector('[data-role="link-input"]').value =
+          inviteUrl(inv.slug, familyLang[inv.slug]);
+
         refreshMessagePreview();
       };
     });
 
     card.querySelector('[data-role="toggle-message"]').onclick = () => {
       msgPanelEl.classList.toggle('open');
-      if(msgPanelEl.classList.contains('open')) refreshMessagePreview();
+
+      if(msgPanelEl.classList.contains('open')){
+        refreshMessagePreview();
+      }
     };
 
     card.querySelector('[data-role="copy-message"]').onclick = async () => {
       const tag = card.querySelector('[data-role="copied-msg-tag"]');
+
       try{
         await navigator.clipboard.writeText(msgPreviewEl.value);
       }catch(e){
         msgPreviewEl.select();
         document.execCommand('copy');
       }
+
       tag.style.display = 'inline';
-      setTimeout(() => { tag.style.display = 'none'; }, 1800);
+
+      setTimeout(() => {
+        tag.style.display = 'none';
+      }, 1800);
     };
 
     listEl.appendChild(card);
   });
 }
 
-/* ---------- Réorganisation des invités d'un foyer (appui long + glisser) ---------- */
 let memberDragActive = false;
-document.addEventListener('touchmove', (e) => { if(memberDragActive) e.preventDefault(); }, { passive:false });
+
+document.addEventListener(
+  'touchmove',
+  (e) => {
+    if(memberDragActive) e.preventDefault();
+  },
+  { passive:false }
+);
 
 function sortedGuestsOf(slug){
   return guests
     .map((g, i) => ({ g, i }))
     .filter(x => x.g.invite_slug === slug)
     .sort((a, b) => {
-      const pa = a.g.position, pb = b.g.position;
+      const pa = a.g.position;
+      const pb = b.g.position;
+
       const ha = pa !== null && pa !== undefined;
       const hb = pb !== null && pb !== undefined;
+
       if(ha && hb && pa !== pb) return pa - pb;
       if(ha && !hb) return -1;
       if(!ha && hb) return 1;
+
       return a.i - b.i;
     })
     .map(x => x.g);
 }
 
 function enableMemberDrag(listEl, inv){
-  const HOLD_MS = 350, MOVE_TOLERANCE = 8;
+  const HOLD_MS = 350;
+  const MOVE_TOLERANCE = 8;
+
   const items = listEl.querySelectorAll('.member-item');
+
   if(items.length < 2) return;
 
   items.forEach(item => {
-    let timer = null, dragging = false, pid = null;
-    let startX = 0, startY = 0, grabOffset = 0;
+    let timer = null;
+    let dragging = false;
+    let pid = null;
+
+    let startX = 0;
+    let startY = 0;
+    let grabOffset = 0;
 
     const clearTimer = () => {
-      clearTimeout(timer); timer = null;
+      clearTimeout(timer);
+      timer = null;
       item.classList.remove('press-hold');
     };
 
@@ -663,96 +843,217 @@ function enableMemberDrag(listEl, inv){
       timer = null;
       dragging = true;
       memberDragActive = true;
+
       item.classList.remove('press-hold');
-      grabOffset = startY - item.getBoundingClientRect().top;
+
+      grabOffset =
+        startY - item.getBoundingClientRect().top;
+
       item.classList.add('dragging');
-      try{ item.setPointerCapture(pid); }catch(_){}
+
+      try{
+        item.setPointerCapture(pid);
+      }catch(_){}
+
       if(navigator.vibrate) navigator.vibrate(15);
     };
 
     item.addEventListener('pointerdown', (e) => {
       if(e.pointerType === 'mouse' && e.button !== 0) return;
       if(e.target.closest('button, input, textarea')) return;
-      pid = e.pointerId; startX = e.clientX; startY = e.clientY;
+
+      pid = e.pointerId;
+      startX = e.clientX;
+      startY = e.clientY;
+
       item.classList.add('press-hold');
+
       timer = setTimeout(startDrag, HOLD_MS);
     });
 
     item.addEventListener('pointermove', (e) => {
       if(e.pointerId !== pid) return;
+
       if(!dragging){
-        if(timer && (Math.abs(e.clientX - startX) > MOVE_TOLERANCE || Math.abs(e.clientY - startY) > MOVE_TOLERANCE)) clearTimer();
+        if(
+          timer &&
+          (
+            Math.abs(e.clientX - startX) > MOVE_TOLERANCE ||
+            Math.abs(e.clientY - startY) > MOVE_TOLERANCE
+          )
+        ){
+          clearTimer();
+        }
+
         return;
       }
+
       e.preventDefault();
+
       const y = e.clientY;
+
       item.style.transform = '';
 
       let prev = item.previousElementSibling;
-      while(prev && y < prev.getBoundingClientRect().top + prev.offsetHeight / 2){
+
+      while(
+        prev &&
+        y < prev.getBoundingClientRect().top +
+        prev.offsetHeight / 2
+      ){
         listEl.insertBefore(item, prev);
         prev = item.previousElementSibling;
       }
+
       let next = item.nextElementSibling;
-      while(next && y > next.getBoundingClientRect().top + next.offsetHeight / 2){
+
+      while(
+        next &&
+        y > next.getBoundingClientRect().top +
+        next.offsetHeight / 2
+      ){
         listEl.insertBefore(next, item);
         next = item.nextElementSibling;
       }
 
       const top = item.getBoundingClientRect().top;
-      item.style.transform = `translateY(${y - grabOffset - top}px)`;
+
+      item.style.transform =
+        `translateY(${y - grabOffset - top}px)`;
     });
 
     const finish = async (e, cancelled) => {
       if(e.pointerId !== pid) return;
+
       clearTimer();
+
       if(!dragging) return;
+
       dragging = false;
       memberDragActive = false;
+
       item.classList.remove('dragging');
       item.style.transform = '';
-      try{ item.releasePointerCapture(pid); }catch(_){}
 
-      // évite que le relâchement déclenche le "renommer"
-      const swallow = (ev) => { ev.stopPropagation(); ev.preventDefault(); };
-      item.addEventListener('click', swallow, { capture:true, once:true });
-      setTimeout(() => item.removeEventListener('click', swallow, true), 150);
+      try{
+        item.releasePointerCapture(pid);
+      }catch(_){}
 
-      if(cancelled){ renderFamilyList(); return; }
-      const ids = Array.from(listEl.querySelectorAll('.member-item')).map(el => el.dataset.id);
+      const swallow = (ev) => {
+        ev.stopPropagation();
+        ev.preventDefault();
+      };
+
+      item.addEventListener(
+        'click',
+        swallow,
+        { capture:true, once:true }
+      );
+
+      setTimeout(
+        () => item.removeEventListener('click', swallow, true),
+        150
+      );
+
+      if(cancelled){
+        renderFamilyList();
+        return;
+      }
+
+      const ids =
+        Array.from(
+          listEl.querySelectorAll('.member-item')
+        ).map(el => el.dataset.id);
+
       await saveMemberOrder(inv, ids);
     };
-    item.addEventListener('pointerup', (e) => finish(e, false));
-    item.addEventListener('pointercancel', (e) => finish(e, true));
-    item.addEventListener('contextmenu', (e) => { if(timer || dragging) e.preventDefault(); });
+
+    item.addEventListener(
+      'pointerup',
+      (e) => finish(e, false)
+    );
+
+    item.addEventListener(
+      'pointercancel',
+      (e) => finish(e, true)
+    );
+
+    item.addEventListener(
+      'contextmenu',
+      (e) => {
+        if(timer || dragging) e.preventDefault();
+      }
+    );
   });
 }
 
 async function saveMemberOrder(inv, visibleIds){
-  // ordre complet du foyer ; les invités visibles (selon le filtre) reprennent leurs places dans le nouvel ordre
   const full = sortedGuestsOf(inv.slug);
   const visibleSet = new Set(visibleIds);
-  const byId = new Map(full.map(g => [String(g.id), g]));
-  const queue = visibleIds.map(id => byId.get(id)).filter(Boolean);
+
+  const byId = new Map(
+    full.map(g => [String(g.id), g])
+  );
+
+  const queue = visibleIds
+    .map(id => byId.get(id))
+    .filter(Boolean);
+
   let q = 0;
-  const newFull = full.map(g => visibleSet.has(String(g.id)) ? queue[q++] : g);
+
+  const newFull = full.map(g =>
+    visibleSet.has(String(g.id))
+      ? queue[q++]
+      : g
+  );
 
   const changes = [];
-  newFull.forEach((g, idx) => { if(g.position !== idx) changes.push({ g, idx }); });
-  if(changes.length === 0){ renderFamilyList(); return; }
+
+  newFull.forEach((g, idx) => {
+    if(g.position !== idx){
+      changes.push({ g, idx });
+    }
+  });
+
+  if(changes.length === 0){
+    renderFamilyList();
+    return;
+  }
 
   try{
     const results = await Promise.all(
-      changes.map(c => sb.from('guests').update({ position: c.idx }).eq('id', c.g.id))
+      changes.map(c =>
+        sb
+          .from('guests')
+          .update({ position: c.idx })
+          .eq('id', c.g.id)
+      )
     );
+
     const failed = results.find(r => r.error);
+
     if(failed) throw failed.error;
-    changes.forEach(c => { c.g.position = c.idx; });
+
+    changes.forEach(c => {
+      c.g.position = c.idx;
+    });
+
     renderFamilyList();
+
   }catch(e){
     console.error(e);
-    alert("Impossible d'enregistrer le nouvel ordre.\n\nVérifie que la colonne « position » existe dans la table guests (Supabase > SQL Editor) :\nalter table guests add column if not exists position integer;");
-    try{ await fetchAll(); }catch(_){}
+
+    alert(
+      "Impossible d'enregistrer le nouvel ordre.\n\n" +
+      "Vérifie que la colonne « position » existe dans la table guests " +
+      "(Supabase > SQL Editor) :\n" +
+      "alter table guests add column if not exists position integer;"
+    );
+
+    try{
+      await fetchAll();
+    }catch(_){}
+
     renderFamilyList();
   }
 }
@@ -760,30 +1061,57 @@ async function saveMemberOrder(inv, visibleIds){
 async function renameMember(m, itemEl){
   const nameEl = itemEl.querySelector('.member-item-name');
   const input = document.createElement('input');
+
   input.value = m.member_name;
+
   nameEl.replaceWith(input);
   input.focus();
+
   const commit = async () => {
     const newVal = input.value.trim() || m.member_name;
+
     try{
-      const { error } = await sb.from('guests').update({ member_name: newVal }).eq('id', m.id);
+      const { error } = await sb
+        .from('guests')
+        .update({ member_name: newVal })
+        .eq('id', m.id);
+
       if(error) throw error;
+
       await fetchAll();
       renderFamilyList();
-    }catch(e){ console.error(e); renderFamilyList(); }
+
+    }catch(e){
+      console.error(e);
+      renderFamilyList();
+    }
   };
+
   input.addEventListener('blur', commit);
-  input.addEventListener('keydown', (e) => { if(e.key==='Enter') input.blur(); });
+
+  input.addEventListener('keydown', (e) => {
+    if(e.key==='Enter') input.blur();
+  });
 }
 
 async function deleteMember(m){
   if(!confirm(`Retirer ${m.member_name} de la liste ?`)) return;
+
   try{
-    const { error } = await sb.from('guests').delete().eq('id', m.id);
+    const { error } = await sb
+      .from('guests')
+      .delete()
+      .eq('id', m.id);
+
     if(error) throw error;
+
     await fetchAll();
     renderFamilyList();
-  }catch(e){ console.error(e); alert('Erreur lors de la suppression.'); }
+
+  }catch(e){
+    console.error(e);
+    alert('Erreur lors de la suppression.');
+  }
 }
 </script>
 </body>
