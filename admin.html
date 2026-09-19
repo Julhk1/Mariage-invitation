@@ -109,6 +109,13 @@
   .member-item.dragging{ position:relative; z-index:10; background:#fff; border-radius:8px; padding-left:10px; padding-right:10px; box-shadow:0 8px 22px rgba(0,0,0,0.22); cursor:grabbing; transition:none; }
   .member-item.press-hold{ background:var(--parchment-2); }
 
+  /* --- choix de la version envoyée (English / العربية) --- */
+  .lang-row{ display:flex; align-items:center; gap:10px; margin-top:14px; flex-wrap:wrap; }
+  .lang-label{ font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-soft); }
+  .lang-switch{ display:inline-flex; border:1px solid var(--line); border-radius:20px; overflow:hidden; background:var(--parchment-2); }
+  .lang-btn{ background:transparent; border:none; padding:6px 18px; font-size:13px; font-weight:600; color:var(--ink-soft); }
+  .lang-btn.active{ background:var(--ink); color:var(--parchment); }
+
   .add-member-row{ display:flex; gap:8px; margin-top:10px; }
   .add-member-row input{ flex:1; }
 
@@ -158,7 +165,9 @@ const ADMIN_PASSCODE = "1234";
 const WEDDING = {
   coupleSignature: 'Julien & Vanessa',
   weddingDateLong: 'Sunday, November 1, 2026',
-  rsvpDeadlineLong: 'October 15, 2026'
+  rsvpDeadlineLong: 'October 15, 2026',
+  weddingDateLongAr: 'الأحد ١ تشرين الثاني ٢٠٢٦',
+  rsvpDeadlineLongAr: '١٥ تشرين الأول ٢٠٢٦'
 };
 /* ========================================================= */
 
@@ -179,15 +188,16 @@ function slugify(str){
     .toLowerCase().trim().replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-');
 }
 
-function inviteUrl(slug){
+function inviteUrl(slug, lang){
   const base = window.location.href.replace(/admin\.html.*$/, '');
-  return base + '?invite=' + slug;
+  return base + '?invite=' + slug + (lang === 'ar' ? '&lang=ar' : '');
 }
 
 let invites = [];
 let guests = [];
 let memberRowCount = 0;
 let currentStatusFilter = 'all';
+let familyLang = {};   // slug -> 'en' | 'ar' (anglais par défaut)
 
 async function fetchAll(){
   const { data: inv, error: e1 } = await sb.from('invites').select('*');
@@ -406,9 +416,16 @@ function renderFamilyList(){
         <input type="text" placeholder="Ajouter un invité à ce foyer…" data-role="new-member-input">
         <button class="btn secondary small" data-role="add-member">Ajouter</button>
       </div>
+      <div class="lang-row">
+        <span class="lang-label">Version à envoyer</span>
+        <div class="lang-switch">
+          <button type="button" class="lang-btn ${familyLang[inv.slug] === 'ar' ? '' : 'active'}" data-role="lang-btn" data-lang="en">English</button>
+          <button type="button" class="lang-btn ${familyLang[inv.slug] === 'ar' ? 'active' : ''}" data-role="lang-btn" data-lang="ar">العربية</button>
+        </div>
+      </div>
       <div class="fam-footer">
         <div class="link-box">
-          <input type="text" readonly value="${inviteUrl(inv.slug)}" data-role="link-input">
+          <input type="text" readonly value="${inviteUrl(inv.slug, familyLang[inv.slug])}" data-role="link-input">
         </div>
         <button class="btn small" data-role="copy-link">Copier le lien</button>
         <button class="btn secondary small" data-role="toggle-message">✉️ Message</button>
@@ -417,7 +434,7 @@ function renderFamilyList(){
       <div class="msg-panel" data-role="msg-panel">
         <div class="msg-panel-label">Qui saluer dans le message ? (décoche ceux que tu ne veux pas nommer)</div>
         <div class="name-picker" data-role="name-picker"></div>
-        <textarea class="msg-preview" data-role="msg-preview" readonly></textarea>
+        <textarea class="msg-preview" data-role="msg-preview" readonly dir="auto"></textarea>
         <div class="msg-panel-actions">
           <button class="btn small" data-role="copy-message">Copier le message</button>
           <span class="copied-tag" data-role="copied-msg-tag" style="display:none;">Copié ✓</span>
@@ -513,7 +530,7 @@ function renderFamilyList(){
 
     // copy link
     card.querySelector('[data-role="copy-link"]').onclick = async () => {
-      const url = inviteUrl(inv.slug);
+      const url = inviteUrl(inv.slug, familyLang[inv.slug]);
       const tag = card.querySelector('[data-role="copied-tag"]');
       try{
         await navigator.clipboard.writeText(url);
@@ -532,18 +549,43 @@ function renderFamilyList(){
     const msgPanelEl = card.querySelector('[data-role="msg-panel"]');
 
     function joinNames(names){
+      const isAr = familyLang[inv.slug] === 'ar';
+      const and = isAr ? ' و ' : ' & ';
+      const comma = isAr ? '، ' : ', ';
       if(names.length === 0) return '';
       if(names.length === 1) return names[0];
-      if(names.length === 2) return names[0] + ' & ' + names[1];
-      return names.slice(0, -1).join(', ') + ' & ' + names[names.length - 1];
+      if(names.length === 2) return names[0] + and + names[1];
+      return names.slice(0, -1).join(comma) + and + names[names.length - 1];
     }
 
     function buildMessage(){
       const checked = Array.from(namePickerEl.querySelectorAll('input[type="checkbox"]:checked'))
         .map(cb => cb.dataset.name);
       const greetNames = joinNames(checked);
+      const lang = familyLang[inv.slug] === 'ar' ? 'ar' : 'en';
+      const link = inviteUrl(inv.slug, lang);
+
+      if(lang === 'ar'){
+        const greetingAr = greetNames ? `مرحباً ${greetNames}،` : 'مرحباً،';
+        return `${greetingAr}
+
+بكل فرح نشارككم خبر زفافنا القريب.
+يشرّفنا أن تكونوا معنا ونحن نحتفل ببداية فصل جديد في حياتنا.
+
+يسرّنا أن ندعوكم لمشاركتنا فرحتنا يوم *${WEDDING.weddingDateLongAr}*.
+
+يرجى الاطّلاع على دعوتكم وتأكيد حضوركم قبل *${WEDDING.rsvpDeadlineLongAr}* عبر الرابط التالي:
+${link}
+
+حضوركم سيمنح هذا اليوم معنىً خاصاً، وسنكون سعداء بصنع ذكريات لن ننساها أبداً.
+
+بانتظاركم لنحتفل معاً! 🤍
+
+— · ✦ · —
+${WEDDING.coupleSignature}`;
+      }
+
       const greeting = greetNames ? `Hello ${greetNames},` : 'Hello,';
-      const link = inviteUrl(inv.slug);
       return `${greeting}
 
 It is with great joy that we share the news of our upcoming wedding.
@@ -575,6 +617,16 @@ ${WEDDING.coupleSignature}`;
       namePickerEl.appendChild(chip);
     });
     refreshMessagePreview();
+
+    // ----- choix de la version envoyée (English / العربية) -----
+    card.querySelectorAll('[data-role="lang-btn"]').forEach(btn => {
+      btn.onclick = () => {
+        familyLang[inv.slug] = btn.dataset.lang;
+        card.querySelectorAll('[data-role="lang-btn"]').forEach(b => b.classList.toggle('active', b === btn));
+        card.querySelector('[data-role="link-input"]').value = inviteUrl(inv.slug, familyLang[inv.slug]);
+        refreshMessagePreview();
+      };
+    });
 
     card.querySelector('[data-role="toggle-message"]').onclick = () => {
       msgPanelEl.classList.toggle('open');
