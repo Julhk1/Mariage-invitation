@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gestion des invités</title>
+<title>Gestion des invités — Julien & Vanessa</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Parisienne&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
@@ -15,39 +15,41 @@
     --ok-bg:#e4efe1; --ok-text:#3c6b41;
     --no-bg:#f3e3de; --no-text:#a2503e;
     --pending-bg:#efe7cf; --pending-text:#8a7440;
+    --burgundy:#5c1624;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   body{
-    min-height:100vh; background:linear-gradient(180deg,#1f3325,#294532);
+    min-height:100vh; background:radial-gradient(circle at 50% 30%, #360c15 0%, #0d0205 100%);
     font-family:'Cormorant Garamond', serif; color:var(--ink);
     padding:36px 14px 60px; display:flex; justify-content:center;
   }
   .wrap{ width:100%; max-width:780px; }
-  .panel{ background:var(--parchment); border-radius:8px; padding:30px 26px 36px; box-shadow:0 30px 60px rgba(0,0,0,0.5); }
+  .panel{ background:var(--parchment); border-radius:12px; padding:30px 26px 36px; box-shadow:0 30px 60px rgba(0,0,0,0.6); }
 
-  h1{ font-family:'Parisienne', cursive; font-weight:400; font-size:34px; margin-bottom:2px; }
-  .sub{ color:var(--ink-soft); font-style:italic; font-size:14px; margin-bottom:20px; }
+  h1{ font-family:'Parisienne', cursive; font-weight:400; font-size:38px; color:var(--burgundy); margin-bottom:2px; }
+  .sub{ color:var(--ink-soft); font-style:italic; font-size:14.5px; margin-bottom:22px; }
 
-  /* --- lock screen --- */
-  .lock-screen{ text-align:center; padding:30px 10px; }
-  .lock-screen input{ width:100%; max-width:220px; text-align:center; margin:14px 0; }
-  .lock-screen button{ font-family:'Cormorant Garamond', serif; background:var(--ink); color:var(--parchment); border:none; padding:10px 28px; border-radius:30px; cursor:pointer; font-weight:600; letter-spacing:0.05em; }
-  .msg{ font-size:13px; color:var(--no-text); min-height:16px; }
+  /* Lock screen */
+  .lock-screen{ text-align:center; padding:40px 10px; }
+  .lock-screen input{ width:100%; max-width:240px; text-align:center; margin:16px 0; border:1.5px solid var(--gold); border-radius:30px; font-size:16px; padding:10px; }
+  .lock-screen button{ font-family:'Cormorant Garamond', serif; background:var(--burgundy); color:var(--parchment); border:none; padding:10px 32px; border-radius:30px; cursor:pointer; font-weight:600; letter-spacing:0.05em; font-size:15px; }
+  .msg{ font-size:13.5px; color:var(--no-text); min-height:18px; margin-bottom:10px; }
 
   input, textarea, select{
     font-family:'Cormorant Garamond', serif; font-size:15px;
     padding:9px 12px; border:1px solid var(--line); border-radius:6px; background:#fff; color:var(--ink);
     width:100%;
   }
-  textarea{ resize:vertical; min-height:44px; }
+  textarea{ resize:vertical; min-height:48px; }
 
   button{ cursor:pointer; font-family:'Cormorant Garamond', serif; }
 
   .btn{
-    background:var(--ink); color:var(--parchment); border:none; padding:9px 20px;
-    border-radius:24px; font-weight:600; font-size:13px; letter-spacing:0.03em;
+    background:var(--burgundy); color:var(--parchment); border:none; padding:9px 20px;
+    border-radius:24px; font-weight:600; font-size:13.5px; letter-spacing:0.03em;
+    transition:background .2s ease;
   }
-  .btn:hover{ background:var(--green-soft,#3c5a40); }
+  .btn:hover{ background:#751d2f; }
   .btn.secondary{ background:transparent; color:var(--ink-soft); border:1px solid var(--line); }
   .btn.secondary:hover{ border-color:var(--gold); color:var(--ink); }
   .btn.danger{ background:transparent; color:var(--no-text); border:1px solid var(--no-bg); }
@@ -55,7 +57,7 @@
   .btn.small{ padding:6px 14px; font-size:12px; }
   .btn:disabled{ opacity:0.5; cursor:not-allowed; }
 
-  /* --- stats --- */
+  /* Stats cards */
   .stat-row{ display:flex; gap:10px; margin:18px 0 24px; flex-wrap:wrap; }
   .stat{ flex:1; min-width:100px; background:var(--parchment-2); border:1px solid var(--line); border-radius:8px; padding:11px 12px; text-align:center; cursor:pointer; transition:transform .12s ease, border-color .12s ease; }
   .stat:hover{ border-color:var(--gold); }
@@ -64,11 +66,11 @@
   .stat .lbl{ font-size:10px; text-transform:uppercase; letter-spacing:0.09em; color:var(--ink-soft); }
   .stat.ok .num{ color:var(--ok-text); } .stat.no .num{ color:var(--no-text); } .stat.pending .num{ color:var(--pending-text); }
 
-  /* --- add family box --- */
+  /* Add family panel */
   .add-box{ background:var(--parchment-2); border:1px dashed var(--gold); border-radius:10px; padding:18px 18px 20px; margin-bottom:26px; }
-  .add-box h2{ font-family:'Parisienne', cursive; font-weight:400; font-size:24px; margin-bottom:12px; }
+  .add-box h2{ font-family:'Parisienne', cursive; font-weight:400; font-size:26px; color:var(--burgundy); margin-bottom:12px; }
   .field{ margin-bottom:12px; }
-  .field label{ display:block; font-size:12px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); margin-bottom:4px; }
+  .field label{ display:block; font-size:11.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-soft); margin-bottom:4px; }
   .member-rows{ display:flex; flex-direction:column; gap:8px; margin-bottom:10px; }
   .member-row{ display:flex; gap:8px; align-items:center; }
   .member-row input{ flex:1; }
@@ -78,49 +80,41 @@
   .form-msg.error{ color:var(--no-text); }
   .form-msg.ok{ color:var(--ok-text); }
 
-  /* --- search + filter --- */
+  /* Search & Filters */
   .search-row{ margin-bottom:18px; display:flex; gap:10px; flex-wrap:wrap; }
   .search-row input{ flex:2; min-width:180px; }
   .search-row select{ flex:1; min-width:150px; }
 
-  /* --- family cards --- */
-  .fam-card{ border:1px solid var(--line); border-radius:10px; padding:16px 18px 18px; margin-bottom:14px; background:#fffdf7; }
-  .fam-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:6px; flex-wrap:wrap; }
-  .fam-title{ font-size:20px; font-weight:600; cursor:pointer; }
+  /* Family cards & guest ordering */
+  .fam-card{ border:1px solid var(--line); border-radius:10px; padding:16px 18px 18px; margin-bottom:16px; background:#fffdf7; box-shadow:0 4px 12px rgba(0,0,0,0.03); }
+  .fam-head{ display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:8px; flex-wrap:wrap; }
+  .fam-title{ font-size:21px; font-weight:600; cursor:pointer; color:var(--burgundy); }
   .fam-title:hover{ color:var(--gold-dark); }
   .fam-note{ font-size:14px; color:var(--ink-soft); font-style:italic; cursor:pointer; margin-top:2px; }
   .fam-note:hover{ color:var(--ink); }
   .fam-actions{ display:flex; gap:6px; flex-shrink:0; }
 
-  /* Reordering Drag and Drop styles */
+  /* Drag & Drop Reordering */
   .member-list{ margin-top:10px; position:relative; user-select:none; }
   .member-item{
     display:flex; align-items:center; justify-content:space-between; gap:10px;
-    padding:8px 6px; border-bottom:1px solid var(--line);
+    padding:8px 8px; border-bottom:1px solid var(--line);
     background:#fffdf7; transition:background 0.2s, transform 0.15s ease, box-shadow 0.15s ease;
     touch-action:none;
   }
   .member-item:last-child{ border-bottom:none; }
-  
   .member-item.dragging{
-    opacity:0.85;
-    background:var(--parchment-2);
-    box-shadow:0 8px 16px rgba(0,0,0,0.15);
-    border-radius:6px;
-    z-index:10;
+    opacity:0.85; background:var(--parchment-2);
+    box-shadow:0 8px 16px rgba(0,0,0,0.15); border-radius:6px; z-index:10;
   }
-  .member-item.drag-over{
-    border-top:2px solid var(--gold);
-  }
-
   .drag-handle{
-    cursor:grab; padding:4px 6px; color:var(--gold-dark); font-size:16px;
+    cursor:grab; padding:4px 8px; color:var(--gold-dark); font-size:18px;
     display:inline-flex; align-items:center; justify-content:center;
   }
   .drag-handle:active{ cursor:grabbing; }
 
   .member-item-left{ display:flex; align-items:center; gap:8px; flex:1; }
-  .member-item-name{ cursor:pointer; font-size:15px; }
+  .member-item-name{ cursor:pointer; font-size:15.5px; }
   .member-item-name:hover{ color:var(--gold-dark); }
   
   .badge{ display:inline-block; font-size:11px; font-weight:600; padding:2px 9px; border-radius:20px; margin-left:8px; }
@@ -139,6 +133,7 @@
   .link-box input{ font-size:12px; color:var(--ink-soft); background:var(--parchment-2); }
   .copied-tag{ font-size:12px; color:var(--ok-text); font-weight:600; }
 
+  /* Message Panel */
   .msg-panel{ margin-top:14px; padding-top:14px; border-top:1px dashed var(--line); display:none; }
   .msg-panel.open{ display:block; }
   .msg-panel-label{ font-size:12px; text-transform:uppercase; letter-spacing:0.08em; color:var(--ink-soft); margin-bottom:8px; }
@@ -154,6 +149,7 @@
 </style>
 </head>
 <body>
+
   <div class="wrap">
     <div class="panel" id="panel">
       <div class="lock-screen" id="lockScreen">
@@ -168,7 +164,7 @@
 
 <script>
 /* =========================================================
-   CONFIGURATION
+   CONFIGURATION & CREDENTIALS
    ========================================================= */
 const SUPABASE_URL = "https://dthppsntdwdtvqgwwbhm.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_Vv0Xsv71M5Xf--EUXXYm2A_r2KD_o53";
@@ -184,10 +180,11 @@ const WEDDING = {
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 const panel = document.getElementById('panel');
 
+/* Lock screen event handlers */
 document.getElementById('unlockBtn').onclick = () => {
   const val = document.getElementById('passInput').value;
   if(val === ADMIN_PASSCODE){ loadDashboard(); }
-  else{ document.getElementById('lockMsg').textContent = 'Code incorrect.'; }
+  else{ document.getElementById('lockMsg').textContent = 'Code d\'accès incorrect.'; }
 };
 document.getElementById('passInput').addEventListener('keydown', (e) => {
   if(e.key === 'Enter') document.getElementById('unlockBtn').click();
@@ -218,13 +215,13 @@ async function fetchAll(){
 }
 
 async function loadDashboard(){
-  panel.innerHTML = '<div class="loading">Chargement…</div>';
+  panel.innerHTML = '<div class="loading">Chargement du tableau de bord…</div>';
   try{
     await fetchAll();
     renderDashboard();
   }catch(e){
     console.error(e);
-    panel.innerHTML = '<div class="loading">Erreur de chargement. Vérifie la configuration Supabase.</div>';
+    panel.innerHTML = '<div class="loading">Erreur de chargement. Vérifiez vos identifiants Supabase.</div>';
   }
 }
 
@@ -239,7 +236,7 @@ function renderDashboard(){
 
   panel.innerHTML = `
     <h1>Gestion des invités</h1>
-    <p class="sub">${total} invité${total>1?'s':''} au total — Glissez (⋮⋮) pour réordonner les invités</p>
+    <p class="sub">${total} invité${total>1?'s':''} au total — Glissez (⋮⋮) pour réordonner l'ordre d'affichage</p>
 
     <div class="stat-row" id="statRow">
       <div class="stat" data-status="all"><div class="num">${total}</div><div class="lbl">Invités</div></div>
@@ -373,7 +370,7 @@ async function handleSaveFamily(){
     renderDashboard();
   }catch(e){
     console.error(e);
-    formMsg.textContent = "Erreur lors de l'enregistrement.";
+    formMsg.textContent = "Erreur lors de l'enregistrement dans Supabase.";
     formMsg.className = 'form-msg error';
     saveBtn.disabled = false;
   }
@@ -390,6 +387,7 @@ function setupDragAndDrop(container, inviteSlug){
   items.forEach(item => {
     item.setAttribute('draggable', 'true');
 
+    /* Desktop Drag Listeners */
     item.addEventListener('dragstart', (e) => {
       draggedElement = item;
       item.classList.add('dragging');
@@ -416,14 +414,12 @@ function setupDragAndDrop(container, inviteSlug){
       }
     });
 
-    // Touch support for Mobile long press & drag
-    let touchStartY = 0;
+    /* Mobile Touch Drag Listeners */
     let touchTarget = null;
 
     item.addEventListener('touchstart', (e) => {
       if(e.target.classList.contains('drag-handle') || e.target.closest('.drag-handle')){
         touchTarget = item;
-        touchStartY = e.touches[0].clientY;
         item.classList.add('dragging');
       }
     }, { passive: true });
@@ -454,6 +450,7 @@ function setupDragAndDrop(container, inviteSlug){
   });
 }
 
+/* Save reordered guest display_order to Supabase */
 async function saveNewOrder(container, inviteSlug){
   const updatedItems = Array.from(container.querySelectorAll('.member-item'));
   const updates = [];
@@ -471,7 +468,7 @@ async function saveNewOrder(container, inviteSlug){
   try{
     await Promise.all(updates);
   }catch(err){
-    console.error('Failed to persist order:', err);
+    console.error('Échec de la sauvegarde de l\'ordre:', err);
   }
 }
 
@@ -542,7 +539,7 @@ function renderFamilyList(){
       </div>
     `;
 
-    // Render members
+    /* Render guest members */
     const memberListEl = card.querySelector('[data-role="member-list"]');
     if(members.length === 0){
       memberListEl.innerHTML = '<div class="empty" style="padding:8px 0;">Aucun invité pour l\'instant.</div>';
@@ -567,10 +564,10 @@ function renderFamilyList(){
       memberListEl.appendChild(item);
     });
 
-    // Initialize reordering drag and drop for members container
+    /* Attach Drag & Drop reordering listeners */
     setupDragAndDrop(memberListEl, inv.slug);
 
-    // Add member logic
+    /* Add new guest member */
     card.querySelector('[data-role="add-member"]').onclick = async () => {
       const input = card.querySelector('[data-role="new-member-input"]');
       const name = input.value.trim();
@@ -584,7 +581,7 @@ function renderFamilyList(){
       }catch(e){ console.error(e); alert("Erreur lors de l'ajout de l'invité."); }
     };
 
-    // Edit family name
+    /* Inline editing for family name */
     card.querySelector('[data-role="edit-name"]').onclick = (ev) => {
       const el = ev.currentTarget;
       const input = document.createElement('input');
@@ -605,7 +602,7 @@ function renderFamilyList(){
       input.addEventListener('keydown', (e) => { if(e.key==='Enter') input.blur(); });
     };
 
-    // Edit note
+    /* Inline editing for note */
     card.querySelector('[data-role="edit-note"]').onclick = (ev) => {
       const el = ev.currentTarget;
       const textarea = document.createElement('textarea');
@@ -624,9 +621,9 @@ function renderFamilyList(){
       textarea.addEventListener('blur', commit);
     };
 
-    // Delete family
+    /* Delete family */
     card.querySelector('[data-role="delete-family"]').onclick = async () => {
-      if(!confirm(`Supprimer "${inv.family_name}" et tous ses invités ? Esta accion es irreversible.`)) return;
+      if(!confirm(`Supprimer "${inv.family_name}" et tous ses invités ? Cette action est irréversible.`)) return;
       try{
         const { error } = await sb.from('invites').delete().eq('slug', inv.slug);
         if(error) throw error;
@@ -635,7 +632,7 @@ function renderFamilyList(){
       }catch(e){ console.error(e); alert('Erreur lors de la suppression.'); }
     };
 
-    // Copy link
+    /* Copy unique link */
     card.querySelector('[data-role="copy-link"]').onclick = async () => {
       const url = inviteUrl(inv.slug);
       const tag = card.querySelector('[data-role="copied-tag"]');
@@ -650,7 +647,7 @@ function renderFamilyList(){
       setTimeout(() => { tag.style.display = 'none'; }, 1800);
     };
 
-    // WhatsApp message composition
+    /* WhatsApp personalized message generator */
     const namePickerEl = card.querySelector('[data-role="name-picker"]');
     const msgPreviewEl = card.querySelector('[data-role="msg-preview"]');
     const msgPanelEl = card.querySelector('[data-role="msg-panel"]');
