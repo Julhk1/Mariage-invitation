@@ -225,6 +225,7 @@
 
   body.ar .rsvp h2, body.ar .gift-heading{ font-family:'Aref Ruqaa','Amiri',serif; font-weight:400; font-size:clamp(30px,8vw,36px); line-height:1.6; }
   body.ar .rsvp .deadline{ font-size:16px; }
+  body.ar .rsvp h2{ text-wrap:balance; font-size:clamp(25px,6.8vw,31px); }
   body.ar .guest-row{ text-align:right; }
   body.ar .guest-name{ font-size:18px; }
   body.ar .pill{ font-size:16.5px; font-weight:700; }
@@ -239,6 +240,7 @@
 
   @media (max-width:400px){
     body.ar .event + .event{ border-right:none; border-top:1px solid var(--line); }
+    body.ar .pill{ font-size:15px; padding-left:6px; padding-right:6px; }
   }
 
   @media (max-width:400px){
@@ -344,10 +346,10 @@ const EVENT = {
     ceremony_place: 'كنيسة مار الياس المارونية',
     ceremony_addr: 'شارع فخر الدين، القنطاري، بيروت',
     ceremony_time: 'الساعة الخامسة والنصف مساءً',
-    reception_place: 'كانتري لودج كلوب آند ريزورت',
-    reception_addr: 'بسالم، المتن الشمالي',
+    reception_place: 'Country Lodge Club &amp; Resort',
+    reception_addr: 'بصاليم، المتن الشمالي',
     reception_time: 'الساعة الثامنة مساءً',
-    deadline: 'يرجى تأكيد الحضور أو الاعتذار قبل ١٥ تشرين الأول ٢٠٢٦'
+    deadline: 'لتأكيد الحضور أو الإعتذار،<br>يرجى الإتصال قبل ١٥ تشرين الأول ٢٠٢٦'
   }
 };
 
@@ -384,23 +386,23 @@ const UI = {
     reception_label: 'حفل العشاء',
     location_btn: 'الموقع على الخريطة',
     families_label: 'عائلتا',
-    rsvp_heading: 'هل ستشاركوننا الفرحة؟',
+    rsvp_heading: 'نتشرّف بحضوركم ومشاركتكم فرحتنا',
     countdown_lead: 'الوقت المتبقي للرد',
     days: 'أيام', hours: 'ساعات', mins: 'دقائق', secs: 'ثوانٍ',
-    attend_btn: 'سأحضر',
-    decline_btn: 'أعتذر عن الحضور',
-    submit_btn: 'إرسال ردّي',
+    attend_btn: 'تأكيد الحضور',
+    decline_btn: 'لن أتمكن من الحضور',
+    submit_btn: 'إرسال الإجابة',
     saving: 'جارٍ الحفظ…',
     saved_ok: 'شكراً لكم! تم تسجيل ردّكم.',
     need_all: 'يرجى الإجابة عن كل مدعو قبل الإرسال.',
     error_generic: 'حدث خطأ ما، يرجى المحاولة مرة أخرى.',
-    unsaved_reminder: 'لا تنسوا الضغط على «إرسال ردّي» في الأسفل ↓',
+    unsaved_reminder: 'لا تنسوا الضغط على «إرسال الإجابة» في الأسفل ↓',
     leave_warning: 'لم يتم إرسال ردّكم بعد. هل أنتم متأكدون من المغادرة؟',
     loading: 'جارٍ تحميل دعوتكم…',
     incomplete_link: 'رابط الدعوة هذا غير مكتمل.<br>يرجى استخدام الرابط الذي أُرسل إليكم.',
     not_found: 'الدعوة غير موجودة.<br>يرجى التحقق من الرابط.',
-    gift_heading: 'لائحة الهدايا',
-    gift_msg: 'مشاركتكم لنا فرحتنا هي الأهم. ولمن يرغب في تقديم هدية، يمكن إرسالها عبر Whish Money بكل سهولة.',
+    gift_heading: '',
+    gift_msg: 'مشاركتكم لنا فرحتنا هي الأهم<br>لمن يرغب لائحة&nbsp;الهدايا: WHISH&nbsp;MONEY، بجميع&nbsp;فروعه&nbsp;حساب',
     account_label: 'رقم الحساب',
     copy_btn: 'نسخ',
     copied_msg: 'تم النسخ ✓',
@@ -496,7 +498,7 @@ function renderShell(invite, guests){
     <div class="rule"></div>
 
     <div class="gift-section">
-      <div class="gift-heading">${t.gift_heading}</div>
+      ${t.gift_heading ? `<div class="gift-heading">${t.gift_heading}</div>` : ''}
       <p class="gift-msg">${t.gift_msg}</p>
       <div class="copy-feedback" id="copyFeedback"></div>
       <div class="acct-box">
