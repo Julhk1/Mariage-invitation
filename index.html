@@ -2,156 +2,82 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>Julien & Vanessa — Invitation</title>
-<meta property="og:type" content="website">
-<meta property="og:title" content="Julien & Vanessa — Wedding Invitation">
-<meta property="og:description" content="You are warmly invited to celebrate our wedding on Sunday, November 1, 2026. Kindly confirm your attendance by October 15, 2026.">
-<meta name="twitter:card" content="summary">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Julien & Vanessa — Wedding Invitation</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Parisienne&family=Amiri:wght@400;700&family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Amiri:wght@400;700&family=Cormorant+Garamond:wght@400;500;600;700&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-  :root{
-    --emerald-1:#294532;
-    --emerald-2:#1f3325;
-    --emerald-3:#345940;
-    --paper:#faf5e8;
-    --paper-edge:#f3ecda;
-    --ink:#2b271e;
-    --ink-soft:#5b5646;
-    --gold:#b8935b;
-    --gold-deep:#9c7a48;
-    --gold-light:#e6d7ab;
-    --line:#d9cba4;
-    --ok-bg:#e4efe1;
-    --ok-text:#3c6b41;
-    --no-bg:#f3e3de;
-    --no-text:#a2503e;
-    --rose:#b8935b;
-    --rose-deep:#9c7a48;
-    --sage:#6f8a6a;
-  }
+:root{
+  --bg:#f7f3ec;
+  --paper:#fffdf9;
+  --ink:#2c2925;
+  --ink-soft:#686159;
+  --gold:#b28a4b;
+  --gold-deep:#8f6b35;
+  --line:#e5ddd0;
+  --green:#71836d;
+  --danger:#a65a52;
+}
 
-  *{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-  }
+*{
+  box-sizing:border-box;
+}
 
-  html,body{
-    overflow-x:hidden;
-  }
+html{
+  scroll-behavior:smooth;
+}
 
-  body{
-    min-height:100vh;
-    background:linear-gradient(180deg, #1f3325, #294532);
-    font-family:'Cormorant Garamond', serif;
-    color:var(--ink);
-    padding:22px 12px 50px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-  }
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Cormorant Garamond',serif;
+  -webkit-font-smoothing:antialiased;
+}
 
-  .card{
-    width:100%;
-    max-width:480px;
-    background:var(--paper);
-    border-radius:2px;
-    box-shadow:
-      0 40px 80px -24px rgba(0,0,0,0.6),
-      0 16px 40px -18px rgba(0,0,0,0.3),
-      0 0 0 1px rgba(189,154,95,0.35);
-    overflow:hidden;
-    position:relative;
-    z-index:1;
-  }
+body.ar{
+  font-family:'Cormorant Garamond','Amiri','Noto Naskh Arabic','Traditional Arabic',serif;
+}
 
-  .frame-outer{
-    position:absolute;
-    inset:9px;
-    border:1.5px solid var(--gold);
-    pointer-events:none;
-    z-index:3;
-  }
+.page{
+  min-height:100vh;
+  padding:24px 14px 50px;
+}
 
-  .frame-inner{
-    position:absolute;
-    inset:14px;
-    border:1px solid var(--gold-deep);
-    pointer-events:none;
-    z-index:3;
-    opacity:0.55;
-  }
+.card{
+  max-width:760px;
+  margin:0 auto;
+  background:var(--paper);
+  border:1px solid var(--line);
+  box-shadow:0 15px 45px rgba(60,45,25,.08);
+}
 
-  .corner{
-    position:absolute;
-    width:34px;
-    height:34px;
-    z-index:3;
-    pointer-events:none;
-  }
+.card-inner{
+  padding:42px 24px 45px;
+  text-align:center;
+  line-height:1.9;
+}
 
-  .corner.tl{
-    top:6px;
-    left:6px;
-  }
-
-  .corner.tr{
-    top:6px;
-    right:6px;
-    transform:scaleX(-1);
-  }
-
-  .corner.bl{
-    bottom:6px;
-    left:6px;
-    transform:scaleY(-1);
-  }
-
-  .corner.br{
-    bottom:6px;
-    right:6px;
-    transform:scale(-1,-1);
-  }
-
-  .watermark{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    width:62%;
-    max-width:260px;
-    opacity:0.20;
-    z-index:1;
-    pointer-events:none;
-    object-fit:contain;
-  }
-
-  .card-inner{
-    padding:clamp(14px,4vw,20px) clamp(22px,6vw,42px) clamp(34px,7vw,46px);
-    text-align:center;
-    position:relative;
-    z-index:2;
-  }
-
-  .crown{
-    width:40px;
-    height:auto;
-    margin:0 auto 10px;
-    display:block;
-  }
-
-  .monogram{
-    font-family:'Parisienne', cursive;
-    font-size:clamp(34px,9vw,44px);
-    color:var(--gold-deep);
-    margin-bottom:18px;
-  }
+.monogram{
+  width:58px;
+  height:58px;
+  margin:0 auto 24px;
+  border:1px solid var(--gold);
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;
+  color:var(--gold-deep);
+  letter-spacing:.08em;
+}
 
 .eyebrow{
   font-size:13px;
@@ -162,772 +88,599 @@
   font-weight:700;
 }
 
-  .parents-line{
-    font-family:'Parisienne', cursive;
-    font-size:clamp(21px,5.5vw,26px);
-    color:var(--ink);
-    margin-bottom:20px;
-    line-height:1.3;
-  }
-
-  .invite-copy{
-    font-size:11.5px;
-    letter-spacing:0.1em;
-    text-transform:uppercase;
-    color:var(--ink-soft);
-    line-height:1.9;
-    max-width:320px;
-    margin:0 auto 22px;
-  }
-
-  .names{
-    font-family:'Parisienne', cursive;
-    font-size:clamp(42px,12vw,58px);
-    line-height:1.4;
-    margin-bottom:16px;
-    padding-top:0.12em;
-    color:var(--emerald-1);
-  }
-
-  .names .amp{
-    color:var(--gold-deep);
-    font-size:0.65em;
-    margin:0 4px;
-  }
-
-  .presented-by{
-    font-size:14.5px;
-    color:var(--ink-soft);
-    font-style:italic;
-    max-width:340px;
-    margin:0 auto 22px;
-    line-height:1.55;
-  }
-
-  .rule{
-    width:64px;
-    height:1px;
-    background:linear-gradient(90deg, transparent, var(--gold), transparent);
-    margin:20px auto;
-    position:relative;
-  }
-
-  .rule::before{
-    content:"❖";
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    background:var(--paper);
-    color:var(--gold-deep);
-    font-size:12px;
-    padding:0 8px;
-  }
-
-  .floral-header{
-    width:min(220px,70%);
-    height:auto;
-    margin:28px auto 6px;
-    display:block;
-    position:relative;
-    z-index:2;
-  }
-
-  .date-block{
-    margin:6px 0 24px;
-    position:relative;
-  }
-
-  .date-block .day{
-    font-size:12.5px;
-    letter-spacing:0.28em;
-    text-transform:uppercase;
-    color:var(--gold-deep);
-  }
-
-  .date-block .big{
-    font-size:clamp(20px,5.5vw,26px);
-    letter-spacing:0.1em;
-    margin-top:8px;
-    font-weight:600;
-    display:inline-block;
-    padding:0 6px;
-    position:relative;
-  }
-
-  .date-block .big::before,
-  .date-block .big::after{
-    content:"";
-    position:absolute;
-    top:50%;
-    width:22px;
-    height:1px;
-    background:linear-gradient(90deg, transparent, var(--gold));
-  }
-
-  .date-block .big::before{
-    left:-26px;
-  }
-
-  .date-block .big::after{
-    right:-26px;
-    transform:scaleX(-1);
-  }
-
-  .events{
-    display:flex;
-    justify-content:center;
-    align-items:stretch;
-    gap:0;
-    margin-bottom:4px;
-    width:100%;
-  }
-
-  .event{
-    flex:1 1 0;
-    max-width:210px;
-    padding:0 12px;
-    margin:0 auto;
-    display:flex;
-    flex-direction:column;
-  }
-
-  .event + .event{
-    border-left:1px solid var(--line);
-  }
-
-  .event .label{
-    text-transform:uppercase;
-    font-size:10.5px;
-    letter-spacing:0.16em;
-    color:var(--gold-deep);
-    margin-bottom:6px;
-  }
-
-  .event .place{
-    font-size:16px;
-    font-weight:600;
-    line-height:1.3;
-  }
-
-  .event .addr{
-    font-size:12px;
-    color:var(--ink-soft);
-    line-height:1.4;
-    margin-top:2px;
-  }
-
-  .event .sub{
-    font-size:13.5px;
-    color:var(--ink-soft);
-    font-style:italic;
-    margin-top:3px;
-  }
-
-  .map-btn{
-    display:inline-flex;
-    align-items:center;
-    gap:6px;
-    align-self:center;
-    font-family:inherit;
-    font-size:11.5px;
-    font-weight:700;
-    letter-spacing:0.05em;
-    color:var(--gold-deep);
-    background:transparent;
-    border:1px solid var(--gold-deep);
-    border-radius:20px;
-    padding:7px 14px;
-    cursor:pointer;
-    text-decoration:none;
-    transition:
-      background .25s ease,
-      color .25s ease,
-      box-shadow .25s ease,
-      transform .15s ease;
-  }
-
-  .event .map-btn{
-    margin-top:auto;
-    align-self:center;
-    padding-top:7px;
-  }
-
-  .gift-section .map-btn{
-    margin-top:10px;
-  }
-
-  .map-btn:hover{
-    background:var(--gold-deep);
-    color:var(--paper);
-    box-shadow:0 8px 18px -8px rgba(156,107,82,0.6);
-    transform:translateY(-1px);
-  }
-
-  .map-btn svg{
-    width:12px;
-    height:12px;
-    flex-shrink:0;
-  }
-
-  .rsvp{
-    margin-top:32px;
-  }
-
-  .rsvp h2{
-    font-family:'Parisienne', cursive;
-    font-weight:400;
-    font-size:clamp(26px,7vw,32px);
-  }
-
-  .rsvp .deadline{
-    font-style:italic;
-    color:var(--ink-soft);
-    font-size:14px;
-    margin:2px 0 16px;
-  }
-
-  .guest-row{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-    padding:13px 2px;
-    border-bottom:1px solid var(--line);
-    text-align:left;
-    flex-wrap:wrap;
-  }
-
-  .guest-row:last-of-type{
-    border-bottom:none;
-  }
-
-  .guest-name{
-    font-size:17px;
-    font-weight:600;
-    flex:1 1 100%;
-  }
-
-  .choice{
-    display:flex;
-    gap:8px;
-    width:100%;
-  }
-
-  .pill{
-    font-family:inherit;
-    font-weight:600;
-    font-size:13.5px;
-    padding:11px 10px;
-    border-radius:24px;
-    border:1.5px solid var(--line);
-    background:var(--paper);
-    color:var(--ink-soft);
-    cursor:pointer;
-    transition:all .15s ease;
-    flex:1;
-    min-height:44px;
-  }
-
-  .pill:active{
-    transform:scale(0.97);
-  }
-
-  .pill.attend.active{
-    background:var(--ok-bg);
-    border-color:var(--ok-text);
-    color:var(--ok-text);
-    box-shadow:0 4px 12px -6px rgba(92,122,82,0.5);
-  }
-
-  .pill.decline.active{
-    background:var(--no-bg);
-    border-color:var(--no-text);
-    color:var(--no-text);
-    box-shadow:0 4px 12px -6px rgba(156,74,72,0.5);
-  }
-
-  .submit-row{
-    margin-top:26px;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:10px;
-  }
-
-  .submit-btn{
-    font-family:inherit;
-    text-transform:uppercase;
-    letter-spacing:0.18em;
-    font-size:12.5px;
-    font-weight:700;
-    color:var(--gold-light);
-    background:linear-gradient(160deg, var(--emerald-1) 0%, var(--emerald-2) 100%);
-    border:1px solid var(--gold);
-    padding:15px 10px;
-    border-radius:4px;
-    cursor:pointer;
-    box-shadow:
-      0 10px 24px -12px rgba(42,54,96,0.65),
-      inset 0 1px 0 rgba(232,205,179,0.15);
-    transition:
-      background .25s ease,
-      box-shadow .25s ease,
-      transform .15s ease;
-    width:100%;
-    max-width:280px;
-    min-height:48px;
-  }
-
-  .submit-btn:hover{
-    background:linear-gradient(160deg, var(--emerald-3) 0%, var(--emerald-2) 100%);
-    box-shadow:
-      0 14px 30px -12px rgba(42,54,96,0.75),
-      inset 0 1px 0 rgba(232,205,179,0.2);
-  }
-
-  .submit-btn:active{
-    transform:translateY(1px);
-  }
-
-  .submit-btn:disabled{
-    opacity:0.5;
-    cursor:not-allowed;
-  }
-
-  .submit-btn.needs-attention{
-    animation:pulse-glow 1.6s ease-in-out infinite;
-  }
-
-  @keyframes pulse-glow{
-    0%,100%{
-      box-shadow:0 0 0 0 rgba(195,154,110,0.55);
-    }
-
-    50%{
-      box-shadow:0 0 0 8px rgba(195,154,110,0);
-    }
-  }
-
-  .unsaved-reminder{
-    font-size:12.5px;
-    font-weight:600;
-    color:var(--gold-deep);
-    background:var(--paper-edge);
-    border:1px solid var(--gold-light);
-    border-radius:20px;
-    padding:6px 14px;
-    margin-bottom:4px;
-    display:none;
-    text-align:center;
-  }
-
-  .unsaved-reminder.show{
-    display:block;
-  }
-
-  .status-msg{
-    font-size:13.5px;
-    color:var(--ok-text);
-    font-style:italic;
-    min-height:18px;
-  }
-
-  .status-msg.error{
-    color:var(--no-text);
-  }
-
-  /* gift registry */
-  .gift-section{
-    margin-top:32px;
-  }
-
-  .gift-heading{
-    font-family:'Parisienne', cursive;
-    font-weight:400;
-    font-size:clamp(26px,7vw,32px);
-  }
-
-  .gift-msg{
-    font-size:14.5px;
-    color:var(--ink-soft);
-    line-height:1.6;
-    max-width:340px;
-    margin:10px auto 20px;
-  }
-
-  .acct-box{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    background:var(--paper-edge);
-    border:1px solid var(--line);
-    border-radius:8px;
-    padding:12px 16px;
-    max-width:280px;
-    margin:0 auto 16px;
-  }
-
-  .acct-label{
-    font-size:10.5px;
-    text-transform:uppercase;
-    letter-spacing:0.1em;
-    color:var(--gold-deep);
-    display:block;
-    margin-bottom:2px;
-  }
-
-  .acct-number{
-    font-size:18px;
-    font-weight:700;
-    letter-spacing:0.04em;
-  }
-
-  .copy-btn{
-    font-family:inherit;
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:0.04em;
-    background:var(--emerald-2);
-    color:var(--gold-light);
-    border:none;
-    border-radius:16px;
-    padding:8px 14px;
-    cursor:pointer;
-    flex-shrink:0;
-    transition:background .15s ease;
-  }
-
-  .copy-btn:hover{
-    background:var(--emerald-3);
-  }
-
-  .copy-feedback{
-    font-size:12.5px;
-    color:var(--ok-text);
-    font-weight:600;
-    min-height:16px;
-    margin-bottom:6px;
-  }
-
-  .loading,
-  .error-box{
-    color:var(--ink-soft);
-    font-style:italic;
-    padding:48px 20px;
-    text-align:center;
-  }
-
-  /* =========================================================
-     VERSE
-     ========================================================= */
-
-  .verse{
-    font-family:'Cormorant Garamond', serif;
-    font-size:16px;
-    line-height:1.8;
-    color:var(--gold-deep);
-    max-width:320px;
-    margin:0 auto 24px;
-  }
-
-  .verse-ref{
-    display:block;
-    font-family:'Cormorant Garamond', serif;
-    font-size:11px;
-    letter-spacing:0.08em;
-    color:var(--gold-deep);
-    margin-top:3px;
-  }
-
-  /* =========================================================
-     VERSION ARABE (RTL)
-     ========================================================= */
-
-  body.ar{
-    font-family:'Cormorant Garamond','Amiri','Noto Naskh Arabic','Traditional Arabic',serif;
-  }
-
-  body.ar .card-inner{
-    line-height:1.9;
-  }
-
-  body.ar .eyebrow,
-  body.ar .invite-copy,
-  body.ar .date-block .day,
-  body.ar .date-block .big,
-  body.ar .event .label,
-  body.ar .acct-label,
-  body.ar .submit-btn,
-  body.ar .map-btn,
-  body.ar .copy-btn,
-  body.ar .pill{
-    letter-spacing:0;
-    text-transform:none;
-  }
-
-  body.ar .presented-by,
-  body.ar .rsvp .deadline,
-  body.ar .event .sub,
-  body.ar .status-msg,
-  body.ar .loading,
-  body.ar .error-box{
-    font-style:normal;
-  }
-
-  body.ar .verse{
-    font-family:'Cormorant Garamond','Amiri','Noto Naskh Arabic','Traditional Arabic',serif;
-    font-size:18px;
-    line-height:2.05;
-    margin-bottom:26px;
-  }
-
-  body.ar .verse-ref{
-    font-family:'Cormorant Garamond','Amiri','Noto Naskh Arabic','Traditional Arabic',serif;
-    font-size:13px;
-    letter-spacing:0;
-    margin-top:2px;
-  }
-
-  body.ar .eyebrow{
-    font-size:17px;
-    font-weight:700;
-    margin-bottom:4px;
-  }
-
-  body.ar .invite-copy{
-    font-size:17.5px;
-    line-height:2;
-    max-width:340px;
-    margin-bottom:20px;
-    color:var(--ink-soft);
-  }
-
-  body.ar .presented-by{
-    font-size:16.5px;
-  }
-
-  body.ar .verse,
-  body.ar .invite-copy,
-  body.ar .rsvp .deadline,
-  body.ar .gift-msg,
-  body.ar .event .place,
-  body.ar .event .addr,
-  body.ar .presented-by{
-    text-wrap:balance;
-  }
-
-  body.ar .parents-line,
-  body.ar .names{
-    direction:ltr;
-    unicode-bidi:isolate;
-  }
-
-  body.ar .date-block .day{
-    font-size:17.5px;
-    font-weight:700;
-    letter-spacing:0;
-  }
-
-  body.ar .date-block .big{
-    font-size:clamp(22px,6vw,28px);
-    letter-spacing:0;
-    font-weight:700;
-  }
-
-  body.ar .event .label{
-    font-size:16px;
-    font-weight:700;
-    margin-bottom:4px;
-  }
-
-  body.ar .event .place{
-    font-size:18.5px;
-    font-weight:700;
-    line-height:1.5;
-  }
-
-  body.ar .event .addr{
-    font-size:15px;
-    line-height:1.6;
-  }
-
-  body.ar .event .sub{
-    font-size:16.5px;
-    line-height:1.6;
-    margin-top:4px;
-  }
-
-  body.ar .event + .event{
-    border-left:none;
-    border-right:1px solid var(--line);
-  }
-
-  body.ar .map-btn{
-    font-size:14px;
-    padding:6px 16px;
-  }
-
-  body.ar .rsvp h2,
-  body.ar .gift-heading{
-    font-family:'Aref Ruqaa','Amiri',serif;
-    font-weight:400;
-    font-size:clamp(30px,8vw,36px);
-    line-height:1.6;
-  }
-
-  body.ar .rsvp .deadline{
-    font-size:16px;
-  }
+.presented-by{
+  font-size:15px;
+  color:var(--ink-soft);
+  margin-bottom:20px;
+}
+
+.parents-line{
+  font-size:17px;
+  color:var(--ink);
+  margin-bottom:18px;
+}
+
+.invite-copy{
+  font-size:17px;
+  line-height:1.8;
+  color:var(--ink-soft);
+  max-width:330px;
+  margin:0 auto 22px;
+}
+
+.names{
+  font-size:clamp(39px,9vw,66px);
+  line-height:1;
+  font-weight:500;
+  color:var(--ink);
+  margin:5px 0 27px;
+}
+
+.names .amp{
+  color:var(--gold);
+  font-size:.7em;
+  padding:0 8px;
+}
+
+.verse{
+  font-family:'Cormorant Garamond',serif;
+  font-size:16px;
+  line-height:1.8;
+  color:var(--gold-deep);
+  max-width:320px;
+  margin:0 auto 24px;
+}
+
+.verse-ref{
+  display:block;
+  font-family:'Cormorant Garamond',serif;
+  font-size:11px;
+  letter-spacing:0.08em;
+  color:var(--gold-deep);
+  margin-top:3px;
+}
+
+.date-block{
+  margin:8px auto 34px;
+}
+
+.date-block .day{
+  font-size:16px;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--gold-deep);
+  margin-bottom:4px;
+}
+
+.date-block .big{
+  font-size:clamp(25px,6vw,34px);
+  letter-spacing:.04em;
+  font-weight:600;
+}
+
+.events{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  margin:0 auto 38px;
+  max-width:650px;
+}
+
+.event{
+  padding:27px 18px 25px;
+}
+
+.event + .event{
+  border-left:1px solid var(--line);
+}
+
+.event .label{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:.18em;
+  color:var(--gold-deep);
+  margin-bottom:8px;
+}
+
+.event .place{
+  font-size:20px;
+  line-height:1.4;
+  font-weight:600;
+}
+
+.event .addr{
+  font-size:14px;
+  line-height:1.6;
+  color:var(--ink-soft);
+  margin-top:5px;
+}
+
+.event .sub{
+  font-family:'Montserrat',sans-serif;
+  font-size:12px;
+  color:var(--ink-soft);
+  margin-top:8px;
+}
+
+.map-btn{
+  display:inline-block;
+  margin-top:13px;
+  padding:6px 14px;
+  border:1px solid var(--gold);
+  color:var(--gold-deep);
+  text-decoration:none;
+  font-family:'Montserrat',sans-serif;
+  font-size:10px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.rsvp{
+  max-width:600px;
+  margin:0 auto;
+  padding-top:5px;
+}
+
+.rsvp h2{
+  margin:0 0 5px;
+  font-family:'Cormorant Garamond',serif;
+  font-size:34px;
+  font-weight:500;
+  color:var(--ink);
+  line-height:1.3;
+}
+
+.rsvp .deadline{
+  font-size:14px;
+  color:var(--ink-soft);
+  margin-bottom:25px;
+}
+
+.guest-list{
+  text-align:left;
+}
+
+.guest-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:15px 0;
+  border-bottom:1px solid var(--line);
+}
+
+.guest-name{
+  font-family:'Montserrat',sans-serif;
+  font-size:14px;
+  font-weight:600;
+}
+
+.pill-group{
+  display:flex;
+  gap:7px;
+  flex-shrink:0;
+}
+
+.pill{
+  appearance:none;
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--ink-soft);
+  padding:7px 11px;
+  cursor:pointer;
+  font-family:'Montserrat',sans-serif;
+  font-size:11px;
+  border-radius:30px;
+}
+
+.pill.active.attend{
+  background:var(--green);
+  border-color:var(--green);
+  color:white;
+}
+
+.pill.active.decline{
+  background:var(--danger);
+  border-color:var(--danger);
+  color:white;
+}
+
+.submit-btn{
+  width:100%;
+  margin-top:27px;
+  padding:13px 20px;
+  border:0;
+  background:var(--ink);
+  color:white;
+  cursor:pointer;
+  font-family:'Montserrat',sans-serif;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+
+.submit-btn:disabled{
+  opacity:.5;
+  cursor:not-allowed;
+}
+
+.status-msg{
+  margin-top:16px;
+  font-family:'Montserrat',sans-serif;
+  font-size:12px;
+  color:var(--green);
+}
+
+.error-box{
+  margin:20px auto;
+  padding:14px;
+  border:1px solid #e2c5c1;
+  background:#fff8f7;
+  color:var(--danger);
+  font-family:'Montserrat',sans-serif;
+  font-size:12px;
+}
+
+.loading{
+  padding:60px 20px;
+  text-align:center;
+  color:var(--ink-soft);
+  font-family:'Montserrat',sans-serif;
+  font-size:12px;
+}
+
+.unsaved-reminder{
+  display:none;
+  margin-top:13px;
+  color:var(--gold-deep);
+  font-family:'Montserrat',sans-serif;
+  font-size:11px;
+}
+
+.gift-section{
+  max-width:600px;
+  margin:48px auto 0;
+  padding-top:32px;
+  border-top:1px solid var(--line);
+}
+
+.gift-heading{
+  font-family:'Cormorant Garamond',serif;
+  font-size:30px;
+  font-weight:500;
+  margin-bottom:12px;
+}
+
+.gift-msg{
+  font-size:15px;
+  line-height:1.8;
+  color:var(--ink-soft);
+}
+
+.account-box{
+  margin:20px auto;
+  max-width:330px;
+  padding:16px;
+  border:1px solid var(--line);
+  background:#fff;
+}
+
+.acct-label{
+  display:block;
+  font-family:'Montserrat',sans-serif;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  color:var(--ink-soft);
+  margin-bottom:5px;
+}
+
+.account-number{
+  font-family:'Montserrat',sans-serif;
+  font-size:15px;
+  letter-spacing:.05em;
+  font-weight:600;
+}
+
+.copy-btn{
+  margin-top:10px;
+  padding:6px 13px;
+  border:1px solid var(--gold);
+  background:white;
+  color:var(--gold-deep);
+  cursor:pointer;
+  font-family:'Montserrat',sans-serif;
+  font-size:10px;
+  text-transform:uppercase;
+}
+
+.copy-feedback{
+  display:block;
+  margin-top:7px;
+  font-family:'Montserrat',sans-serif;
+  font-size:10px;
+  color:var(--green);
+  min-height:14px;
+}
+
+.whish-btn{
+  display:inline-block;
+  margin-top:8px;
+  padding:8px 15px;
+  border:1px solid var(--gold);
+  color:var(--gold-deep);
+  text-decoration:none;
+  font-family:'Montserrat',sans-serif;
+  font-size:10px;
+  text-transform:uppercase;
+}
+
+.footer{
+  margin-top:40px;
+  color:#aaa196;
+  font-family:'Montserrat',sans-serif;
+  font-size:9px;
+  letter-spacing:.08em;
+}
+
+/* =========================
+   ARABIC
+========================= */
+
+body.ar .card-inner{
+  line-height:1.9;
+}
+
+body.ar .eyebrow,
+body.ar .invite-copy,
+body.ar .date-block .day,
+body.ar .date-block .big,
+body.ar .event .label,
+body.ar .acct-label,
+body.ar .submit-btn,
+body.ar .map-btn,
+body.ar .copy-btn,
+body.ar .pill{
+  letter-spacing:0;
+  text-transform:none;
+}
+
+body.ar .presented-by,
+body.ar .rsvp .deadline,
+body.ar .event .sub,
+body.ar .status-msg,
+body.ar .loading,
+body.ar .error-box{
+  font-style:normal;
+}
+
+body.ar .verse{
+  font-family:'Cormorant Garamond','Amiri','Noto Naskh Arabic','Traditional Arabic',serif;
+  font-size:18px;
+  line-height:2.05;
+  margin-bottom:26px;
+}
+
+body.ar .verse-ref{
+  font-family:'Cormorant Garamond','Amiri','Noto Naskh Arabic','Traditional Arabic',serif;
+  font-size:13px;
+  letter-spacing:0;
+  margin-top:2px;
+}
+
+body.ar .eyebrow{
+  font-size:17px;
+  font-weight:700;
+  margin-bottom:4px;
+}
+
+body.ar .invite-copy{
+  font-size:17.5px;
+  line-height:2;
+  max-width:340px;
+  margin-bottom:20px;
+  color:var(--ink-soft);
+}
+
+body.ar .presented-by{
+  font-size:16.5px;
+}
+
+body.ar .verse,
+body.ar .invite-copy,
+body.ar .rsvp .deadline,
+body.ar .gift-msg,
+body.ar .event .place,
+body.ar .event .addr,
+body.ar .presented-by{
+  text-wrap:balance;
+}
+
+body.ar .parents-line,
+body.ar .names{
+  direction:ltr;
+  unicode-bidi:isolate;
+}
+
+body.ar .date-block .day{
+  font-size:17.5px;
+  font-weight:700;
+  letter-spacing:0;
+}
+
+body.ar .date-block .big{
+  font-size:clamp(22px,6vw,28px);
+  letter-spacing:0;
+  font-weight:700;
+}
+
+body.ar .event .label{
+  font-size:16px;
+  font-weight:700;
+  margin-bottom:4px;
+}
+
+body.ar .event .place{
+  font-size:18.5px;
+  font-weight:700;
+  line-height:1.5;
+}
+
+body.ar .event .addr{
+  font-size:15px;
+  line-height:1.6;
+}
+
+body.ar .event .sub{
+  font-size:16.5px;
+  line-height:1.6;
+  margin-top:4px;
+}
+
+body.ar .event + .event{
+  border-left:none;
+  border-right:1px solid var(--line);
+}
+
+body.ar .map-btn{
+  font-size:14px;
+  padding:6px 16px;
+}
+
+body.ar .rsvp h2,
+body.ar .gift-heading{
+  font-family:'Aref Ruqaa','Amiri',serif;
+  font-weight:400;
+  font-size:clamp(30px,8vw,36px);
+  line-height:1.6;
+}
+
+body.ar .rsvp .deadline{
+  font-size:16px;
+}
 
 body.ar .rsvp h2{
-  text-wrap:nowrap;
+  text-wrap:normal;
   font-size:clamp(25px,6.8vw,31px);
 }
 
-  body.ar .guest-row{
-    text-align:right;
+/* Correction : empêcher le mot de se couper */
+body.ar .rsvp h2 .nowrap{
+  white-space:nowrap;
+}
+
+body.ar .guest-row{
+  text-align:right;
+}
+
+body.ar .guest-name{
+  font-size:18px;
+}
+
+body.ar .pill{
+  font-size:16.5px;
+  font-weight:700;
+}
+
+body.ar .submit-btn{
+  font-size:17px;
+  font-weight:700;
+}
+
+body.ar .unsaved-reminder{
+  font-size:14.5px;
+}
+
+body.ar .status-msg{
+  font-size:15px;
+}
+
+body.ar .gift-msg{
+  font-size:16.5px;
+  line-height:1.9;
+}
+
+body.ar .acct-label{
+  font-size:14px;
+  font-weight:700;
+}
+
+body.ar .copy-btn{
+  font-size:14px;
+}
+
+body.ar .copy-feedback{
+  font-size:14px;
+}
+
+.nowrap{
+  white-space:nowrap;
+}
+
+@media(max-width:600px){
+
+  .page{
+    padding:10px 8px 35px;
   }
 
-  body.ar .guest-name{
-    font-size:18px;
+  .card-inner{
+    padding:34px 17px 38px;
   }
 
-  body.ar .pill{
-    font-size:16.5px;
-    font-weight:700;
+  .events{
+    grid-template-columns:1fr;
   }
 
-  body.ar .submit-btn{
-    font-size:17px;
-    font-weight:700;
+  .event + .event{
+    border-left:none;
+    border-top:1px solid var(--line);
   }
 
-  body.ar .unsaved-reminder{
-    font-size:14.5px;
+  body.ar .event + .event{
+    border-right:none;
+    border-top:1px solid var(--line);
   }
 
-  body.ar .status-msg{
-    font-size:15px;
+  .guest-row{
+    align-items:flex-start;
   }
 
-  body.ar .gift-msg{
-    font-size:16.5px;
-    line-height:1.9;
+  .pill-group{
+    flex-direction:column;
   }
-
-  body.ar .acct-label{
-    font-size:14px;
-    font-weight:700;
-  }
-
-  body.ar .copy-btn{
-    font-size:14px;
-  }
-
-  body.ar .copy-feedback{
-    font-size:14px;
-  }
-
-  @media (max-width:400px){
-    body.ar .event + .event{
-      border-right:none;
-      border-top:1px solid var(--line);
-    }
-
-    body.ar .pill{
-      font-size:15px;
-      padding-left:6px;
-      padding-right:6px;
-    }
-  }
-
-  @media (max-width:400px){
-    .events{
-      flex-direction:column;
-      gap:16px;
-    }
-
-    .event{
-      margin:0 auto;
-    }
-
-    .event + .event{
-      border-left:none;
-      border-top:1px solid var(--line);
-      padding-top:14px;
-    }
-  }
+}
 </style>
 </head>
 
 <body>
 
+<div class="page">
+
   <div class="card">
 
-    <div class="frame-outer"></div>
-    <div class="frame-inner"></div>
+    <div class="card-inner" id="app">
 
-    <svg class="corner tl" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="cornerGold" x1="0" y1="60" x2="60" y2="0" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stop-color="#294532"/>
-          <stop offset="45%" stop-color="#e8cdb3"/>
-          <stop offset="100%" stop-color="#9c6b52"/>
-        </linearGradient>
-      </defs>
-      <path d="M4 40 C4 20 20 4 40 4" stroke="url(#cornerGold)" stroke-width="1.1"/>
-      <path d="M4 30 C4 16 16 4 30 4" stroke="url(#cornerGold)" stroke-width="0.8"/>
-      <circle cx="4" cy="4" r="3" fill="url(#cornerGold)"/>
-    </svg>
+      <div class="loading">
+        Loading your invitation…
+      </div>
 
-    <svg class="corner tr" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 40 C4 20 20 4 40 4" stroke="url(#cornerGold)" stroke-width="1.1"/>
-      <path d="M4 30 C4 16 16 4 30 4" stroke="url(#cornerGold)" stroke-width="0.8"/>
-      <circle cx="4" cy="4" r="3" fill="url(#cornerGold)"/>
-    </svg>
-
-    <svg class="corner bl" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 40 C4 20 20 4 40 4" stroke="url(#cornerGold)" stroke-width="1.1"/>
-      <path d="M4 30 C4 16 16 4 30 4" stroke="url(#cornerGold)" stroke-width="0.8"/>
-      <circle cx="4" cy="4" r="3" fill="url(#cornerGold)"/>
-    </svg>
-
-    <svg class="corner br" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M4 40 C4 20 20 4 40 4" stroke="url(#cornerGold)" stroke-width="1.1"/>
-      <path d="M4 30 C4 16 16 4 30 4" stroke="url(#cornerGold)" stroke-width="0.8"/>
-      <circle cx="4" cy="4" r="3" fill="url(#cornerGold)"/>
-    </svg>
-
-    <img class="watermark" src="royal-flourish-rings.png" alt="" />
-
-    <svg class="floral-header" viewBox="0 0 220 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <line x1="30" y1="20" x2="94" y2="20" stroke="#b8935b" stroke-width="1.2"/>
-      <line x1="126" y1="20" x2="190" y2="20" stroke="#b8935b" stroke-width="1.2"/>
-      <rect x="105" y="10" width="10" height="10" transform="rotate(45 110 15)" fill="#294532"/>
-      <circle cx="60" cy="20" r="2.5" fill="#b8935b"/>
-      <circle cx="160" cy="20" r="2.5" fill="#b8935b"/>
-    </svg>
-
-    <div class="card-inner" id="cardInner">
-      <div class="loading">Loading your invitation…</div>
     </div>
 
   </div>
 
+</div>
+
 <script>
-
-/* =========================================================
-   1) CONFIGURATION — Supabase project keys
-   ========================================================= */
-
 const SUPABASE_URL = "https://dthppsntdwdtvqgwwbhm.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_Vv0Xsv71M5Xf--EUXXYm2A_r2KD_o53";
 
-/* =========================================================
-   2) EVENT CONTENT — one block per language.
-   ========================================================= */
+const SUPABASE_ANON_KEY =
+  "sb_publishable_Vv0Xsv71M5Xf--EUXXYm2A_r2KD_o53";
+
+const sb = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
 const EVENT = {
 
@@ -948,10 +701,14 @@ const EVENT = {
   },
 
   en: {
-    verse: 'Therefore, what God has joined together, let no one separate',
-    verse_ref: 'MATTHEW 19:6',
+    verse:
+      'Therefore, what God has joined together, let no one separate',
 
-    parents_line: 'Hobeika &amp; Fakhry',
+    verse_ref:
+      'MATTHEW 19:6',
+
+    parents_line:
+      'Hobeika &amp; Fakhry',
 
     invite_copy:
       'Have the pleasure of inviting you to the wedding of',
@@ -988,8 +745,12 @@ const EVENT = {
   },
 
   ar: {
-    verse: 'فما جمعه الله، لا يفرقه إنسان',
-    verse_ref: 'إِنْجِيلُ مَتَّى ١٩: ٦',
+
+    verse:
+      'فما جمعه الله، لا يفرقه إنسان',
+
+    verse_ref:
+      'إِنْجِيلُ مَتَّى ١٩: ٦',
 
     parents_line:
       'Hobeika &amp; Fakhry',
@@ -1040,16 +801,16 @@ const UI = {
       'Reception',
 
     location_btn:
-      'Location Map',
+      'View location',
 
     families_label:
       'The Families of',
 
     rsvp_heading:
-      'Will you be there?',
+      'We would be delighted to celebrate with you',
 
     countdown_lead:
-      'Time left to respond',
+      'Time remaining to RSVP',
 
     days:
       'Days',
@@ -1058,64 +819,64 @@ const UI = {
       'Hours',
 
     mins:
-      'Min',
+      'Minutes',
 
     secs:
-      'Sec',
+      'Seconds',
 
     attend_btn:
-      "I'll be there",
+      'Will attend',
 
     decline_btn:
-      "I can't make it",
+      'Will not attend',
 
     submit_btn:
-      'Send my response',
+      'Submit RSVP',
 
     saving:
       'Saving…',
 
     saved_ok:
-      'Thank you! Your response has been recorded.',
+      'Thank you! Your RSVP has been recorded.',
 
     need_all:
-      'Please answer for each guest before sending.',
+      'Please answer for every guest before submitting.',
 
     error_generic:
-      'Something went wrong, please try again.',
+      'Something went wrong. Please try again.',
 
     unsaved_reminder:
-      "Don't forget to press \"Send my response\" below ↓",
+      'Please remember to press “Submit RSVP” below ↓',
 
     leave_warning:
-      'Your response has not been sent yet. Are you sure you want to leave?',
+      'Your RSVP has not been submitted yet. Are you sure you want to leave?',
 
     loading:
       'Loading your invitation…',
 
     incomplete_link:
-      "This invitation link is incomplete.<br>Please use the link that was sent to you.",
+      'This invitation link is incomplete.<br>Please use the link that was sent to you.',
 
     not_found:
       'Invitation not found.<br>Please check your link.',
 
     gift_heading:
-      'Gift Registry',
+      'Gifts',
 
     gift_msg:
-      'Sharing our joy with you is what matters most. For those who wish, a gift may be sent via Whish Money.',
+      'Your presence and sharing our joy is the greatest gift.<br>For those who wish, gifts can be sent through Whish Money.',
 
     account_label:
-      'Account Number',
+      'Account number',
 
     copy_btn:
       'Copy',
 
     copied_msg:
-      'Copied to clipboard ✓',
+      'Copied ✓',
 
     whish_btn:
-      'Whish Locations'
+      'Whish locations'
   },
 
   ar: {
@@ -1132,8 +893,9 @@ const UI = {
     families_label:
       'عائلتا',
 
+    /* Correction ici */
     rsvp_heading:
-      'نتشرّف  بحضوركم  و مشاركتكم  فرحتنا',
+      'نتشرّف بحضوركم <span class="nowrap">ومشاركتكم</span> فرحتنا',
 
     countdown_lead:
       'الوقت المتبقي للرد',
@@ -1206,130 +968,90 @@ const UI = {
   }
 };
 
-/* ========================================================= */
+let currentLang = 'en';
+let currentInvite = null;
+let currentGuests = [];
+let answers = {};
+let isDirty = false;
 
-const sb =
-  window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+function escapeHtml(value){
+  return String(value ?? '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
 
-const cardInner =
-  document.getElementById('cardInner');
-
-const ICON_PIN =
-  '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22s7-7.5 7-13a7 7 0 10-14 0c0 5.5 7 13 7 13z" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="9" r="2.4" stroke="currentColor" stroke-width="1.6"/></svg>';
-
-const ICON_CHURCH =
-  '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v4M10 4h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M12 6l9 6v10H3V12l9-6z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 22v-6h4v6" stroke="currentColor" stroke-width="1.6"/></svg>';
-
-function getSlug(){
+function getParams(){
 
   const params =
     new URLSearchParams(window.location.search);
 
-  return params.get('invite');
+  return {
+    invite:
+      params.get('invite'),
+
+    lang:
+      params.get('lang') === 'ar'
+        ? 'ar'
+        : 'en'
+  };
 }
 
-const currentLang =
-  new URLSearchParams(window.location.search).get('lang') === 'ar'
-    ? 'ar'
-    : 'en';
+function setLanguage(lang){
 
-if(currentLang === 'ar'){
+  currentLang = lang;
 
-  document.documentElement.lang = 'ar';
+  document.documentElement.lang =
+    lang === 'ar'
+      ? 'ar'
+      : 'en';
 
-  document.documentElement.dir = 'rtl';
-
-  document.body.classList.add('ar');
-
-  document.title =
-    'Julien & Vanessa — دعوة زفاف';
-}
-
-let loadState = 'loading';
-
-let cachedInvite = null;
-
-let cachedGuests = null;
-
-let draft = {};
-
-function paint(){
-
-  const t = UI[currentLang];
-
-  if(loadState === 'loading'){
-
-    cardInner.innerHTML =
-      `<div class="loading">${t.loading}</div>`;
-
-    return;
-  }
-
-  if(loadState === 'empty-slug'){
-
-    cardInner.innerHTML =
-      `<div class="error-box">${t.incomplete_link}</div>`;
-
-    return;
-  }
-
-  if(loadState === 'not-found'){
-
-    cardInner.innerHTML =
-      `<div class="error-box">${t.not_found}</div>`;
-
-    return;
-  }
-
-  renderShell(
-    cachedInvite,
-    cachedGuests
+  document.body.classList.toggle(
+    'ar',
+    lang === 'ar'
   );
+
+  document.body.dir =
+    lang === 'ar'
+      ? 'rtl'
+      : 'ltr';
 }
 
-function renderShell(invite, guests){
-
-  const t = UI[currentLang];
+function renderShell(){
 
   const e = EVENT[currentLang];
+  const t = UI[currentLang];
 
-  cardInner.innerHTML = `
+  document.title =
+    currentLang === 'ar'
+      ? 'Julien & Vanessa — دعوة الزفاف'
+      : 'Julien & Vanessa — Wedding Invitation';
 
-    ${
-      e.verse
-        ? `
-          <div class="verse">
-            ${e.verse}
-            ${
-              e.verse_ref
-                ? `<span class="verse-ref">${e.verse_ref}</span>`
-                : ''
-            }
-          </div>
-        `
-        : ''
-    }
+  document.getElementById('app').innerHTML = `
+
+    <div class="monogram">
+      ${EVENT.monogram}
+    </div>
 
     ${
-      e.parents_line
+      currentLang === 'ar'
         ? `
           <div class="eyebrow">
             ${t.families_label}
           </div>
-
-          <div class="parents-line">
-            ${e.parents_line}
-          </div>
         `
         : `
-          <div class="monogram">
-            ${EVENT.monogram}
+          <div class="eyebrow">
+            ${t.families_label}
           </div>
         `
     }
+
+    <div class="parents-line">
+      ${e.parents_line}
+    </div>
 
     <div class="invite-copy">
       ${e.invite_copy}
@@ -1339,11 +1061,25 @@ function renderShell(invite, guests){
       ${e.names}
     </div>
 
-    <p class="presented-by" dir="auto">
-      ${invite.note || ''}
-    </p>
+    ${
+      e.verse
+        ? `
+          <div class="verse">
+            ${e.verse}
 
-    <div class="rule"></div>
+            ${
+              e.verse_ref
+                ? `
+                  <span class="verse-ref">
+                    ${e.verse_ref}
+                  </span>
+                `
+                : ''
+            }
+          </div>
+        `
+        : ''
+    }
 
     <div class="date-block">
 
@@ -1383,7 +1119,6 @@ function renderShell(invite, guests){
           target="_blank"
           rel="noopener"
         >
-          ${ICON_CHURCH}
           ${t.location_btn}
         </a>
 
@@ -1413,15 +1148,12 @@ function renderShell(invite, guests){
           target="_blank"
           rel="noopener"
         >
-          ${ICON_PIN}
           ${t.location_btn}
         </a>
 
       </div>
 
     </div>
-
-    <div class="rule"></div>
 
     <div class="rsvp">
 
@@ -1433,32 +1165,31 @@ function renderShell(invite, guests){
         ${e.deadline}
       </div>
 
-      <div id="guestRows"></div>
+      <div id="countdown"></div>
 
-      <div class="submit-row">
+      <div id="guest-list" class="guest-list"></div>
 
-        <div
-          class="unsaved-reminder"
-          id="unsavedReminder"
-        ></div>
+      <button
+        id="submit-btn"
+        class="submit-btn"
+        disabled
+      >
+        ${t.submit_btn}
+      </button>
 
-        <button
-          class="submit-btn"
-          id="submitBtn"
-        >
-          ${t.submit_btn}
-        </button>
-
-        <div
-          class="status-msg"
-          id="statusMsg"
-        ></div>
-
+      <div
+        id="unsaved-reminder"
+        class="unsaved-reminder"
+      >
+        ${t.unsaved_reminder}
       </div>
 
-    </div>
+      <div
+        id="status-msg"
+        class="status-msg"
+      ></div>
 
-    <div class="rule"></div>
+    </div>
 
     <div class="gift-section">
 
@@ -1472,439 +1203,508 @@ function renderShell(invite, guests){
           : ''
       }
 
-      <p class="gift-msg">
+      <div class="gift-msg">
         ${t.gift_msg}
-      </p>
+      </div>
 
-      <div
-        class="copy-feedback"
-        id="copyFeedback"
-      ></div>
+      <div class="account-box">
 
-      <div class="acct-box">
+        <span class="acct-label">
+          ${t.account_label}
+        </span>
 
-        <div>
-
-          <span class="acct-label">
-            ${t.account_label}
-          </span>
-
-          <span
-            class="acct-number"
-            dir="ltr"
-          >
-            ${EVENT.gift.account_number}
-          </span>
-
+        <div class="account-number">
+          ${EVENT.gift.account_number}
         </div>
 
         <button
+          id="copy-btn"
           class="copy-btn"
-          id="copyBtn"
+          type="button"
         >
           ${t.copy_btn}
         </button>
 
+        <span
+          id="copy-feedback"
+          class="copy-feedback"
+        ></span>
+
+        <br>
+
+        <a
+          class="whish-btn"
+          href="${EVENT.gift.whish_url}"
+          target="_blank"
+          rel="noopener"
+        >
+          ${t.whish_btn}
+        </a>
+
       </div>
 
-      <a
-        class="map-btn"
-        href="${EVENT.gift.whish_url}"
-        target="_blank"
-        rel="noopener"
-      >
-        ${ICON_PIN}
-        ${t.whish_btn}
-      </a>
+    </div>
 
+    <div class="footer">
+      JULIEN &amp; VANESSA
     </div>
   `;
 
-  document.getElementById('copyBtn').onclick =
-    async () => {
+  document
+    .getElementById('copy-btn')
+    ?.addEventListener('click', copyAccount);
 
-      const fb =
-        document.getElementById('copyFeedback');
+  document
+    .getElementById('submit-btn')
+    ?.addEventListener('click', submitRSVP);
 
-      try{
+  renderGuests();
+}
 
-        await navigator.clipboard.writeText(
-          EVENT.gift.account_number
-        );
+function renderGuests(){
 
-      }catch(err){
+  const container =
+    document.getElementById('guest-list');
 
-        const tmp =
-          document.createElement('input');
-
-        tmp.value =
-          EVENT.gift.account_number;
-
-        document.body.appendChild(tmp);
-
-        tmp.select();
-
-        document.execCommand('copy');
-
-        document.body.removeChild(tmp);
-      }
-
-      fb.textContent =
-        t.copied_msg;
-
-      setTimeout(() => {
-        fb.textContent = '';
-      }, 1800);
-    };
-
-  function hasUnsavedChanges(){
-
-    return guests.some(
-      g =>
-        draft[g.id] &&
-        draft[g.id] !== g.status
-    );
+  if(!container){
+    return;
   }
 
-  function updateReminderState(){
+  container.innerHTML =
+    currentGuests.map(guest => {
 
-    const reminderEl =
-      document.getElementById('unsavedReminder');
+      const answer =
+        answers[guest.id] || '';
 
-    const submitBtn =
-      document.getElementById('submitBtn');
-
-    if(!reminderEl || !submitBtn)
-      return;
-
-    const unsaved =
-      hasUnsavedChanges();
-
-    reminderEl.textContent =
-      t.unsaved_reminder;
-
-    reminderEl.classList.toggle(
-      'show',
-      unsaved
-    );
-
-    submitBtn.classList.toggle(
-      'needs-attention',
-      unsaved
-    );
-  }
-
-  function renderRows(){
-
-    const rowsEl =
-      document.getElementById('guestRows');
-
-    rowsEl.innerHTML = '';
-
-    guests.forEach(g => {
-
-      const row =
-        document.createElement('div');
-
-      row.className =
-        'guest-row';
-
-      row.innerHTML = `
+      return `
 
         <div
-          class="guest-name"
-          dir="auto"
+          class="guest-row"
+          data-guest-id="${guest.id}"
         >
-          ${g.member_name}
-        </div>
 
-        <div class="choice">
+          <div class="guest-name">
+            ${escapeHtml(guest.name)}
+          </div>
 
-          <button
-            class="pill attend ${
-              draft[g.id] === 'attending'
-                ? 'active'
-                : ''
-            }"
-          >
-            ${t.attend_btn}
-          </button>
+          <div class="pill-group">
 
-          <button
-            class="pill decline ${
-              draft[g.id] === 'declined'
-                ? 'active'
-                : ''
-            }"
-          >
-            ${t.decline_btn}
-          </button>
+            <button
+              type="button"
+              class="pill attend ${answer === 'attend' ? 'active' : ''}"
+              onclick="setAnswer('${guest.id}','attend')"
+            >
+              ${UI[currentLang].attend_btn}
+            </button>
+
+            <button
+              type="button"
+              class="pill decline ${answer === 'decline' ? 'active' : ''}"
+              onclick="setAnswer('${guest.id}','decline')"
+            >
+              ${UI[currentLang].decline_btn}
+            </button>
+
+          </div>
 
         </div>
       `;
+    })
+    .join('');
 
-      const [
-        attendBtn,
-        declineBtn
-      ] =
-        row.querySelectorAll('.pill');
-
-      attendBtn.onclick = () => {
-
-        draft[g.id] =
-          'attending';
-
-        renderRows();
-      };
-
-      declineBtn.onclick = () => {
-
-        draft[g.id] =
-          'declined';
-
-        renderRows();
-      };
-
-      rowsEl.appendChild(row);
-    });
-
-    updateReminderState();
-  }
-
-  renderRows();
-
-  document.getElementById('submitBtn').onclick =
-    async () => {
-
-      const statusMsg =
-        document.getElementById('statusMsg');
-
-      const submitBtn =
-        document.getElementById('submitBtn');
-
-      const allAnswered =
-        guests.every(
-          g =>
-            draft[g.id] === 'attending' ||
-            draft[g.id] === 'declined'
-        );
-
-      if(!allAnswered){
-
-        statusMsg.textContent =
-          t.need_all;
-
-        statusMsg.className =
-          'status-msg error';
-
-        return;
-      }
-
-      submitBtn.disabled = true;
-
-      statusMsg.textContent =
-        t.saving;
-
-      statusMsg.className =
-        'status-msg';
-
-      try{
-
-        for(const g of guests){
-
-          const { error } =
-            await sb
-              .from('guests')
-              .update({
-                status:
-                  draft[g.id],
-
-                responded_at:
-                  new Date().toISOString()
-              })
-              .eq('id', g.id);
-
-          if(error)
-            throw error;
-
-          g.status =
-            draft[g.id];
-        }
-
-        statusMsg.textContent =
-          t.saved_ok;
-
-        statusMsg.className =
-          'status-msg';
-
-        updateReminderState();
-
-      }catch(err){
-
-        console.error(err);
-
-        statusMsg.textContent =
-          t.error_generic;
-
-        statusMsg.className =
-          'status-msg error';
-      }
-
-      submitBtn.disabled = false;
-    };
+  updateSubmitState();
 }
 
-window.addEventListener(
-  'beforeunload',
-  (e) => {
+window.setAnswer = function(guestId, value){
 
-    if(
-      loadState !== 'ready' ||
-      !cachedGuests
-    )
-      return;
+  answers[guestId] = value;
 
-    const unsaved =
-      cachedGuests.some(
-        g =>
-          draft[g.id] &&
-          draft[g.id] !== g.status
-      );
+  isDirty = true;
 
-    if(unsaved){
+  const row =
+    document.querySelector(
+      `[data-guest-id="${guestId}"]`
+    );
 
-      e.preventDefault();
-
-      e.returnValue = '';
-    }
+  if(!row){
+    return;
   }
-);
 
-async function init(){
+  row
+    .querySelector('.attend')
+    ?.classList.toggle(
+      'active',
+      value === 'attend'
+    );
 
-  const slug =
-    getSlug();
+  row
+    .querySelector('.decline')
+    ?.classList.toggle(
+      'active',
+      value === 'decline'
+    );
+
+  updateSubmitState();
+
+  const reminder =
+    document.getElementById('unsaved-reminder');
+
+  if(reminder){
+    reminder.style.display = 'block';
+  }
+};
+
+function updateSubmitState(){
+
+  const btn =
+    document.getElementById('submit-btn');
+
+  if(!btn){
+    return;
+  }
+
+  const complete =
+    currentGuests.length > 0 &&
+    currentGuests.every(
+      guest => answers[guest.id]
+    );
+
+  btn.disabled = !complete;
+}
+
+async function loadInvitation(slug){
 
   if(!slug){
 
-    loadState =
-      'empty-slug';
-
-    paint();
+    document.getElementById('app').innerHTML = `
+      <div class="error-box">
+        ${UI[currentLang].incomplete_link}
+      </div>
+    `;
 
     return;
   }
 
-  try{
+  const {
+    data: invite,
+    error: inviteError
+  } = await sb
+    .from('invites')
+    .select('*')
+    .eq('slug', slug)
+    .maybeSingle();
 
-    const {
-      data: invite,
-      error: inviteErr
-    } =
-      await sb
-        .from('invites')
-        .select('*')
-        .eq('slug', slug)
-        .single();
+  if(inviteError || !invite){
 
-    if(inviteErr || !invite)
-      throw new Error(
-        'invite not found'
-      );
+    document.getElementById('app').innerHTML = `
+      <div class="error-box">
+        ${UI[currentLang].not_found}
+      </div>
+    `;
 
-    const {
-      data: guests,
-      error: guestsErr
-    } =
-      await sb
-        .from('guests')
-        .select('*')
-        .eq('invite_slug', slug);
-
-    if(guestsErr)
-      throw guestsErr;
-
-    /* ordre choisi dans l'admin
-       (colonne "position") ;
-       sans position, l'ordre d'origine est conservé */
-
-    const ordered =
-      (guests || [])
-        .map((g, i) => ({
-          g,
-          i
-        }))
-        .sort((a, b) => {
-
-          const pa =
-            a.g.position;
-
-          const pb =
-            b.g.position;
-
-          const ha =
-            pa !== null &&
-            pa !== undefined;
-
-          const hb =
-            pb !== null &&
-            pb !== undefined;
-
-          if(
-            ha &&
-            hb &&
-            pa !== pb
-          )
-            return pa - pb;
-
-          if(
-            ha &&
-            !hb
-          )
-            return -1;
-
-          if(
-            !ha &&
-            hb
-          )
-            return 1;
-
-          return a.i - b.i;
-
-        })
-        .map(x => x.g);
-
-    cachedInvite =
-      invite;
-
-    cachedGuests =
-      ordered;
-
-    guests.forEach(
-      g => {
-        draft[g.id] =
-          g.status;
-      }
-    );
-
-    loadState =
-      'ready';
-
-    paint();
-
-  }catch(e){
-
-    console.error(e);
-
-    loadState =
-      'not-found';
-
-    paint();
+    return;
   }
+
+  currentInvite = invite;
+
+  const {
+    data: guests,
+    error: guestsError
+  } = await sb
+    .from('guests')
+    .select('*')
+    .eq('invite_slug', slug)
+    .order('id');
+
+  if(guestsError){
+
+    document.getElementById('app').innerHTML = `
+      <div class="error-box">
+        ${UI[currentLang].error_generic}
+      </div>
+    `;
+
+    return;
+  }
+
+  currentGuests = guests || [];
+
+  currentGuests.forEach(guest => {
+
+    if(
+      guest.rsvp_status === 'attend' ||
+      guest.rsvp_status === 'decline'
+    ){
+
+      answers[guest.id] =
+        guest.rsvp_status;
+    }
+
+  });
+
+  renderShell();
+
+  startCountdown();
 }
 
-init();
+async function submitRSVP(){
 
+  const t = UI[currentLang];
+
+  const incomplete =
+    currentGuests.some(
+      guest => !answers[guest.id]
+    );
+
+  if(incomplete){
+
+    showStatus(
+      t.need_all,
+      true
+    );
+
+    return;
+  }
+
+  const button =
+    document.getElementById('submit-btn');
+
+  button.disabled = true;
+
+  button.textContent =
+    t.saving;
+
+  try{
+
+    for(const guest of currentGuests){
+
+      const { error } =
+        await sb
+          .from('guests')
+          .update({
+            rsvp_status:
+              answers[guest.id],
+
+            rsvp_updated_at:
+              new Date().toISOString()
+          })
+          .eq('id', guest.id);
+
+      if(error){
+        throw error;
+      }
+    }
+
+    isDirty = false;
+
+    const reminder =
+      document.getElementById('unsaved-reminder');
+
+    if(reminder){
+      reminder.style.display = 'none';
+    }
+
+    showStatus(
+      t.saved_ok,
+      false
+    );
+
+    button.textContent =
+      t.submit_btn;
+
+  }catch(error){
+
+    console.error(error);
+
+    button.disabled = false;
+
+    button.textContent =
+      t.submit_btn;
+
+    showStatus(
+      t.error_generic,
+      true
+    );
+  }
+
+  updateSubmitState();
+}
+
+function showStatus(message, error){
+
+  const element =
+    document.getElementById('status-msg');
+
+  if(!element){
+    return;
+  }
+
+  element.textContent =
+    message;
+
+  element.style.color =
+    error
+      ? 'var(--danger)'
+      : 'var(--green)';
+}
+
+function copyAccount(){
+
+  const feedback =
+    document.getElementById('copy-feedback');
+
+  navigator.clipboard
+    .writeText(EVENT.gift.account_number)
+    .then(() => {
+
+      feedback.textContent =
+        UI[currentLang].copied_msg;
+
+      setTimeout(() => {
+
+        feedback.textContent = '';
+
+      },2500);
+
+    })
+    .catch(() => {
+
+      feedback.textContent =
+        UI[currentLang].error_generic;
+
+    });
+}
+
+function startCountdown(){
+
+  const container =
+    document.getElementById('countdown');
+
+  if(!container){
+    return;
+  }
+
+  function update(){
+
+    const now =
+      new Date().getTime();
+
+    const deadline =
+      new Date(
+        EVENT.rsvp_deadline_iso
+      ).getTime();
+
+    let diff =
+      deadline - now;
+
+    if(diff < 0){
+      diff = 0;
+    }
+
+    const day =
+      1000 * 60 * 60 * 24;
+
+    const hour =
+      1000 * 60 * 60;
+
+    const minute =
+      1000 * 60;
+
+    const days =
+      Math.floor(diff / day);
+
+    const hours =
+      Math.floor(
+        (diff % day) / hour
+      );
+
+    const mins =
+      Math.floor(
+        (diff % hour) / minute
+      );
+
+    const secs =
+      Math.floor(
+        (diff % minute) / 1000
+      );
+
+    container.innerHTML = `
+      <div style="
+        display:flex;
+        justify-content:center;
+        gap:18px;
+        margin:0 0 25px;
+        color:var(--gold-deep);
+        font-family:'Montserrat',sans-serif;
+        font-size:10px;
+      ">
+
+        <div>
+          <strong style="font-size:18px;">
+            ${days}
+          </strong><br>
+          ${UI[currentLang].days}
+        </div>
+
+        <div>
+          <strong style="font-size:18px;">
+            ${hours}
+          </strong><br>
+          ${UI[currentLang].hours}
+        </div>
+
+        <div>
+          <strong style="font-size:18px;">
+            ${mins}
+          </strong><br>
+          ${UI[currentLang].mins}
+        </div>
+
+        <div>
+          <strong style="font-size:18px;">
+            ${secs}
+          </strong><br>
+          ${UI[currentLang].secs}
+        </div>
+
+      </div>
+    `;
+  }
+
+  update();
+
+  setInterval(update,1000);
+}
+
+window.addEventListener(
+  'beforeunload',
+  function(event){
+
+    if(!isDirty){
+      return;
+    }
+
+    event.preventDefault();
+
+    event.returnValue =
+      UI[currentLang].leave_warning;
+
+    return UI[currentLang].leave_warning;
+  }
+);
+
+(async function(){
+
+  const {
+    invite,
+    lang
+  } = getParams();
+
+  setLanguage(lang);
+
+  await loadInvitation(invite);
+
+})();
 </script>
 
 </body>
