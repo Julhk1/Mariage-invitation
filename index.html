@@ -42,18 +42,18 @@
     overflow-x: hidden;
   }
 
-  /* ÉCRAN D'OUVERTURE ENVELOPPE BORDEAUX */
+  /* ÉCRAN D'OUVERTURE DE L'ENVELOPPE */
   .envelope-screen {
     position: fixed;
     inset: 0;
     z-index: 1000;
-    background: radial-gradient(circle, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.9) 100%), var(--emerald-2);
+    background: #121a14;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: opacity 0.5s ease, visibility 0.5s ease;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
   }
 
   .envelope-screen.hidden {
@@ -62,74 +62,18 @@
     pointer-events: none;
   }
 
-  .envelope-wrapper {
-    position: relative;
-    width: min(340px, 85vw);
-    aspect-ratio: 1 / 2.05;
-    perspective: 1000px;
+  .envelope-media-box {
+    width: min(360px, 88vw);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.6);
   }
 
-  /* Rabat gauche découpe CSS de image_943a60.jpg */
-  .flap-left {
-    position: absolute;
-    inset: 0;
-    background: url('image_943a60.jpg') center/cover no-repeat;
-    clip-path: polygon(0 0, 82% 0, 32% 100%, 0 100%);
-    transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-origin: left center;
-    z-index: 2;
-  }
-
-  /* Rabat droit découpe CSS de image_943a60.jpg */
-  .flap-right {
-    position: absolute;
-    inset: 0;
-    background: url('image_943a60.jpg') center/cover no-repeat;
-    clip-path: polygon(82% 0, 100% 0, 100% 100%, 32% 100%);
-    transition: transform 0.55s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-origin: right center;
-    z-index: 2;
-  }
-
-  /* Sceau doré personnalisé J|V */
-  .seal-jv {
-    position: absolute;
-    top: 50%;
-    left: 35%;
-    transform: translate(-50%, -50%);
-    width: 68px;
-    height: 68px;
-    border-radius: 50%;
-    background: radial-gradient(circle at 35% 35%, #f3e5b8, #b8935b 60%, #7a5c2d 100%);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.6), inset 0 2px 3px rgba(255,255,255,0.6), inset 0 -3px 5px rgba(0,0,0,0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 3;
-    transition: transform 0.35s ease, opacity 0.35s ease;
-    border: 1px solid #d9cba4;
-  }
-
-  .seal-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: #1a1005;
-    letter-spacing: 1px;
-  }
-
-  /* Action d'ouverture */
-  .envelope-wrapper.open .flap-left {
-    transform: translateX(-105%) rotateY(-20deg);
-  }
-
-  .envelope-wrapper.open .flap-right {
-    transform: translateX(105%) rotateY(20deg);
-  }
-
-  .envelope-wrapper.open .seal-jv {
-    transform: translate(-50%, -50%) scale(1.3);
-    opacity: 0;
+  .envelope-video {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
   }
 
   .tap-hint {
@@ -137,7 +81,7 @@
     font-size: 11px;
     letter-spacing: 3px;
     text-transform: uppercase;
-    margin-top: 25px;
+    margin-top: 20px;
     animation: pulse 1.8s infinite;
   }
 
@@ -181,7 +125,6 @@
     color: #fff;
   }
 
-  /* Rings SVG Icon */
   .rings-icon {
     width: 60px;
     height: 60px;
@@ -277,6 +220,7 @@
     cursor: pointer;
     width: 100%;
     margin-top: 10px;
+  }
 
   .btn-submit:disabled {
     opacity: 0.6;
@@ -290,7 +234,7 @@
   }
   .status-msg.error { color: #8a3028; }
 
-  /* MAP & REGISTRY SECTIONS */
+  /* SECTIONS LIEU & REGISTRE */
   .section-title {
     font-size: 20px;
     color: var(--emerald-2);
@@ -319,12 +263,10 @@
 <body>
 
   <div class="envelope-screen" id="envelopeScreen">
-    <div class="envelope-wrapper" id="envelopeWrapper">
-      <div class="flap-left"></div>
-      <div class="flap-right"></div>
-      <div class="seal-jv">
-        <span class="seal-text">J|V</span>
-      </div>
+    <div class="envelope-media-box">
+      <video class="envelope-video" id="envelopeVideo" autoplay loop muted playsinline>
+        <source src="http://googleusercontent.com/generated_video_content/14136145781005190810" type="video/mp4">
+      </video>
     </div>
     <div class="tap-hint" id="tapHintText">Cliquer pour ouvrir</div>
   </div>
@@ -348,7 +290,7 @@
 
     <div class="date-box" id="dateText">
       Dimanche 1er Novembre 2026<br>
-      <small style="font-size:14px; color: var(--ink-soft);">Sainte-Clotilde, Paris</small>
+      <small style="font-size:14px; color: var(--ink-soft);">Église Maronite Saint-Élias, Beyrouth</small>
     </div>
 
     <div class="divider"></div>
@@ -357,13 +299,13 @@
 
     <div class="divider"></div>
     <div class="section-title" id="locationTitle">Lieu de Célébration</div>
-    <p style="font-size:14px; color:var(--ink-soft);" id="locationDesc">Basilique Sainte-Clotilde, 23 Rue de Las Cases, 75007 Paris</p>
-    <iframe class="map-iframe" src="https://maps.google.com/maps?q=Basilique%20Sainte-Clotilde%20Paris&t=&z=15&ie=UTF8&iwloc=&output=embed" loading="lazy"></iframe>
+    <p style="font-size:14px; color:var(--ink-soft);" id="locationDesc">Église Maronite Saint-Élias, Kantari, Beyrouth</p>
+    <iframe class="map-iframe" src="https://maps.app.goo.gl/oxTBmFbUH9Ye2uDC8" loading="lazy"></iframe>
 
     <div class="wish-box">
       <strong id="wishTitle">Registre de Mariage</strong>
       <p id="wishDesc" style="margin-top:5px; font-size:13px; color:var(--ink-soft);">
-        Votre présence est notre plus beau cadeau. Si vous désirez participer à notre voyage de noces, une urne Wish Money sera disponible.
+        Votre présence est notre plus beau cadeau. Si vous désirez participer, un compte Wish Money est à disposition.
       </p>
     </div>
   </div>
@@ -374,15 +316,10 @@
   const SUPABASE_ANON_KEY = "sb_publishable_Vv0Xsv71M5Xf--EUXXYm2A_r2KD_o53";
   const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // GESTION DE L'ANIMATION D'OUVERTURE
+  // OUVERTURE DE L'ENVELOPPE AU CLIC
   const screen = document.getElementById('envelopeScreen');
-  const wrapper = document.getElementById('envelopeWrapper');
-
   screen.addEventListener('click', () => {
-    wrapper.classList.add('open');
-    setTimeout(() => {
-      screen.classList.add('hidden');
-    }, 550);
+    screen.classList.add('hidden');
   });
 
   // MULTILINGUE
@@ -399,7 +336,7 @@
       saved: "Merci ! Votre réponse a été enregistrée.",
       locationTitle: "Lieu de Célébration",
       wishTitle: "Registre de Mariage",
-      wishDesc: "Votre présence est notre plus beau cadeau. Si vous désirez participer à notre voyage de noces, une urne Wish Money sera disponible."
+      wishDesc: "Votre présence est notre plus beau cadeau. Si vous désirez participer, un compte Wish Money est à disposition."
     },
     en: {
       tapHint: "Click to open",
@@ -412,7 +349,7 @@
       saved: "Thank you! Your response has been saved.",
       locationTitle: "Venue Location",
       wishTitle: "Wedding Registry",
-      wishDesc: "Your presence is our greatest gift. If you wish to contribute to our honeymoon, a Wish Money registry will be available."
+      wishDesc: "Your presence is our greatest gift. If you wish to contribute, a Wish Money account is available."
     }
   };
 
@@ -447,12 +384,12 @@
     const rsvpContainer = document.getElementById('rsvpContent');
 
     if(!slug) {
-      rsvpContainer.innerHTML = `<p style="font-size:14px; color:var(--ink-soft);">Veuillez utiliser le lien d'invitation personnalisé reçu par message.</p>`;
+      rsvpContainer.innerHTML = `<p style="font-size:14px; color:var(--ink-soft);">Veuillez utiliser le lien d'invitation reçu par message.</p>`;
       return;
     }
 
     try {
-      const { data: guests, error } = await sb.from('guests').select('*').eq('invite_slug', slug).order('display_order', { ascending: true });
+      const { data: guests, error } = await sb.from('guests').select('*').eq('invite_slug', slug);
       if(error || !guests || guests.length === 0) {
         rsvpContainer.innerHTML = `<p style="font-size:14px; color:var(--ink-soft);">Invitation introuvable.</p>`;
         return;
@@ -478,7 +415,7 @@
         <div class="guest-item">
           <div class="guest-name">${g.member_name}</div>
           <div class="rsvp-btns">
-            <button class="rsvp-btn yes ${st==='confirmed'?'selected':''}" onclick="setGuestStatus('${g.id}', 'confirmed')">${t.yes}</button>
+            <button class="rsvp-btn yes ${st==='attending'||st==='confirmed'?'selected':''}" onclick="setGuestStatus('${g.id}', 'attending')">${t.yes}</button>
             <button class="rsvp-btn no ${st==='declined'?'selected':''}" onclick="setGuestStatus('${g.id}', 'declined')">${t.no}</button>
           </div>
         </div>
