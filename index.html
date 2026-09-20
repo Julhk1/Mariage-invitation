@@ -204,6 +204,18 @@
     line-height:1.55;
   }
 
+  .kids-note{
+    font-size:14px;
+    color:var(--gold-deep);
+    font-family:'Cormorant Garamond','Amiri','Noto Naskh Arabic',serif;
+    font-style:italic;
+    max-width:320px;
+    margin:0 auto 20px;
+    line-height:1.7;
+    padding-top:10px;
+    border-top:1px solid var(--line);
+  }
+
   .rule{
     width:64px;
     height:1px;
@@ -710,13 +722,18 @@
     font-size:16.5px;
   }
 
+  body.ar .kids-note{
+    font-size:16px;
+  }
+
   body.ar .verse,
   body.ar .invite-copy,
   body.ar .rsvp .deadline,
   body.ar .gift-msg,
   body.ar .event .place,
   body.ar .event .addr,
-  body.ar .presented-by{
+  body.ar .presented-by,
+  body.ar .kids-note{
     text-wrap:balance;
   }
 
@@ -1032,7 +1049,10 @@ const EVENT = {
       'الساعة السابعة مساءً',
 
     deadline:
-      'لتأكيد الحضور أو الإعتذار،<br>يرجى إرسال الإجابة قبل ١٥ تشرين الأول ٢٠٢٦'
+      'لتأكيد الحضور أو الإعتذار،<br>يرجى إرسال الإجابة قبل ١٥ تشرين الأول ٢٠٢٦',
+
+    kids_note:
+      'ليلة هانئة لصغاركم، وفرحة جميلة لنا معكم'
   }
 };
 
@@ -1349,6 +1369,12 @@ function renderShell(invite, guests){
     <p class="presented-by" dir="auto">
       ${invite.note || ''}
     </p>
+
+    ${e.kids_note ? `
+      <p class="kids-note" dir="auto">
+        ${e.kids_note}
+      </p>
+    ` : ''}
 
     <div class="rule"></div>
 
