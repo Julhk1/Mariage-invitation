@@ -210,10 +210,8 @@
     font-family:'Cormorant Garamond','Amiri','Noto Naskh Arabic',serif;
     font-style:italic;
     max-width:320px;
-    margin:0 auto 20px;
+    margin:6px auto 4px;
     line-height:1.7;
-    padding-top:10px;
-    border-top:1px solid var(--line);
   }
 
   .rule{
@@ -1370,12 +1368,6 @@ function renderShell(invite, guests){
       ${invite.note || ''}
     </p>
 
-    ${e.kids_note ? `
-      <p class="kids-note" dir="auto">
-        ${e.kids_note}
-      </p>
-    ` : ''}
-
     <div class="rule"></div>
 
     <div class="date-block">
@@ -1461,6 +1453,12 @@ function renderShell(invite, guests){
       <h2>
         ${t.rsvp_heading}
       </h2>
+
+      ${e.kids_note ? `
+        <p class="kids-note" dir="auto">
+          ${e.kids_note}
+        </p>
+      ` : ''}
 
       <div class="deadline">
         ${e.deadline}
