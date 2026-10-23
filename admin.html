@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Parisienne&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
 <style>
   :root{
     --parchment:#faf5e8; --parchment-2:#f3ecda; --ink:#2b271e; --ink-soft:#5b5646;
@@ -230,6 +231,10 @@ function renderDashboard(){
       <div class="stat pending" data-status="pending"><div class="num">${pending}</div><div class="lbl">En attente</div></div>
     </div>
 
+    <div style="text-align:right; margin:-10px 0 22px;">
+      <button class="btn" id="exportBtn" type="button">📥 Exporter en Excel</button>
+    </div>
+
     <div class="add-box">
       <h2>Ajouter une famille</h2>
 
@@ -274,6 +279,7 @@ function renderDashboard(){
   addMemberRow();
 
   document.getElementById('addRowBtn').onclick = () => addMemberRow();
+  document.getElementById('exportBtn').onclick = exportExcel;
   document.getElementById('saveFamilyBtn').onclick = handleSaveFamily;
   document.getElementById('searchInput').oninput = renderFamilyList;
 
@@ -1055,6 +1061,247 @@ async function saveMemberOrder(inv, visibleIds){
     }catch(_){}
 
     renderFamilyList();
+  }
+}
+
+
+/* ============================================================
+   EXPORT EXCEL — présents regroupés par famille (1 cadeau / famille)
+   ============================================================ */
+async function exportExcel(){
+  const btn = document.getElementById('exportBtn');
+
+  if(typeof ExcelJS === 'undefined'){
+    alert("La librairie Excel n'est pas chargée. Vérifie ta connexion internet puis recharge la page.");
+    return;
+  }
+
+  const oldLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Préparation…';
+
+  try{
+    await fetchAll();
+
+    const INK='FF2B271E', GOLD='FFB8935B', CREAM='FFF3ECDA', LINE='FFD9CBA4';
+    const thin = { style:'thin', color:{ argb:LINE } };
+    const BORDER = { top:thin, left:thin, bottom:thin, right:thin };
+    const statusOf = g => g.status || 'pending';
+    const STATUS_LABEL = { attending:'Présent·e', declined:'Décliné', pending:'En attente' };
+    const STATUS_COLOR = { attending:'FF3C6B41', declined:'FFA2503E', pending:'FF8A7440' };
+
+    // Familles triées A→Z, avec leurs membres
+    const families = invites
+      .map(inv => ({ inv, members: sortedGuestsOf(inv.slug) }))
+      .sort((a,b) => a.inv.family_name.localeCompare(b.inv.family_name, 'fr', { sensitivity:'base' }));
+
+    const presentFamilies = families
+      .map(f => ({ ...f, present: f.members.filter(g => statusOf(g) === 'attending') }))
+      .filter(f => f.present.length > 0);
+
+    const nbPresents  = presentFamilies.reduce((n,f) => n + f.present.length, 0);
+    const nbDeclined  = guests.filter(g => statusOf(g) === 'declined').length;
+    const nbPending   = guests.filter(g => statusOf(g) === 'pending').length;
+
+    const wb = new ExcelJS.Workbook();
+    wb.creator = WEDDING.coupleSignature;
+    wb.created = new Date();
+
+    const styleHeader = (row) => {
+      row.height = 26;
+      row.eachCell(c => {
+        c.font = { name:'Calibri', bold:true, color:{ argb:'FFFFFFFF' }, size:11 };
+        c.fill = { type:'pattern', pattern:'solid', fgColor:{ argb:INK } };
+        c.alignment = { vertical:'middle', horizontal:'center', wrapText:true };
+        c.border = BORDER;
+      });
+    };
+
+    const setupPage = (ws) => {
+      ws.pageSetup = { orientation:'portrait', paperSize:9, fitToPage:true, fitToWidth:1, fitToHeight:0 };
+      ws.headerFooter.oddFooter = '&L' + WEDDING.coupleSignature + '&RPage &P / &N';
+    };
+
+    /* ---------- Feuille 1 : Cadeaux par famille ---------- */
+    const ws1 = wb.addWorksheet('Cadeaux par famille', { views:[{ state:'frozen', ySplit:1 }] });
+    ws1.columns = [
+      { header:'N°',                  key:'n',    width:6  },
+      { header:'Famille',             key:'fam',  width:30 },
+      { header:'Personnes présentes', key:'names',width:48 },
+      { header:'Nb personnes',        key:'nb',   width:14 },
+      { header:'Cadeaux',             key:'gift', width:11 },
+      { header:'Cadeau remis',        key:'done', width:15 }
+    ];
+    styleHeader(ws1.getRow(1));
+
+    presentFamilies.forEach((f, i) => {
+      const r = ws1.addRow({
+        n: i + 1,
+        fam: f.inv.family_name,
+        names: f.present.map(g => g.member_name).join('\n'),
+        nb: f.present.length,
+        gift: 1,
+        done: 'Non'
+      });
+      r.height = Math.max(22, f.present.length * 16 + 6);
+      r.eachCell((c, col) => {
+        c.border = BORDER;
+        c.font = { name:'Calibri', size:11, bold: col === 2 };
+        c.alignment = {
+          vertical:'middle',
+          horizontal: (col === 2 || col === 3) ? 'left' : 'center',
+          wrapText:true
+        };
+        if(i % 2 === 1) c.fill = { type:'pattern', pattern:'solid', fgColor:{ argb:'FFFBF8EF' } };
+      });
+      r.getCell(6).dataValidation = {
+        type:'list', allowBlank:false, formulae:['"Oui,Non"']
+      };
+    });
+
+    const last = presentFamilies.length + 1;
+    const tot = ws1.addRow({
+      n:'', fam:'TOTAL', names:'',
+      nb:   { formula:`SUM(D2:D${last})`, result: nbPresents },
+      gift: { formula:`SUM(E2:E${last})`, result: presentFamilies.length },
+      done: { formula:`COUNTIF(F2:F${last},"Oui")&" / "&COUNTA(F2:F${last})`, result:`0 / ${presentFamilies.length}` }
+    });
+    tot.height = 26;
+    tot.eachCell(c => {
+      c.font = { name:'Calibri', bold:true, size:12 };
+      c.fill = { type:'pattern', pattern:'solid', fgColor:{ argb:CREAM } };
+      c.border = { top:{ style:'medium', color:{ argb:GOLD } }, bottom:thin, left:thin, right:thin };
+      c.alignment = { vertical:'middle', horizontal:'center' };
+    });
+    ws1.getCell(`B${last+1}`).alignment = { vertical:'middle', horizontal:'left' };
+
+    // Surligne en vert quand le cadeau est remis
+    ws1.addConditionalFormatting({
+      ref:`A2:F${last}`,
+      rules:[{
+        type:'expression', formulae:['$F2="Oui"'],
+        style:{ fill:{ type:'pattern', pattern:'solid', bgColor:{ argb:'FFE4EFE1' } } }
+      }]
+    });
+    ws1.autoFilter = `A1:F${last}`;
+    ws1.pageSetup.printTitlesRow = '1:1';
+    setupPage(ws1);
+
+    /* ---------- Feuille 2 : Détail des présents ---------- */
+    const ws2 = wb.addWorksheet('Détail des présents', { views:[{ state:'frozen', ySplit:1 }] });
+    ws2.columns = [
+      { header:'N° famille', key:'n',   width:12 },
+      { header:'Famille',    key:'fam', width:30 },
+      { header:'Nom de l\'invité', key:'name', width:38 }
+    ];
+    styleHeader(ws2.getRow(1));
+
+    presentFamilies.forEach((f, i) => {
+      f.present.forEach((g, k) => {
+        const r = ws2.addRow({ n:i+1, fam:f.inv.family_name, name:g.member_name });
+        r.eachCell((c, col) => {
+          c.font = { name:'Calibri', size:11, bold: col === 2 && k === 0 };
+          c.alignment = { vertical:'middle', horizontal: col === 1 ? 'center' : 'left' };
+          c.border = {
+            left:thin, right:thin,
+            top: k === 0 ? { style:'medium', color:{ argb:GOLD } } : thin,
+            bottom: thin
+          };
+          if(i % 2 === 1) c.fill = { type:'pattern', pattern:'solid', fgColor:{ argb:'FFFBF8EF' } };
+        });
+      });
+    });
+    ws2.autoFilter = `A1:C${nbPresents + 1}`;
+    ws2.pageSetup.printTitlesRow = '1:1';
+    setupPage(ws2);
+
+    /* ---------- Feuille 3 : Tous les invités (avec statut) ---------- */
+    const ws3 = wb.addWorksheet('Tous les invités', { views:[{ state:'frozen', ySplit:1 }] });
+    ws3.columns = [
+      { header:'Famille',  key:'fam',    width:30 },
+      { header:'Invité',   key:'name',   width:38 },
+      { header:'Statut',   key:'status', width:16 }
+    ];
+    styleHeader(ws3.getRow(1));
+
+    let rowCount = 0;
+    families.forEach(f => {
+      f.members.forEach(g => {
+        const st = statusOf(g);
+        const r = ws3.addRow({ fam:f.inv.family_name, name:g.member_name, status:STATUS_LABEL[st] });
+        rowCount++;
+        r.eachCell((c, col) => {
+          c.border = BORDER;
+          c.font = { name:'Calibri', size:11, bold: col === 3, color:{ argb: col === 3 ? STATUS_COLOR[st] : 'FF000000' } };
+          c.alignment = { vertical:'middle', horizontal: col === 3 ? 'center' : 'left' };
+        });
+      });
+    });
+    ws3.autoFilter = `A1:C${rowCount + 1}`;
+    ws3.pageSetup.printTitlesRow = '1:1';
+    setupPage(ws3);
+
+    /* ---------- Feuille 4 : Récapitulatif ---------- */
+    const ws4 = wb.addWorksheet('Récapitulatif');
+    ws4.columns = [{ width:38 }, { width:16 }];
+    ws4.mergeCells('A1:B1');
+    const title = ws4.getCell('A1');
+    title.value = `Mariage ${WEDDING.coupleSignature}`;
+    title.font = { name:'Calibri', size:18, bold:true, color:{ argb:'FFFFFFFF' } };
+    title.fill = { type:'pattern', pattern:'solid', fgColor:{ argb:INK } };
+    title.alignment = { vertical:'middle', horizontal:'center' };
+    ws4.getRow(1).height = 38;
+
+    ws4.mergeCells('A2:B2');
+    const sub = ws4.getCell('A2');
+    sub.value = 'Récapitulatif au ' + new Date().toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+    sub.font = { name:'Calibri', italic:true, color:{ argb:'FF5B5646' } };
+    sub.alignment = { horizontal:'center' };
+
+    const stats = [
+      ['Total invités',                        guests.length],
+      ['Présents',                             nbPresents],
+      ['Déclinés',                             nbDeclined],
+      ['En attente de réponse',                nbPending],
+      ['Familles présentes (= cadeaux à prévoir)', presentFamilies.length],
+      ['Moyenne de personnes par famille présente',
+        presentFamilies.length ? Math.round((nbPresents / presentFamilies.length) * 10) / 10 : 0]
+    ];
+    stats.forEach(([label, val], i) => {
+      const r = ws4.getRow(4 + i);
+      r.getCell(1).value = label;
+      r.getCell(2).value = val;
+      r.height = 24;
+      const highlight = i === 4;
+      [1,2].forEach(col => {
+        const c = r.getCell(col);
+        c.border = BORDER;
+        c.font = { name:'Calibri', size:12, bold: highlight || col === 2 };
+        c.alignment = { vertical:'middle', horizontal: col === 1 ? 'left' : 'center', indent: col === 1 ? 1 : 0 };
+        if(highlight) c.fill = { type:'pattern', pattern:'solid', fgColor:{ argb:CREAM } };
+      });
+    });
+    setupPage(ws4);
+    wb.views = [{ activeTab:0 }];
+
+    /* ---------- Téléchargement ---------- */
+    const buf = await wb.xlsx.writeBuffer();
+    const blob = new Blob([buf], { type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'invites-par-famille-' + new Date().toISOString().slice(0,10) + '.xlsx';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+
+  }catch(e){
+    console.error(e);
+    alert("Erreur lors de l'export Excel : " + (e.message || e));
+  }finally{
+    btn.disabled = false;
+    btn.textContent = oldLabel;
   }
 }
 
